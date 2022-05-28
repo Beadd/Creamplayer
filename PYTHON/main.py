@@ -85,6 +85,7 @@ while True:
         print("下载QQ音乐歌单\t3")
         mode = input("输入数字选择:\t")
     if Start() == 0:
+        mode == 0
         print("请输入正确数字")
     else:
         print("开始下载歌曲")
