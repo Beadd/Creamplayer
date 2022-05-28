@@ -24,6 +24,10 @@ def Start():
         os.system("cls")
         id = input("请输入QQ音乐歌单ID:")
         path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(id)
+    if mode == "4":
+        os.system("cls")
+        id = input("请输入QQ音乐单曲ID:")
+        path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(id)
     else:
         return 0
 def Music():
@@ -76,6 +80,7 @@ def Lyric():
             code.write(req.content)
         counter += 1
 
+os.system("cls")
 print("C Beadd")
 print("歌曲自动下载至当前目录MusicB中\n歌词自动下载至当前目录LyricB中\n")
 while True:
@@ -83,6 +88,7 @@ while True:
         print("下载网易云单曲\t1")
         print("下载网易云歌单\t2")
         print("下载QQ音乐歌单\t3")
+        print("下载QQ音乐单曲\t4")
         mode = input("输入数字选择:\t")
     if Start() == 0:
         mode = 0
