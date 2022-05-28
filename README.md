@@ -13,6 +13,6 @@ pip install requests
 ./main.py
 ```
 # 感谢 Thanks
-[meting-api](https://github.com/injahow/meting-api)
+- [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
 感谢使用！欢迎issues催，若想有个界面感觉要用C++重写，star多了就搞！
