@@ -15,4 +15,4 @@ pip install requests
 # 感谢 Thanks
 - [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
-感谢使用！欢迎issues催，若想有个界面感觉要用C++重写，star多了就搞！
+感谢使用！欢迎issues催，会争取用更少的库，界面以后会用C++重写，欢迎Star!
