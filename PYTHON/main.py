@@ -14,14 +14,18 @@ def Start():
     global mode
     if mode == "1":
         os.system("cls")
-        id = input("请输入单曲ID:")
-        path = "https://api.injahow.cn/meting/?type=song&id=" + str(id)
-    else:
+        id = input("请输入网易云单曲ID:")
+        path = "http://api.injahow.cn/meting/?type=song&id=" + str(id)
+    if mode == "2":
         os.system("cls")
-        id = input("请输入歌单ID:")
-        path = "https://api.injahow.cn/meting/?type=playlist&id=" + str(id)
-
-
+        id = input("请输入网易云歌单ID:")
+        path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(id)
+    if mode == "3":
+        os.system("cls")
+        id = input("请输入QQ音乐歌单ID:")
+        path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(id)
+    else:
+        return 0
 def Music():
     counter = 1
     #    file = open(path, encoding="utf-8")
@@ -76,15 +80,20 @@ print("C Beadd")
 print("歌曲自动下载至当前目录MusicB中\n歌词自动下载至当前目录LyricB中\n")
 while True:
     if mode == 0:
-        mode = input("下载网易云单曲\t1\n下载网易云歌单\t2\n输入数字选择:\t")
-    Start()
-    print("开始下载歌曲")
-    if Music() == 0:
-        print("ID有错误!请检查")
-        os.system("pause")
-    # print("歌曲下载完成!是否下载歌词?\n取消请直接关闭窗口")
-    # os.system("pause")
+        print("下载网易云单曲\t1")
+        print("下载网易云歌单\t2")
+        print("下载QQ音乐歌单\t3")
+        mode = input("输入数字选择:\t")
+    if Start() == 0:
+        print("请输入正确数字")
     else:
-        Lyric()
-        print("下载完成!感谢使用!\n请直接关闭窗口或继续\n")
-        os.system("pause")
+        print("开始下载歌曲")
+        if Music() == 0:
+            print("ID有错误!请检查")
+            os.system("pause")
+        # print("歌曲下载完成!是否下载歌词?\n取消请直接关闭窗口")
+        # os.system("pause")
+        else:
+            Lyric()
+            print("下载完成!感谢使用!\n请直接关闭窗口或继续\n")
+            os.system("pause")
