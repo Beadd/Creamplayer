@@ -10,7 +10,7 @@
 ```bash
 cd PYTHON
 pip install requests
-./main.py
+python main.py
 ```
 # 感谢 Thanks
 - [meting-api](https://github.com/injahow/meting-api)
