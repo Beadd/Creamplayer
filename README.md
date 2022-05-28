@@ -5,7 +5,7 @@
 - 自动创建文件夹并批量下载
 - ID检测json检查
 # 使用 How
-- exe下载 前往[releases](https://github.com/Beadd/MusicDownloader/releases)
+- exe下载，前往[releases](https://github.com/Beadd/MusicDownloader/releases)
 - py下载，下载zip 
 ```bash
 cd PYTHON
