@@ -1,10 +1,11 @@
 # 关于 About
-识别ID自动调用API并分析json，填入ID自动批量下载，推荐自行下载PYTHON里的main.py运行，exe打包不太友好
+识别ID自动调用API并分析json，填入ID自动批量下载，推荐自行下载PYTHON里的main.py运行，exe打包不太友好且不一定来得及更新，正在想办法能够下载付费或VIP歌曲以及其他平台
 # 使用 How
 - 歌单与单曲选择
 - 输入ID自动获取识别json
 - 自动创建文件夹并批量下载
 - ID检测json检查
+
 # 感谢 Thanks
 [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
