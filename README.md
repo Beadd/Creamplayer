@@ -5,10 +5,13 @@
 - 自动创建文件夹并批量下载
 - ID检测json检查
 # 使用 How
+## - py下载
 ```
 pip install requests
 ./main.py
 ```
+## - exe下载
+前往[releases](https://github.com/Beadd/MusicDownloader/releases)
 # 感谢 Thanks
 [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
