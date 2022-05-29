@@ -10,11 +10,12 @@
 ```
 pip install requests
 ```
-- 下载zip文件进入
+下载zip文件进入
 ```bash
 cd PYTHON
 python main.py
 ```
+所下载的文件对应目录，MusicB音频目录，LyricB歌词目录
 # 进度 Progress
 还在深挖突破VIP的瓶颈，成功我会第一时间更新，如果你有任何的建议可以直接Issues！
 # 感谢 Thanks
