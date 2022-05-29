@@ -12,6 +12,8 @@ cd PYTHON
 pip install requests
 python main.py
 ```
+# 进度 Progress
+还在深挖突破VIP的瓶颈，成功我会第一时间更新，如果你有任何的建议可以直接Issues!
 # 感谢 Thanks
 - [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
