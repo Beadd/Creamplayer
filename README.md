@@ -5,16 +5,19 @@
 - 自动创建文件夹并批量下载
 - ID检测json检查
 # 使用 How
-- exe下载，前往[releases](https://github.com/Beadd/MusicDownloader/releases)
-- py下载，下载zip 
+1.  exe下载，前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用，无法使用请用下面的方法
+2.  注：需要requests库支持
+```
+pip install requests
+```
+- 下载zip文件进入
 ```bash
 cd PYTHON
-pip install requests
 python main.py
 ```
 # 进度 Progress
-还在深挖突破VIP的瓶颈，成功我会第一时间更新，如果你有任何的建议可以直接Issues!
+还在深挖突破VIP的瓶颈，成功我会第一时间更新，如果你有任何的建议可以直接Issues！
 # 感谢 Thanks
 - [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
-感谢使用！欢迎issues催，会争取用更少的库，界面以后会用C++重写，欢迎Star!
+感谢使用！欢迎issues催，会争取用更少的库，界面以后会用C++重写，欢迎Star！
