@@ -1,4 +1,5 @@
 import json
+import re
 from traceback import print_tb
 import requests
 import os
@@ -16,18 +17,23 @@ def Start():
         os.system("cls")
         id = input("请输入网易云单曲ID:")
         path = "http://api.injahow.cn/meting/?type=song&id=" + str(id)
+        return 1
     if mode == "2":
         os.system("cls")
         id = input("请输入网易云歌单ID:")
         path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(id)
+        return 1
     if mode == "3":
-        os.system("cls")
-        id = input("请输入QQ音乐歌单ID:")
-        path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(id)
-    if mode == "4":
         os.system("cls")
         id = input("请输入QQ音乐单曲ID:")
         path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(id)
+        return 1
+    if mode == "4":
+        os.system("cls")
+        id = input("请输入QQ音乐歌单ID:")
+        path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(id)
+        return 1
+    
     else:
         return 0
 def Music():
@@ -87,8 +93,9 @@ while True:
     if mode == 0:
         print("下载网易云单曲\t1")
         print("下载网易云歌单\t2")
-        print("下载QQ音乐歌单\t3")
-        print("下载QQ音乐单曲\t4")
+        print("下载QQ音乐单曲\t3")
+        print("下载QQ音乐歌单\t4")
+        
         mode = input("输入数字选择:\t")
     if Start() == 0:
         mode = 0
