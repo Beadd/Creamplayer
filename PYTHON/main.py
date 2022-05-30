@@ -9,6 +9,11 @@ from urllib.request import urlopen
 string = "\/:*?\">|"
 path = "path"
 mode = 0
+header = {
+    'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36'
+}
+proxies = {"http": None, "https": None}
 
 def Start():
     global path
@@ -36,13 +41,17 @@ def Start():
     
     else:
         return 0
+
+    
 def Music():
     counter = 1
-    #    file = open(path, encoding="utf-8")
-    #    data = json.load(file)
-    with urlopen(path) as response:
-        source = response.read()
-    data = json.loads(source)
+    # file = open(path, encoding="utf-8")
+    # data = json.load(file)
+    #  with urlopen(path) as response:
+    #    source = response.read()
+    """source == response"""
+    response = requests.get(path, headers=header, proxies=proxies)
+    data = json.loads(response.text)
     if 'error' in data:
         return 0;
 
@@ -65,11 +74,13 @@ def Music():
 
 def Lyric():
     counter = 1
-    #    file = open(path, encoding="utf-8")
-    #    data = json.load(file)
-    with urlopen(path) as response:
-        source = response.read()
-    data = json.loads(source)
+    # file = open(path, encoding="utf-8")
+    # data = json.load(file)
+    # with urlopen(path) as response:
+    #    source = response.read()
+    """source == response"""
+    response = requests.get(path, headers=header, proxies=proxies)
+    data = json.loads(response.text)
     # start
     os.system("mkdir LyricB")
     for data in data:
