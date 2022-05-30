@@ -18,6 +18,14 @@ python MusicDownloader.py
 所下载的文件对应目录，MusicB音频目录，LyricB歌词目录
 # 进度 Progress
 还在深挖突破QQ音乐VIP的瓶颈，目前只能下载网易音乐VIP歌曲，如果你有任何的建议可以直接Issues！
+- [x] 网易云音乐下载
+- [x] 网易云歌单批量下载
+- [x] 网易云会员VIP音乐下载
+- [x] 网易云我喜欢的歌曲下载 
+- [x] QQ音乐音乐下载
+- [x] QQ音乐歌单批量下载
+- [ ] QQ音乐会员VIP下载
+- [ ] QQ音乐我喜欢的歌单下载  
 # 感谢 Thanks
 - [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
