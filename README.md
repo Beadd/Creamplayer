@@ -13,7 +13,7 @@ pip install requests
 下载zip文件进入
 ```bash
 cd PYTHON
-python main.py
+python MusicDownloader.py
 ```
 所下载的文件对应目录，MusicB音频目录，LyricB歌词目录
 # 进度 Progress
