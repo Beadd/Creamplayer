@@ -25,6 +25,7 @@ python MusicDownloader.py
 - [x] 网易云专辑下载
 - [x] QQ音乐音乐下载
 - [x] QQ音乐歌单批量下载
+- [ ] 网易云歌手下载
 - [ ] QQ音乐会员VIP下载
 - [ ] QQ音乐我喜欢的歌单下载  
 # 感谢 Thanks
