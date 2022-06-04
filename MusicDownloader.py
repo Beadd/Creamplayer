@@ -137,7 +137,9 @@ def MusicLyricDownload(M_id,M_header,M_proxies):
     #        name = "NameFalseId." + str(M_id)
     name_url = MusicDirName + "/" + name + ".mp3"
     url = data1[0]['url']
-    req = requests.get(url)
+    req = requests.get(url,proxies=proxies)
+    if (os.path.exists(MusicDirName) == False):
+        os.system("mkdir "+MusicDirName)
     with open(name_url, "wb") as code:
         code.write(req.content)
     url_lyric = data1[0]['lrc']
