@@ -5,8 +5,9 @@
 - 自动创建文件夹并批量下载
 - ID检测json检查
 # 使用 How
-1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用,无法使用请用下面的方法
-2.  注:需要requests库支持
+## 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用,无法使用请用下面的方法
+## 2.  下载MusicDownloader.py
+注:需要requests库支持
 ```
 pip install requests
 ```
