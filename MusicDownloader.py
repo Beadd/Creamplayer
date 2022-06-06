@@ -63,8 +63,8 @@ def Start():
     if mode == "4":
         os.system("cls")
         id = input("请输入QQ音乐歌单ID:")
-        if IdCheck(id) == 0:
-            return -1
+        #if IdCheck(id) == 0:
+        #    return -1
         path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(id)
         return 1
     if mode == '5':
