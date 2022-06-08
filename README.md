@@ -38,4 +38,4 @@ python MusicDownloader.py
 - [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
 感谢使用！欢迎issues催,会争取用更少的库,界面以后会用C++重写,欢迎Star！
-#QQ音乐等VIP歌曲下载解决方案
+# QQ音乐等VIP歌曲下载解决方案
