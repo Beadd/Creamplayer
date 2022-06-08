@@ -1,5 +1,5 @@
 # 关于 About
-识别ID自动调用API并分析json,填入ID自动批量下载,推荐自行下载MusicDownloader.py运行,但用了requests,不想pip的可以去下载exe打包好的直接用,正在想办法能够下载付费或VIP歌曲以及其他平台,日后一定
+识别ID自动调用API并分析json,填入ID自动批量下载,推荐自行下载MusicDownloader.py运行,用了requests,不想pip的可以去下载exe打包好的直接用,正在想办法能够下载付费或VIP歌曲以及其他平台,日后一定
 - 歌单/单曲/专辑选择
 - 输入ID自动获取识别json
 - 自动创建文件夹并批量下载
@@ -37,7 +37,7 @@ python MusicDownloader.py
 # 感谢 Thanks
 - [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
-感谢使用！欢迎issues催,会争取用更少的库,界面以后会用C++重写,欢迎Star！
+感谢使用！欢迎issues催,界面以后会用C++重写,欢迎Star！
 # QQ音乐等多平台VIP歌曲下载解决方案
 ### 只要是在网页上你能听见的能播放全的未加密的,任何平台此方法都适用
 ![avatar](./QQvipDownload.png)
