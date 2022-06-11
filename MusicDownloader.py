@@ -1,10 +1,11 @@
+
 import os
 import re
 import sys
 import json
 import time
+#import eyed3
 import requests
-
 
 
 mode = 0
@@ -100,8 +101,20 @@ def Music():
         with open(name_url, "wb") as code:
             code.write(req.content)
         counter += 1
+        '''
+        eyed3
+        
+        audiofile = eyed3.load(name_url)
+        audiofile.tag.artist = data['artist']
+        #API in not have album 
+        #audiofile.tag.album = data['album']
+        audiofile.tag.title = data['name']
+        #image
+        #audio_Image = requests.get(data['pic'])
 
-
+        #save alright
+        audiofile.tag.save()
+        '''
 def Lyric():
     counter = 1
     # file = open(path, encoding="utf-8")# data = json.load(file)# with urlopen(path) as response:#    source = response.read()
@@ -126,7 +139,7 @@ def Lyric():
         counter += 1
 
 
-def MusicLyricDownload(M_id,M_header,M_proxies):
+def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     #url = 'https://api.injahow.cn/meting/?type=url&id=' + str(M_id)
     #req = requests.get(url)
     M_path = 'https://api.injahow.cn/meting/?type=song&id=' + str(M_id)
@@ -145,8 +158,20 @@ def MusicLyricDownload(M_id,M_header,M_proxies):
         code.write(req.content)
     url_lyric = data1[0]['lrc']
     req_lyric = requests.get(url_lyric)
-    with open(name_url, "wb") as code:
+    lrc_Name_Url = LyricDirName + "/" + data1[0]['name'] + ".lrc"
+    with open(lrc_Name_Url, "wb") as code:
         code.write(req_lyric.content)
+    '''eyed3
+    audiofile = eyed3.load(name_url)
+    audiofile.tag.artist = data1[0]['artist']
+    audiofile.tag.title = data1[0]['name']
+    audiofile.tag.album = str(M_albumId)
+    #audiofile.tag.album.artist = data1[0]['artist']
+    audiofile.tag.save()
+
+    #eyed3 Lyric
+    '''
+
     # M_path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(M_id)
     # response = requests.get(M_path, headers=M_header, proxies=M_proxies)
     # data = json.loads(response.text)
@@ -185,7 +210,7 @@ def Album():
     num = data['album']['size']
     for i in range(0,num):
         print(str(i+1) +" "+ data['album']['songs'][i]['name'])
-        MusicLyricDownload(data['album']['songs'][i]['id'],header163,proxies)
+        MusicLyricDownload(data['album']['songs'][i]['id'],albumId,header163,proxies)
     print("专辑下载完成,下载至"+MusicDirName)
     os.system("pause")
         
