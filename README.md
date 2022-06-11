@@ -15,9 +15,6 @@ cd PYTHON
 python MusicDownloader.py
 ```
 所下载的文件对应目录,MusicB音频目录,LyricB歌词目录,想更改下载文件夹名可以分别更改全局变量里的MusicDirName和LyricDirName。
-# QQ音乐ID
-> ## 比如这个ID为003eZ03f3yrLl5
-> ![avatar](./QQmusicID.png)
 
 # 进度 Progress
 还在深挖突破QQ音乐VIP的瓶颈,目前只能下载网易音乐VIP歌曲,如果你有任何的建议可以直接Issues！
@@ -32,10 +29,16 @@ python MusicDownloader.py
 - [x] QQ音乐我喜欢的歌单下载
 - [ ] 网易云歌手下载
 - [ ] QQ音乐会员VIP下载
+
 # 感谢 Thanks
 - [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
 感谢使用！欢迎issues催,界面以后会用C++重写,欢迎Star！
+
+# QQ音乐ID
+> ## 比如这个ID为003eZ03f3yrLl5
+> ![avatar](./QQmusicID.png)
+
 # QQ音乐等多平台VIP歌曲下载解决方案
 ### 只要是在网页上你能听见的能播放全的未加密的,任何平台此方法都适用
 ![avatar](./QQvipDownload.png)
