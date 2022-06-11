@@ -5,6 +5,10 @@
 ```
 pip install requests
 ```
+_eyeD3的为有对歌曲添加元数据的版本,选需
+```
+pip install eyeD3
+```
 下载zip文件进入
 ```bash
 cd PYTHON
