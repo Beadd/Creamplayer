@@ -1,6 +1,6 @@
 # 使用 How
 ## 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用,无法使用请用下面的方法
-## 2.  下载MusicDownloader.py
+## 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py
 注:需要requests库支持
 ```
 pip install requests
