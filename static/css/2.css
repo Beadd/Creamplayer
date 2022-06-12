@@ -1,0 +1,36 @@
+@media(max-width: 555px){
+    #container{
+        width: 100%;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}
+
+@media (max-width: 399px){
+    #title{
+        font-size: 10vw;
+    }
+    #inputMusicId{
+        width: 88%;
+        margin-right: 0px;
+        margin-left: 0px;
+    }
+    #button-get{
+        width: 88%;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    /* #musicPlayer{
+        width: 88%;
+        margin-left: 0px;
+        margin-right: 0px;
+    } */
+}
+#musicPlayer{
+    width: 88%;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
