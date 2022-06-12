@@ -33,11 +33,6 @@ python MusicDownloader.py
 - [ ] 网易云歌手下载
 - [ ] QQ音乐会员VIP下载
 
-# 感谢 Thanks
-- [meting-api](https://github.com/injahow/meting-api)
-# 最后 Fine
-感谢使用！欢迎issues催,界面以后会用C++重写,欢迎Star！
-
 # QQ音乐ID
 > ## 比如这个ID为003eZ03f3yrLl5
 > ![avatar](./QQmusicID.png)
@@ -55,3 +50,8 @@ python MusicDownloader.py
 - (注意看时间,如果第3步有很多选项注意都看一遍)
 - (下载的前提是能播放歌曲,所以此方法下载VIP的前提是你有VIP)
 ### (亲试QQ音乐有用,包括VIP,网易云酷狗酷我等同理！)
+
+# 感谢 Thanks
+- [meting-api](https://github.com/injahow/meting-api)
+# 最后 Fine
+感谢使用！欢迎issues催,界面以后会用C++重写,欢迎Star！
