@@ -20,8 +20,6 @@ python MusicDownloader.py
 所下载的文件对应目录,MusicB音频目录,LyricB歌词目录,想更改下载文件夹名可以分别更改全局变量里的MusicDirName和LyricDirName。
 
 # 目前进度 Progress
-还在深挖突破QQ音乐VIP的瓶颈,目前只能下载网易音乐VIP歌曲,如果你有任何的建议可以直接Issues！
-
 - [x] 网易云音乐下载
 - [x] 网易云歌单批量下载
 - [x] 网易云会员VIP音乐下载
@@ -54,4 +52,4 @@ python MusicDownloader.py
 # 感谢 Thanks
 - [meting-api](https://github.com/injahow/meting-api)
 # 最后 Fine
-感谢使用！欢迎issues催,界面以后会用C++重写,欢迎Star！
+感谢使用！欢迎issues催,目前只能下载网易音乐VIP歌曲,如果你有任何的建议可以直接Issues！欢迎Star！
