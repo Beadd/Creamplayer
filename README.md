@@ -47,7 +47,7 @@ python MusicDownloader.py
 7.  在浏览器打开复制的URL即是音频
 - (注意看时间,如果第3步有很多选项注意都看一遍)
 - (下载的前提是能播放歌曲,所以此方法下载VIP的前提是你有VIP)
-### (亲试QQ音乐有用,包括VIP,网易云酷狗酷我等同理！)
+### (亲试QQ音乐有用,包括VIP,网易云酷狗酷我等各平台同理！)
 
 # 感谢 Thanks
 - [meting-api](https://github.com/injahow/meting-api)
