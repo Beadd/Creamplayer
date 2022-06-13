@@ -14,7 +14,6 @@ pip install eyeD3
 ```
 下载zip文件进入
 ```bash
-cd PYTHON
 python MusicDownloader.py
 ```
 所下载的文件对应目录,MusicB音频目录,LyricB歌词目录,想更改下载文件夹名可以分别更改全局变量里的MusicDirName和LyricDirName。
