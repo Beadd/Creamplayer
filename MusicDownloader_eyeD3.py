@@ -15,7 +15,7 @@ LyricDirName = 'LyricB'
 MusicDirName = 'MusicB'
 
 
-proxies = {"http": None, "https": None}
+proxiesB = {"http": None, "https": None}
 header = {
     'User-Agent':
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36'
@@ -42,6 +42,7 @@ def Start():
     global mode
     if mode == "1":
         os.system("cls")
+        print("="*120)
         id = input("请输入网易云单曲ID:")
         if IdCheck(id) == 0:
             return -1
@@ -49,6 +50,7 @@ def Start():
         return 1
     if mode == "2":
         os.system("cls")
+        print("="*120)
         id = input("请输入网易云歌单ID:")
         if IdCheck(id) == 0:
             return -1
@@ -56,6 +58,7 @@ def Start():
         return 1
     if mode == "3":
         os.system("cls")
+        print("="*120)
         id = input("请输入QQ音乐单曲ID:")
         #if IdCheck(id) == 0:
         #    return -1
@@ -63,6 +66,7 @@ def Start():
         return 1
     if mode == "4":
         os.system("cls")
+        print("="*120)
         id = input("请输入QQ音乐歌单ID:")
         #if IdCheck(id) == 0:
         #    return -1
@@ -70,6 +74,7 @@ def Start():
         return 1
     if mode == '5':
         os.system("cls")
+        print("="*120)
         Album()
         #return 5
     else:
@@ -80,10 +85,10 @@ def Music():
     counter = 1
     # file = open(path, encoding="utf-8")# data = json.load(file)#  with urlopen(path) as response:#    source = response.read()
     """source == response"""
-    response = requests.get(path, headers=header, proxies=proxies)
+    response = requests.get(path, headers=header, proxies=proxiesB)
     data = json.loads(response.text)
     if 'error' in data:
-        return 0;
+        return 0
 
     # start
     if (os.path.exists(MusicDirName) == False):
@@ -110,8 +115,8 @@ def Music():
         #audiofile.tag.album = data['album']
         audiofile.tag.title = data['name']
         #image
-        #audio_Image = requests.get(data['pic'])
-
+        audio_Image = requests.get(data['pic'])
+        audiofile.tag.image = audio_Image
         #save alright
         audiofile.tag.save()
 
@@ -119,7 +124,7 @@ def Lyric():
     counter = 1
     # file = open(path, encoding="utf-8")# data = json.load(file)# with urlopen(path) as response:#    source = response.read()
     """source == response"""
-    response = requests.get(path, headers=header, proxies=proxies)
+    response = requests.get(path, headers=header, proxies=proxiesB)
     data = json.loads(response.text)
     # start
     if (os.path.exists(LyricDirName) == False):
@@ -143,7 +148,7 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     #url = 'https://api.injahow.cn/meting/?type=url&id=' + str(M_id)
     #req = requests.get(url)
     M_path = 'https://api.injahow.cn/meting/?type=song&id=' + str(M_id)
-    response = requests.get(M_path,headers=header163,proxies=proxies)
+    response = requests.get(M_path,headers=header163,proxies=proxiesB)
     data1 = json.loads(response.text)
     name = data1[0]['name']
     #for i in string:
@@ -151,7 +156,7 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     #        name = "NameFalseId." + str(M_id)
     name_url = MusicDirName + "/" + name + ".mp3"
     url = data1[0]['url']
-    req = requests.get(url,proxies=proxies)
+    req = requests.get(url,proxies=proxiesB)
     if (os.path.exists(MusicDirName) == False):
         os.system("mkdir "+MusicDirName)
     with open(name_url, "wb") as code:
@@ -196,7 +201,7 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
 def Album():
     albumId = input("请输入专辑ID:")
     u163API ="http://music.163.com/api/album/"+albumId+"?ext=true&id="+albumId+"&offset=0&total=true&limit=10"
-    response = requests.get(u163API, headers=header163, proxies=proxies)
+    response = requests.get(u163API, headers=header163, proxies=proxiesB)
     data = json.loads(response.text)
     if data['code'] != 200:
         if(os.path.exists('logB') == False):
@@ -210,7 +215,7 @@ def Album():
     num = data['album']['size']
     for i in range(0,num):
         print(str(i+1) +" "+ data['album']['songs'][i]['name'])
-        MusicLyricDownload(data['album']['songs'][i]['id'],albumId,header163,proxies)
+        MusicLyricDownload(data['album']['songs'][i]['id'],albumId,header163,proxiesB)
     print("专辑下载完成,下载至"+MusicDirName)
     os.system("pause")
         
@@ -223,8 +228,8 @@ print('''  __  __           _      _____                      _                 
  | |  | | |_| \__ \ | (__| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   
  |_|  |_|\__,_|___/_|\___|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   
 ''')
-print("="*30)
-print("歌曲自动下载至当前目录MusicB中\n歌词自动下载至当前目录LyricB中\n"+("="*30))
+print("="*120)
+print("歌曲自动下载至当前目录MusicB中\n歌词自动下载至当前目录LyricB中\n"+("="*120))
 while True:
     if mode == 0:
         print("下载网易云单曲  |  1")
@@ -235,28 +240,35 @@ while True:
         mode = input("输入数字选择:   |  ")
     start = Start()
     if start != 0:
+        print("="*120)
         print("开始下载歌曲")
     if start == -1:
         mode = 0
         os.system("cls")
+        print("="*120)
         print("请输入合法ID!")
         continue
     if start == 0:
         mode = 0
         os.system("cls")
+        print("="*120)
         print("请输入正确数字!")
         continue
     # if start == 5:
+    #     print("="*120)
     #     os.system("cls")
     #     Album()
     if start == 1:
         if Music() == 0:
+            print("="*120)
             print("ID有错误!请检查")
             os.system("pause")
         # print("歌曲下载完成!是否下载歌词?\n取消请直接关闭窗口")
         # os.system("pause")
         else:
             Lyric()
-            print("下载完成!感谢使用!\n请直接关闭窗口或继续\n")
+            print("="*120)
+            print("下载完成!感谢使用!\n请直接关闭窗口或继续")
+            print("="*120)
             os.system("pause")
 
