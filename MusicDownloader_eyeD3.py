@@ -116,9 +116,22 @@ def Music():
         audiofile.tag.title = data['name']
         #image
         audio_Image = requests.get(data['pic'])
-        audiofile.tag.image = audio_Image
+        if (os.path.exists(MusicDirName) == False):
+            os.system("mkdir "+MusicDirName)
+        with open(MusicDirName+"/pic.jpg", "wb") as code:
+            code.write(audio_Image.content)
+        imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
+        audiofile.tag.images.set(3, imageDate, "image/jpeg")
         #save alright
         audiofile.tag.save()
+        #delete pic
+        #if (os.path.exists(MusicDirName+"/pic.jpg") != False):
+        #os.system("del "+"./"+MusicDirName+"/pic.jpg")
+        '''
+        alright eyed3
+        '''
+
+
 
 def Lyric():
     counter = 1
@@ -166,14 +179,30 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     lrc_Name_Url = LyricDirName + "/" + data1[0]['name'] + ".lrc"
     with open(lrc_Name_Url, "wb") as code:
         code.write(req_lyric.content)
-    #eyed3
+    '''
+    eyed3
+    '''
     audiofile = eyed3.load(name_url)
     audiofile.tag.artist = data1[0]['artist']
     audiofile.tag.title = data1[0]['name']
     audiofile.tag.album = str(M_albumId)
     #audiofile.tag.album.artist = data1[0]['artist']
+    #image
+    audio_Image = requests.get(data1[0]['pic'])
+    if (os.path.exists(MusicDirName) == False):
+        os.system("mkdir "+MusicDirName)
+    with open(MusicDirName+"/pic.jpg", "wb") as code:
+        code.write(audio_Image.content)
+    imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
+    audiofile.tag.images.set(3, imageDate, "image/jpeg")
+    #save alright
     audiofile.tag.save()
-
+    #delete pic
+    #if (os.path.exists(MusicDirName+"/pic.jpg") != False):
+    #os.system("del "+"./"+MusicDirName+"/pic.jpg")
+    '''
+    alright eyed3
+    '''
     #eyed3 Lyric
     
 
@@ -221,7 +250,8 @@ def Album():
         
 
 
-print('''  __  __           _      _____                      _                 _           
+print('''
+  __  __           _      _____                      _                 _           
  |  \/  |         (_)    |  __ \                    | |               | |          
  | \  / |_   _ ___ _  ___| |  | | _____      ___ __ | | ___   __ _  __| | ___ _ __ 
  | |\/| | | | / __| |/ __| |  | |/ _ \ \ /\ / / '_ \| |/ _ \ / _` |/ _` |/ _ \ '__|
