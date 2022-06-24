@@ -1,9 +1,17 @@
+```
+  __  __           _      _____                      _                 _           
+ |  \/  |         (_)    |  __ \                    | |               | |          
+ | \  / |_   _ ___ _  ___| |  | | _____      ___ __ | | ___   __ _  __| | ___ _ __ 
+ | |\/| | | | / __| |/ __| |  | |/ _ \ \ /\ / / '_ \| |/ _ \ / _` |/ _` |/ _ \ '__|
+ | |  | | |_| \__ \ | (__| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   
+ |_|  |_|\__,_|___/_|\___|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   
+```
 # 关于下载 About
 识别ID自动调用API并分析json,填入ID自动批量下载,推荐自行下载MusicDownloader.py运行,用了requests,不想pip的可以去下载exe打包好的直接用,正在想办法能够下载付费或VIP歌曲以及其他平台,日后一定
 
 # 简单使用 Simply use
-## 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用,无法使用请用下面的方法
-## 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py
+### 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用,无法使用请用下面的方法
+### 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py
 注:需要requests库支持
 ```
 pip install requests
@@ -53,11 +61,4 @@ python MusicDownloader.py
 # 最后 Fine
 感谢使用！欢迎issues催,目前只能下载网易音乐VIP歌曲,如果你有任何的建议可以直接Issues！欢迎Star！
 
-```
-  __  __           _      _____                      _                 _           
- |  \/  |         (_)    |  __ \                    | |               | |          
- | \  / |_   _ ___ _  ___| |  | | _____      ___ __ | | ___   __ _  __| | ___ _ __ 
- | |\/| | | | / __| |/ __| |  | |/ _ \ \ /\ / / '_ \| |/ _ \ / _` |/ _` |/ _ \ '__|
- | |  | | |_| \__ \ | (__| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   
- |_|  |_|\__,_|___/_|\___|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   
-```
+
