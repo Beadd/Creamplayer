@@ -11,20 +11,18 @@
 
 # 简单使用 Simply use
 ### 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用,无法使用请用下面的方法
-### 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py
-注:需要requests库支持
+### 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py需要requests库支持
 ```
 pip install requests
 ```
-注:eyeD3的为有对歌曲添加元数据的版本,选需
+注:eyeD3的为有对歌曲添加元数据的版本,需要再安装eyeD3库
 ```
 pip install eyeD3
 ```
-下载zip文件进入
+所下载的文件对应目录,MusicB音频目录,LyricB歌词目录,想更改下载文件夹名可以分别更改全局变量里的MusicDirName和LyricDirName。
 ```bash
 python MusicDownloader.py
 ```
-所下载的文件对应目录,MusicB音频目录,LyricB歌词目录,想更改下载文件夹名可以分别更改全局变量里的MusicDirName和LyricDirName。
 
 # 目前进度 Progress
 - [x] 网易云音乐下载
@@ -38,7 +36,7 @@ python MusicDownloader.py
 - [ ] 网易云歌手下载
 - [ ] QQ音乐会员VIP下载
 
-# QQ音乐ID
+# 关于QQ音乐ID
 > ## 比如这个ID为003eZ03f3yrLl5
 > ![avatar](./QQmusicID.png)
 
