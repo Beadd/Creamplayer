@@ -15,6 +15,7 @@
 ```
 pip install requests
 ```
+![avatar](./github.jpg)
 注:eyeD3的为有对歌曲添加元数据的版本,需要再安装eyeD3库
 ```
 pip install eyeD3
