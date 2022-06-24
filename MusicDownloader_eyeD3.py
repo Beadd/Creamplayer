@@ -1,3 +1,4 @@
+# coding:UTF-8
 
 import os
 import re
@@ -101,6 +102,7 @@ def Music():
             if i in name:
                 name = "NameFalseNo." + str(counter)
         name_url = MusicDirName + "/" + name + ".mp3"
+        name_url_utf8 = name_url.encode('utf-8', 'ignore')
         url = data['url']
         req = requests.get(url)
         with open(name_url, "wb") as code:
@@ -110,20 +112,24 @@ def Music():
         eyed3
         '''
         audiofile = eyed3.load(name_url)
-        audiofile.tag.artist = data['artist']
+        if not data['artist']:
+            audiofile.tag.artist = data['artist']
         #API in not have album 
         #audiofile.tag.album = data['album']
-        audiofile.tag.title = data['name']
+        if not data['name']:
+            audiofile.tag.title = data['name']
         #image
-        audio_Image = requests.get(data['pic'])
-        if (os.path.exists(MusicDirName) == False):
-            os.system("mkdir "+MusicDirName)
-        with open(MusicDirName+"/pic.jpg", "wb") as code:
-            code.write(audio_Image.content)
-        imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
-        audiofile.tag.images.set(3, imageDate, "image/jpeg")
+        if not data['pic']:
+            audio_Image = requests.get(data['pic'])
+            if (os.path.exists(MusicDirName) == False):
+                os.system("mkdir "+MusicDirName)
+            with open(MusicDirName+"/pic.jpg", "wb") as code:
+                code.write(audio_Image.content)
+            imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
+            audiofile.tag.images.set(3, imageDate, "image/jpeg")
         #save alright
-        audiofile.tag.save()
+        if not data['name']:
+            audiofile.tag.save(encoding='utf-8')
         #delete pic
         #if (os.path.exists(MusicDirName+"/pic.jpg") != False):
         #os.system("del "+"./"+MusicDirName+"/pic.jpg")
@@ -183,20 +189,24 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     eyed3
     '''
     audiofile = eyed3.load(name_url)
-    audiofile.tag.artist = data1[0]['artist']
-    audiofile.tag.title = data1[0]['name']
+    if not data1[0]['artist']:
+        audiofile.tag.artist = data1[0]['artist']
+    if not data1[0]['name']:
+        audiofile.tag.title = data1[0]['name']
     audiofile.tag.album = str(M_albumId)
     #audiofile.tag.album.artist = data1[0]['artist']
     #image
-    audio_Image = requests.get(data1[0]['pic'])
-    if (os.path.exists(MusicDirName) == False):
-        os.system("mkdir "+MusicDirName)
-    with open(MusicDirName+"/pic.jpg", "wb") as code:
-        code.write(audio_Image.content)
-    imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
-    audiofile.tag.images.set(3, imageDate, "image/jpeg")
+    if not data1[0]['pic']:
+        audio_Image = requests.get(data1[0]['pic'])
+        if (os.path.exists(MusicDirName) == False):
+            os.system("mkdir "+MusicDirName)
+        with open(MusicDirName+"/pic.jpg", "wb") as code:
+            code.write(audio_Image.content)
+        imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
+        audiofile.tag.images.set(3, imageDate, "image/jpeg")
     #save alright
-    audiofile.tag.save()
+    if not data1[0]['name']:
+        audiofile.tag.save()
     #delete pic
     #if (os.path.exists(MusicDirName+"/pic.jpg") != False):
     #os.system("del "+"./"+MusicDirName+"/pic.jpg")
