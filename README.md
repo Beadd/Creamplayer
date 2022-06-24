@@ -10,13 +10,13 @@
 识别ID自动调用API并分析json,填入ID自动批量下载,推荐自行下载MusicDownloader.py运行,用了requests,不想pip的可以去下载exe打包好的直接用,正在想办法能够下载付费或VIP歌曲以及其他平台,日后一定。如果你有任何的建议可以直接Issues！欢迎Star！
 
 # 简单使用 Simply use
-### 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用,无法使用请用下面的方法
+### 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用包括EyeD3,若无法使用请用下面的方法
 ### 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py需要requests库支持
 ```
 pip install requests
 ```
 ![avatar](./github.jpg)
-注:eyeD3的为有对歌曲添加元数据的版本,需要再安装eyeD3库
+注:EyeD3的为有对歌曲添加元数据的版本,需要再安装EyeD3库
 ```
 pip install eyeD3
 ```
@@ -36,6 +36,13 @@ python MusicDownloader.py
 - [x] QQ音乐我喜欢的歌单下载
 - [ ] 网易云歌手下载
 - [ ] QQ音乐会员VIP下载
+
+## EyeD3
+- [x] 歌曲封面图片元
+- [x] 歌曲专辑ID元
+- [x] 歌曲名称元(标题)
+- [x] 歌曲歌手元(参与创作的艺术家)
+
 
 # 关于QQ音乐ID
 > ## 比如这个ID为003eZ03f3yrLl5
