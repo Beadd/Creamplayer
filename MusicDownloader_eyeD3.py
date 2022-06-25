@@ -1,18 +1,26 @@
 # coding:UTF-8
-
 import os
 import re
 import sys
 import json
 import time
-import eyed3
 import requests
-
-
+#import eyed3
+'''
+eyed3
+'''
+eyed3exist=True
+try:
+    import eyed3
+except ImportError:
+    eyed3exist=False
+'''
+alright eyed3
+'''
 mode = 0
 path = "path"
 string = "\/:*?\">|"
-LyricDirName = 'LyricB'
+LyricDirName = 'MusicB'#'LyricB'
 MusicDirName = 'MusicB'
 
 
@@ -90,10 +98,10 @@ def Music():
     data = json.loads(response.text)
     if 'error' in data:
         return 0
-
     # start
     if (os.path.exists(MusicDirName) == False):
-        os.system("mkdir "+MusicDirName)
+        os.makedirs(MusicDirName)
+    # download
     for data in data:
         # os.system("cls")
         print( str(counter) + ' ' + data['name'])
@@ -102,43 +110,54 @@ def Music():
             if i in name:
                 name = "NameFalseNo." + str(counter)
         name_url = MusicDirName + "/" + name + ".mp3"
-        name_url_utf8 = name_url.encode('utf-8', 'ignore')
+        #name_url_utf8 = name_url.encode('utf-8', 'ignore')
         url = data['url']
         req = requests.get(url)
         with open(name_url, "wb") as code:
             code.write(req.content)
-        counter += 1
         '''
         eyed3
         '''
-        audiofile = eyed3.load(name_url)
-        if not data['artist']:
-            audiofile.tag.artist = data['artist']
-        #API in not have album 
-        #audiofile.tag.album = data['album']
-        if not data['name']:
-            audiofile.tag.title = data['name']
-        #image
-        if not data['pic']:
-            audio_Image = requests.get(data['pic'])
-            if (os.path.exists(MusicDirName) == False):
-                os.system("mkdir "+MusicDirName)
-            with open(MusicDirName+"/pic.jpg", "wb") as code:
-                code.write(audio_Image.content)
-            imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
-            audiofile.tag.images.set(3, imageDate, "image/jpeg")
-        #save alright
-        if not data['name']:
-            audiofile.tag.save(encoding='utf-8')
-        #delete pic
-        #if (os.path.exists(MusicDirName+"/pic.jpg") != False):
-        #os.system("del "+"./"+MusicDirName+"/pic.jpg")
-        '''
-        alright eyed3
-        '''
+        if eyed3exist:
+            audiofile = eyed3.load(name_url)
+            #artist
+            if not not data['artist']:
+                audiofile.tag.artist = data['artist']
+            #title
+            if not not data['name']:
+                audiofile.tag.title = data['name']
+            #image
+            if not not data['pic']:
+                audio_Image = requests.get(data['pic'])
+                if (os.path.exists(MusicDirName) == False):
+                    os.makedirs(MusicDirName)
+                with open(MusicDirName+"/pic.jpg", "wb") as code:
+                    code.write(audio_Image.content)
+                imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
+                audiofile.tag.images.set(3, imageDate, "image/jpeg")
+                #delete pic
+                if (os.path.exists(MusicDirName+"/pic.jpg") != False):
+                    os.remove("./"+MusicDirName+"/pic.jpg")
+            #lyrics
+            #API in not have album 
+            #   audiofile.tag.album = data['album']
+            if not not data['name']:
+                audiofile.tag.save(encoding='utf-8')
+            #save alright
+            '''
+            alright eyed3
+            '''
+        #download Lyric
+        print( str(counter) + ' ' + data['name'] + '(歌词)')
+        req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
+        if (os.path.exists(LyricDirName) == False):
+            os.makedirs(LyricDirName)
+        lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
+        with open(lrc_Name_Url, "wb") as code:
+            code.write(req_lyric.content)
+        counter += 1
 
-
-
+'''
 def Lyric():
     counter = 1
     # file = open(path, encoding="utf-8")# data = json.load(file)# with urlopen(path) as response:#    source = response.read()
@@ -161,7 +180,7 @@ def Lyric():
         with open(name_url, "wb") as code:
             code.write(req.content)
         counter += 1
-
+'''
 
 def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     #url = 'https://api.injahow.cn/meting/?type=url&id=' + str(M_id)
@@ -170,9 +189,9 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     response = requests.get(M_path,headers=header163,proxies=proxiesB)
     data1 = json.loads(response.text)
     name = data1[0]['name']
-    #for i in string:
-    #    if i in name:
-    #        name = "NameFalseId." + str(M_id)
+    for i in string:
+        if i in name:
+            name = "NameFalseId." + str(M_id)
     name_url = MusicDirName + "/" + name + ".mp3"
     url = data1[0]['url']
     req = requests.get(url,proxies=proxiesB)
@@ -185,57 +204,71 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     lrc_Name_Url = LyricDirName + "/" + data1[0]['name'] + ".lrc"
     with open(lrc_Name_Url, "wb") as code:
         code.write(req_lyric.content)
+    print("歌词下载完成")
+    if eyed3exist:
+        audiofile = eyed3.load(name_url)
+        #artist
+        if not not data1[0]['artist']:
+            audiofile.tag.artist = data1[0]['artist']
+        #title
+        if not not data1[0]['name']:
+            audiofile.tag.title = data1[0]['name']
+        #image
+        if not not data1[0]['pic']:
+            audio_Image = requests.get(data1[0]['pic'])
+            if (os.path.exists(MusicDirName) == False):
+                os.makedirs(MusicDirName)
+            with open(MusicDirName+"/pic.jpg", "wb") as code:
+                code.write(audio_Image.content)
+            imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
+            audiofile.tag.images.set(3, imageDate, "image/jpeg")
+            #delete pic
+            if (os.path.exists(MusicDirName+"/pic.jpg") != False):
+                os.remove("./"+MusicDirName+"/pic.jpg")
+        #lyrics
+        #album 
+        audiofile.tag.album = str(M_albumId)
+        if not not data1[0]['name']:
+            audiofile.tag.save(encoding='utf-8')
+        #save alright
+        '''
+        alright eyed3
+        '''
     '''
     eyed3
-    '''
-    audiofile = eyed3.load(name_url)
-    if not data1[0]['artist']:
-        audiofile.tag.artist = data1[0]['artist']
-    if not data1[0]['name']:
-        audiofile.tag.title = data1[0]['name']
-    audiofile.tag.album = str(M_albumId)
-    #audiofile.tag.album.artist = data1[0]['artist']
-    #image
-    if not data1[0]['pic']:
-        audio_Image = requests.get(data1[0]['pic'])
-        if (os.path.exists(MusicDirName) == False):
-            os.system("mkdir "+MusicDirName)
-        with open(MusicDirName+"/pic.jpg", "wb") as code:
-            code.write(audio_Image.content)
-        imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
-        audiofile.tag.images.set(3, imageDate, "image/jpeg")
-    #save alright
-    if not data1[0]['name']:
-        audiofile.tag.save()
+    
+    if eyed3exist:
+        audiofile = eyed3.load(name_url)
+        if not data1[0]['artist']:
+            audiofile.tag.artist = data1[0]['artist']
+        if not data1[0]['name']:
+            audiofile.tag.title = data1[0]['name']
+        audiofile.tag.album = str(M_albumId)
+        #audiofile.tag.album.artist = data1[0]['artist']
+        #image
+        if not data1[0]['pic']:
+            audio_Image = requests.get(data1[0]['pic'])
+            if (os.path.exists(MusicDirName) == False):
+                os.system("mkdir "+MusicDirName)
+            with open(MusicDirName+"/pic.jpg", "wb") as code:
+                code.write(audio_Image.content)
+            imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
+            audiofile.tag.images.set(3, imageDate, "image/jpeg")
+            #delete pic
+            if (os.path.exists(MusicDirName+"/pic.jpg") != False):
+                os.remove("./"+MusicDirName+"/pic.jpg")
+        #save alright
+        if not data1[0]['name']:
+            audiofile.tag.save()
     #delete pic
     #if (os.path.exists(MusicDirName+"/pic.jpg") != False):
     #os.system("del "+"./"+MusicDirName+"/pic.jpg")
-    '''
+    
     alright eyed3
     '''
-    #eyed3 Lyric
-    
-
-    # M_path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(M_id)
-    # response = requests.get(M_path, headers=M_header, proxies=M_proxies)
-    # data = json.loads(response.text)
-    
-    # if 'error' in data:
-    #     return 0;
-    # if (os.path.exists(MusicDirName) == False):
-    #     os.system("mkdir "+MusicDirName)
-    # name = data['name']
-    # print(name)
-    # for i in string:
-    #     if i in name:
-    #         name = "NameFalseId." + str(M_id)
-    # name_url = MusicDirName + "/" + name + ".mp3"
-    # url = data['url']
-    # req = requests.get(url)
-    # with open(name_url, "wb") as code:
-    #     code.write(req.content)
-
-
+    '''
+    eyed3
+    '''
 
 def Album():
     albumId = input("请输入专辑ID:")
@@ -244,7 +277,7 @@ def Album():
     data = json.loads(response.text)
     if data['code'] != 200:
         if(os.path.exists('logB') == False):
-            os.system("mkdir logB")
+            os.makedirs("logB")
         fileName = "logB/" + str(time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))) + ".log"
         with open(fileName, "wb") as code:
             code.write(response.content)
@@ -253,7 +286,7 @@ def Album():
         sys.exit(0)
     num = data['album']['size']
     for i in range(0,num):
-        print(str(i+1) +" "+ data['album']['songs'][i]['name'])
+        print(str(i+1) +" "+ data['album']['songs'][i]['name'] +" "+"下载完成")
         MusicLyricDownload(data['album']['songs'][i]['id'],albumId,header163,proxiesB)
     print("专辑下载完成,下载至"+MusicDirName)
     os.system("pause")
@@ -306,7 +339,7 @@ while True:
         # print("歌曲下载完成!是否下载歌词?\n取消请直接关闭窗口")
         # os.system("pause")
         else:
-            Lyric()
+            #Lyric()
             print("="*120)
             print("下载完成!感谢使用!\n请直接关闭窗口或继续")
             print("="*120)
