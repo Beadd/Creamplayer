@@ -28,7 +28,7 @@ python MusicDownloader.py
 - [ ] 网易云歌手下载
 - [ ] QQ音乐会员VIP下载
 
-## EyeD3
+## 关于EyeD3
 - [x] 歌曲封面图片元
 - [x] 歌曲专辑ID元
 - [x] 歌曲名称元(标题)
