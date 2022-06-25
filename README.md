@@ -43,11 +43,11 @@ python MusicDownloader.py
 
 # 一些建议 XiaoShengBiBi
 ## 关于QQ音乐ID
-> ### 比如这个ID为003eZ03f3yrLl5
+> 比如这个ID为003eZ03f3yrLl5
 > ![avatar](./QQmusicID.png)
 
 ## QQ音乐等多平台VIP歌曲下载解决方案
-### 只要是在网页上你能听见的能播放全的未加密的,任何平台此方法都适用
+只要是在网页上你能听见的能播放全的未加密的,任何平台此方法都适用
 ![avatar](./QQvipDownload.png)
 1.  按F12或Ctrl+Shift+I打开开发者模式
 2.  选择网络(Network)
