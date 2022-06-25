@@ -1,5 +1,5 @@
 # 关于下载 About
-识别ID自动调用API并分析json,填入ID自动批量下载,推荐自行下载MusicDownloader.py运行,用了requests,不想pip的可以去下载exe打包好的直接用,正在想办法能够下载付费或VIP歌曲以及其他平台,日后一定。如果你有任何的建议可以直接Issues！欢迎Star！
+识别ID自动调用API分析json进行下载,推荐自行下载MusicDownloader.py运行,用了requests,不想pip的可以去下载exe打包好的直接用,正在想办法能够下载付费或VIP歌曲以及其他平台,日后一定。然后如果你有任何的建议或者其他好用的API可以直接Issues甚至pr！欢迎Star！
 
 # 简单使用 Simply use
 ### 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用包括EyeD3,若无法使用请用下面的方法
