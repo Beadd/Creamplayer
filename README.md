@@ -8,11 +8,10 @@
 pip install requests
 ```
 
-注:EyeD3的为有对歌曲添加元数据的版本,需要再安装EyeD3库
+注:EyeD3的为有对歌曲添加元数据的版本,需要再安装EyeD3库。想更改下载文件夹名可以分别更改全局变量里的MusicDirName和LyricDirName,默认在同一文件夹MusicB里。
 ```
 pip install eyeD3
 ```
-所下载的文件对应目录,MusicB音频目录,LyricB歌词目录,想更改下载文件夹名可以分别更改全局变量里的MusicDirName和LyricDirName。
 ```bash
 python MusicDownloader.py
 ```
