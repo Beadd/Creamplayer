@@ -1,5 +1,5 @@
 # 关于下载 About
-调用API分析json进行下载,eyed3添加封面等元数据
+调用API分析json进行下载,eyed3添加封面等元数据,简单下载,上手即用
 
 # 简单使用 Simply use
 ## 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)
