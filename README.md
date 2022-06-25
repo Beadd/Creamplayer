@@ -35,7 +35,7 @@ python MusicDownloader.py
 - [x] 歌曲歌手元(参与创作的艺术家)
 
 # 感谢 Thanks
-- [meting-api](https://github.com/injahow/meting-api)
+- [Meting-api](https://github.com/injahow/meting-api)
 - [APlayer](https://github.com/DIYgod/APlayer)
 # 许可证 License
 [MIT](https://github.com/Beadd/MusicDownloader/blob/main/LICENSE) license.
