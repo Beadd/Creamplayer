@@ -43,12 +43,19 @@ python MusicDownloader.py
 - [x] 歌曲名称元(标题)
 - [x] 歌曲歌手元(参与创作的艺术家)
 
+# 感谢 Thanks
+- [meting-api](https://github.com/injahow/meting-api)
+# 许可证 License
+[MIT](https://github.com/Beadd/MusicDownloader/blob/main/LICENSE) license.
+# 最后 Fine
+感谢使用！
 
-# 关于QQ音乐ID
-> ## 比如这个ID为003eZ03f3yrLl5
+# 一些建议 XiaoShengBiBi
+## 关于QQ音乐ID
+> ### 比如这个ID为003eZ03f3yrLl5
 > ![avatar](./QQmusicID.png)
 
-# QQ音乐等多平台VIP歌曲下载解决方案
+## QQ音乐等多平台VIP歌曲下载解决方案
 ### 只要是在网页上你能听见的能播放全的未加密的,任何平台此方法都适用
 ![avatar](./QQvipDownload.png)
 1.  按F12或Ctrl+Shift+I打开开发者模式
@@ -59,12 +66,4 @@ python MusicDownloader.py
 6.  复制其中的Request URL
 7.  在浏览器打开复制的URL即是音频
 - (注意看时间,如果第3步有很多选项注意都看一遍)
-- (下载的前提是能播放歌曲,所以此方法下载VIP的前提是你有VIP)
-### (亲试QQ音乐有用,包括VIP,网易云酷狗酷我等各平台同理！)
-
-# 感谢 Thanks
-- [meting-api](https://github.com/injahow/meting-api)
-# 许可证 License
-[MIT](https://github.com/Beadd/MusicDownloader/blob/main/LICENSE) license.
-# 最后 Fine
-感谢使用！
+- (下载的前提是能播放歌曲,网易云酷狗酷我等各平台同理)
