@@ -36,6 +36,7 @@ python MusicDownloader.py
 
 # 感谢 Thanks
 - [meting-api](https://github.com/injahow/meting-api)
+- [APlayer](https://github.com/DIYgod/APlayer)
 # 许可证 License
 [MIT](https://github.com/Beadd/MusicDownloader/blob/main/LICENSE) license.
 # 最后 Fine
