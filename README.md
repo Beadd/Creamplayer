@@ -1,14 +1,15 @@
 # 关于下载 About
-识别ID自动调用API分析json进行下载,推荐自行下载MusicDownloader.py运行,用了requests,不想pip的可以去下载exe打包好的直接用,正在想办法能够下载付费或VIP歌曲以及其他平台,日后一定。然后如果你有任何的建议或者其他好用的API可以直接Issues或者pr
+调用API分析json进行下载,eyed3添加封面等元数据
 
 # 简单使用 Simply use
-### 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)直接下载使用包括EyeD3,若无法使用请用下面的方法
-### 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py需要requests库支持
+## 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)
+下载运行即可,包含eyed3,无需pip,若无法使用请用下面的方法
+## 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py需要requests库支持
 ```
 pip install requests
 ```
 
-注:EyeD3的为有对歌曲添加元数据的版本,需要再安装EyeD3库。想更改下载文件夹名可以分别更改全局变量里的MusicDirName和LyricDirName,默认在同一文件夹MusicB里。
+注:安装eyeD3库可以对下载的歌曲增加元元素,但不是必须。
 ```
 pip install eyeD3
 ```
@@ -40,9 +41,10 @@ python MusicDownloader.py
 # 许可证 License
 [MIT](https://github.com/Beadd/MusicDownloader/blob/main/LICENSE) license.
 # 最后 Fine
+更改下载文件夹名可以分别更改全局变量里的MusicDirName和LyricDirName,默认在同一文件夹MusicB里。
+如果你有任何的建议或者其他好用的API可以直接Issues！
 感谢使用！欢迎Star
 
-# 一些建议 XiaoShengBiBi
 ## 关于QQ音乐ID
 > 比如这个ID为003eZ03f3yrLl5
 > ![avatar](./QQmusicID.png)
