@@ -164,6 +164,9 @@ def Music():
             #lyrics
             if req_lyric.text != '':
                 audiofile.tag.lyrics.set(req_lyric.text)
+                print(str(counter)+"将歌词嵌入歌曲中")
+            else:
+                print("歌词为空,eyed3嵌入失败,自动跳过")
             #API in not have album 
             #   audiofile.tag.album = data['album']
             if data['name'] is not None:
