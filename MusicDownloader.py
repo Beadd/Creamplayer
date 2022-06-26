@@ -126,11 +126,14 @@ def Music():
         #download Lyric
         print( str(counter) + ' ' + data['name'] + '(歌词)')
         req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
-        if (os.path.exists(LyricDirName) == False):
-            os.makedirs(LyricDirName)
-        lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
-        with open(lrc_Name_Url, "wb") as code:
-            code.write(req_lyric.content)
+        if req_lyric.text != '':
+            if (os.path.exists(LyricDirName) == False):
+                os.makedirs(LyricDirName)
+            lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
+            with open(lrc_Name_Url, "wb") as code:
+                code.write(req_lyric.content)
+        else:
+            print("序号为"+str(counter)+"歌曲歌词为空")
         '''
         eyed3
         '''
@@ -159,6 +162,8 @@ def Music():
                 if (os.path.exists(MusicDirName+"/pic.jpg") != False):
                     os.remove("./"+MusicDirName+"/pic.jpg")
             #lyrics
+            if req_lyric.text != '':
+                audiofile.tag.lyrics.set(req_lyric.text)
             #API in not have album 
             #   audiofile.tag.album = data['album']
             if data['name'] is not None:
