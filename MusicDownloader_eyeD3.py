@@ -1,4 +1,6 @@
 # coding:UTF-8
+
+
 import os
 import re
 import sys
@@ -113,6 +115,10 @@ def Music():
         #name_url_utf8 = name_url.encode('utf-8', 'ignore')
         url = data['url']
         req = requests.get(url)
+        if req.text == None:
+            continue
+        if req.text == '':
+            continue
         with open(name_url, "wb") as code:
             code.write(req.content)
         '''
@@ -121,13 +127,13 @@ def Music():
         if eyed3exist:
             audiofile = eyed3.load(name_url)
             #artist
-            if not not data['artist']:
+            if data['artist'] is not 'NoneType':
                 audiofile.tag.artist = data['artist']
             #title
-            if not not data['name']:
+            if data['name'] is not None:
                 audiofile.tag.title = data['name']
             #image
-            if not not data['pic']:
+            if data['pic'] is not None:
                 audio_Image = requests.get(data['pic'])
                 if (os.path.exists(MusicDirName) == False):
                     os.makedirs(MusicDirName)
@@ -141,7 +147,7 @@ def Music():
             #lyrics
             #API in not have album 
             #   audiofile.tag.album = data['album']
-            if not not data['name']:
+            if data['name'] is not None:
                 audiofile.tag.save(encoding='utf-8')
             #save alright
             '''
