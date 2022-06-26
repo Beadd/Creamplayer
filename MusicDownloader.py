@@ -226,6 +226,51 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     with open(lrc_Name_Url, "wb") as code:
         code.write(req_lyric.content)
     print("歌词下载完成")
+
+    '''
+    eyed3
+    '''
+    if eyed3exist:
+        try:
+            audiofile = eyed3.load(name_url)
+        except:
+            print("打开音乐失败,自动跳过")
+            return 0
+        #artist
+        if data1[0]['artist'] is not 'NoneType':
+            audiofile.tag.artist = data1[0]['artist']
+        #title
+        if data1[0]['name'] is not None:
+            audiofile.tag.title = data1[0]['name']
+        #image
+        if data1[0]['pic'] is not None:
+            audio_Image = requests.get(data1[0]['pic'])
+            if (os.path.exists(MusicDirName) == False):
+                os.makedirs(MusicDirName)
+            with open(MusicDirName+"/pic.jpg", "wb") as code:
+                code.write(audio_Image.content)
+            imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
+            audiofile.tag.images.set(3, imageDate, "image/jpeg")
+            #delete pic
+            if (os.path.exists(MusicDirName+"/pic.jpg") != False):
+                os.remove("./"+MusicDirName+"/pic.jpg")
+        #lyrics
+        if req_lyric.text != '':
+            audiofile.tag.lyrics.set(req_lyric.text)
+            print("正在将歌词嵌入歌曲中")
+        else:
+            print("歌词为空,eyed3嵌入失败,自动跳过")
+        #album 
+        audiofile.tag.album = str(M_albumId)
+        if data1[0]['name'] is not None:
+            audiofile.tag.save(encoding='utf-8')
+        #save alright
+    '''
+    alright eyed3
+    '''
+
+
+    '''
     if eyed3exist:
         audiofile = eyed3.load(name_url)
         #artist
@@ -252,44 +297,10 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
         if not not data1[0]['name']:
             audiofile.tag.save(encoding='utf-8')
         #save alright
-        '''
+
         alright eyed3
         '''
-    '''
-    eyed3
-    
-    if eyed3exist:
-        audiofile = eyed3.load(name_url)
-        if not data1[0]['artist']:
-            audiofile.tag.artist = data1[0]['artist']
-        if not data1[0]['name']:
-            audiofile.tag.title = data1[0]['name']
-        audiofile.tag.album = str(M_albumId)
-        #audiofile.tag.album.artist = data1[0]['artist']
-        #image
-        if not data1[0]['pic']:
-            audio_Image = requests.get(data1[0]['pic'])
-            if (os.path.exists(MusicDirName) == False):
-                os.system("mkdir "+MusicDirName)
-            with open(MusicDirName+"/pic.jpg", "wb") as code:
-                code.write(audio_Image.content)
-            imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
-            audiofile.tag.images.set(3, imageDate, "image/jpeg")
-            #delete pic
-            if (os.path.exists(MusicDirName+"/pic.jpg") != False):
-                os.remove("./"+MusicDirName+"/pic.jpg")
-        #save alright
-        if not data1[0]['name']:
-            audiofile.tag.save()
-    #delete pic
-    #if (os.path.exists(MusicDirName+"/pic.jpg") != False):
-    #os.system("del "+"./"+MusicDirName+"/pic.jpg")
-    
-    alright eyed3
-    '''
-    '''
-    eyed3
-    '''
+
 
 def Album():
     albumId = input("请输入专辑ID:")
