@@ -9,7 +9,7 @@
 pip install requests
 ```
 
-注:安装eyeD3库可以对下载的歌曲增加元元素,但不是必须。
+可选择:安装eyeD3库可以对下载的歌曲增加元元素,但不是必须。
 ```
 pip install eyeD3
 ```
