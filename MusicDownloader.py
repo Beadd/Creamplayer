@@ -116,11 +116,21 @@ def Music():
         url = data['url']
         req = requests.get(url)
         if req.text == None:
+            print("序号为"+str(counter)+"音乐为None,自动跳过")
             continue
         if req.text == '':
+            print("序号为"+str(counter)+"音乐为空,自动跳过")
             continue
         with open(name_url, "wb") as code:
             code.write(req.content)
+        #download Lyric
+        print( str(counter) + ' ' + data['name'] + '(歌词)')
+        req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
+        if (os.path.exists(LyricDirName) == False):
+            os.makedirs(LyricDirName)
+        lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
+        with open(lrc_Name_Url, "wb") as code:
+            code.write(req_lyric.content)
         '''
         eyed3
         '''
@@ -154,18 +164,11 @@ def Music():
             if data['name'] is not None:
                 audiofile.tag.save(encoding='utf-8')
             #save alright
-            '''
-            alright eyed3
-            '''
-        #download Lyric
-        print( str(counter) + ' ' + data['name'] + '(歌词)')
-        req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
-        if (os.path.exists(LyricDirName) == False):
-            os.makedirs(LyricDirName)
-        lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
-        with open(lrc_Name_Url, "wb") as code:
-            code.write(req_lyric.content)
+        '''
+        alright eyed3
+        '''
         counter += 1
+
 
 '''
 def Lyric():
