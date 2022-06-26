@@ -34,6 +34,7 @@ python MusicDownloader.py
 - [x] 歌曲专辑ID元
 - [x] 歌曲名称元(标题)
 - [x] 歌曲歌手元(参与创作的艺术家)
+- [x] 歌曲歌词嵌入
 
 # 感谢 Thanks
 - [Meting-api](https://github.com/injahow/meting-api)
