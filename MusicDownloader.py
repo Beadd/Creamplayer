@@ -7,7 +7,6 @@ import sys
 import json
 import time
 import requests
-#import eyed3
 '''
 eyed3
 '''
@@ -24,7 +23,7 @@ path = "path"
 string = "\/:*?\">|"
 LyricDirName = 'MusicB'#'LyricB'
 MusicDirName = 'MusicB'
-
+width = os.get_terminal_size().columns
 
 proxiesB = {"http": None, "https": None}
 header = {
@@ -42,50 +41,46 @@ header163 = {
 
 
 
-def IdCheck(id):
-    if id.isdigit():
-        return 1
-    else:
-        return 0
-
 def Start():
     global path
     global mode
+    if mode == 'q' or mode =='quit':
+        exit()
     if mode == "1":
-        os.system("cls")
-        print("="*120)
+        # os.system("cls")
+        print("="*width)
         id = input("请输入网易云单曲ID:")
-        if IdCheck(id) == 0:
+        if id.isdigit() == 0:
             return -1
         path = "http://api.injahow.cn/meting/?type=song&id=" + str(id)
         return 1
     if mode == "2":
-        os.system("cls")
-        print("="*120)
+        # os.system("cls")
+        print("="*width)
         id = input("请输入网易云歌单ID:")
-        if IdCheck(id) == 0:
+        if id.isdigit() == 0:
             return -1
         path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(id)
         return 1
     if mode == "3":
-        os.system("cls")
-        print("="*120)
+        # os.system("cls")
+        print("="*width)
         id = input("请输入QQ音乐单曲ID:")
-        #if IdCheck(id) == 0:
+        #if id.digit() == 0:
         #    return -1
         path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(id)
         return 1
     if mode == "4":
-        os.system("cls")
-        print("="*120)
+        # os.system("cls")
+        print("="*width)
         id = input("请输入QQ音乐歌单ID:")
-        #if IdCheck(id) == 0:
+        #if id.digit() == 0:
         #    return -1
         path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(id)
         return 1
     if mode == '5':
-        os.system("cls")
-        print("="*120)
+        # os.system("cls")
+        print("="*width)
         Album()
         #return 5
     else:
@@ -106,26 +101,22 @@ def Music():
     # download
     for data in data:
         # os.system("cls")
-        print( str(counter) + ' ' + data['name'])
+        print(str(counter) + ' ' + data['name'] + '...',end="")
         name = data['name']
         for i in string:
             if i in name:
                 name = "NameFalseNo." + str(counter)
         name_url = MusicDirName + "/" + name + ".mp3"
-        #name_url_utf8 = name_url.encode('utf-8', 'ignore')
         url = data['url']
         req = requests.get(url)
-        if req.text == None:
-            print("序号为"+str(counter)+"音乐为None,自动跳过")
-            continue
-        if req.text == '':
-            print("序号为"+str(counter)+"音乐为空,自动跳过")
+        if req.text == None or req.text == '':
+            print("\n\033[33m返回为空,自动跳过,不做统计\033[0m\n",end="")
             continue
         with open(name_url, "wb") as code:
             code.write(req.content)
         #download Lyric
-        print( str(counter) + ' ' + data['name'] + '(歌词)')
         req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
+        print('  歌词下载完成',end="")
         if req_lyric.text != '':
             if (os.path.exists(LyricDirName) == False):
                 os.makedirs(LyricDirName)
@@ -133,7 +124,7 @@ def Music():
             with open(lrc_Name_Url, "wb") as code:
                 code.write(req_lyric.content)
         else:
-            print("序号为"+str(counter)+"歌曲歌词为空")
+            print("\n\033[33m序号为"+str(counter)+"歌曲歌词为空\033[0m")
         '''
         eyed3
         '''
@@ -141,16 +132,16 @@ def Music():
             try:
                 audiofile = eyed3.load(name_url)
             except:
-                print("打开序号"+str(counter)+"音乐失败,自动跳过")
+                print("\n\033[33m打开序号"+str(counter)+"音乐失败,自动跳过\033[0m")
                 continue
             #artist
-            if data['artist'] is not 'NoneType':
+            if data['artist'] != 'NoneType':
                 audiofile.tag.artist = data['artist']
             #title
-            if data['name'] is not None:
+            if data['name'] != None:
                 audiofile.tag.title = data['name']
             #image
-            if data['pic'] is not None:
+            if data['pic'] != None:
                 audio_Image = requests.get(data['pic'])
                 if (os.path.exists(MusicDirName) == False):
                     os.makedirs(MusicDirName)
@@ -164,44 +155,20 @@ def Music():
             #lyrics
             if req_lyric.text != '':
                 audiofile.tag.lyrics.set(req_lyric.text)
-                print(str(counter)+"将歌词嵌入歌曲中")
+                print("  已内嵌歌词",end="")
             else:
-                print("歌词为空,eyed3嵌入失败,自动跳过")
+                print("\n\033[33m歌词为空,eyed3嵌入失败,自动跳过\033[0m")
             #API in not have album 
             #   audiofile.tag.album = data['album']
-            if data['name'] is not None:
+            if data['name'] != None:
                 audiofile.tag.save(encoding='utf-8')
             #save alright
         '''
         alright eyed3
         '''
+        print('')
         counter += 1
 
-
-'''
-def Lyric():
-    counter = 1
-    # file = open(path, encoding="utf-8")# data = json.load(file)# with urlopen(path) as response:#    source = response.read()
-    """source == response"""
-    response = requests.get(path, headers=header, proxies=proxiesB)
-    data = json.loads(response.text)
-    # start
-    if (os.path.exists(LyricDirName) == False):
-        os.system("mkdir "+LyricDirName)
-    for data in data:
-        # os.system("cls")
-        print( str(counter) + ' ' + data['name'] + '(歌词)')
-        name = data['name']
-        for i in string:
-            if i in name:
-                name = "NameFalseNo." + str(counter)
-        name_url = LyricDirName + "/" + name + ".lrc"
-        url = data['lrc']
-        req = requests.get(url)
-        with open(name_url, "wb") as code:
-            code.write(req.content)
-        counter += 1
-'''
 
 def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     #url = 'https://api.injahow.cn/meting/?type=url&id=' + str(M_id)
@@ -217,7 +184,7 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     url = data1[0]['url']
     req = requests.get(url,proxies=proxiesB)
     if (os.path.exists(MusicDirName) == False):
-        os.system("mkdir "+MusicDirName)
+        os.makedirs(MusicDirName)
     with open(name_url, "wb") as code:
         code.write(req.content)
     url_lyric = data1[0]['lrc']
@@ -225,7 +192,7 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
     lrc_Name_Url = LyricDirName + "/" + data1[0]['name'] + ".lrc"
     with open(lrc_Name_Url, "wb") as code:
         code.write(req_lyric.content)
-    print("歌词下载完成")
+    print("\n\033[32m歌词下载完成\033[0m")
 
     '''
     eyed3
@@ -234,16 +201,16 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
         try:
             audiofile = eyed3.load(name_url)
         except:
-            print("打开音乐失败,自动跳过")
+            print("\n\033[33m打开音乐失败,自动跳过\033[0m")
             return 0
-        #artist
-        if data1[0]['artist'] is not 'NoneType':
+        #歌手
+        if data1[0]['artist'] != 'NoneType':
             audiofile.tag.artist = data1[0]['artist']
-        #title
-        if data1[0]['name'] is not None:
+        #曲名
+        if data1[0]['name'] != None:
             audiofile.tag.title = data1[0]['name']
-        #image
-        if data1[0]['pic'] is not None:
+        #封面
+        if data1[0]['pic'] != None:
             audio_Image = requests.get(data1[0]['pic'])
             if (os.path.exists(MusicDirName) == False):
                 os.makedirs(MusicDirName)
@@ -254,52 +221,19 @@ def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies):
             #delete pic
             if (os.path.exists(MusicDirName+"/pic.jpg") != False):
                 os.remove("./"+MusicDirName+"/pic.jpg")
-        #lyrics
+        #歌词
         if req_lyric.text != '':
             audiofile.tag.lyrics.set(req_lyric.text)
-            print("正在将歌词嵌入歌曲中")
+            print("  正在将歌词嵌入歌曲中",end="")
         else:
-            print("歌词为空,eyed3嵌入失败,自动跳过")
-        #album 
+            print("\n\033[33m歌词为空,eyed3嵌入失败,自动跳过\033[0m")
+        #专辑
         audiofile.tag.album = str(M_albumId)
-        if data1[0]['name'] is not None:
+        if data1[0]['name'] != None:
             audiofile.tag.save(encoding='utf-8')
-        #save alright
     '''
     alright eyed3
     '''
-
-
-    '''
-    if eyed3exist:
-        audiofile = eyed3.load(name_url)
-        #artist
-        if not not data1[0]['artist']:
-            audiofile.tag.artist = data1[0]['artist']
-        #title
-        if not not data1[0]['name']:
-            audiofile.tag.title = data1[0]['name']
-        #image
-        if not not data1[0]['pic']:
-            audio_Image = requests.get(data1[0]['pic'])
-            if (os.path.exists(MusicDirName) == False):
-                os.makedirs(MusicDirName)
-            with open(MusicDirName+"/pic.jpg", "wb") as code:
-                code.write(audio_Image.content)
-            imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
-            audiofile.tag.images.set(3, imageDate, "image/jpeg")
-            #delete pic
-            if (os.path.exists(MusicDirName+"/pic.jpg") != False):
-                os.remove("./"+MusicDirName+"/pic.jpg")
-        #lyrics
-        #album 
-        audiofile.tag.album = str(M_albumId)
-        if not not data1[0]['name']:
-            audiofile.tag.save(encoding='utf-8')
-        #save alright
-
-        alright eyed3
-        '''
 
 
 def Album():
@@ -314,66 +248,55 @@ def Album():
         with open(fileName, "wb") as code:
             code.write(response.content)
         print("API调用失败:cookie失效或其他问题,自动将调用日志保存在logB文件夹中")
-        os.system("pause")
+        # os.system("pause")
         sys.exit(0)
     num = data['album']['size']
     for i in range(0,num):
         print(str(i+1) +" "+ data['album']['songs'][i]['name'] +" "+"下载完成")
         MusicLyricDownload(data['album']['songs'][i]['id'],albumId,header163,proxiesB)
-    print("专辑下载完成,下载至"+MusicDirName)
-    os.system("pause")
-        
+    print("\n\033[32m专辑下载完成,下载至 "+MusicDirName+" \033[0m")
 
 
 print('''
-  __  __           _      _____                      _                 _           
- |  \/  |         (_)    |  __ \                    | |               | |          
- | \  / |_   _ ___ _  ___| |  | | _____      ___ __ | | ___   __ _  __| | ___ _ __ 
- | |\/| | | | / __| |/ __| |  | |/ _ \ \ /\ / / '_ \| |/ _ \ / _` |/ _` |/ _ \ '__|
- | |  | | |_| \__ \ | (__| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   
- |_|  |_|\__,_|___/_|\___|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   
+\033[34m  __  __           _     \033[35m _____                      _                 _           \033[0m
+\033[34m |  \/  |         (_)    \033[35m|  __ \                    | |               | |          \033[0m
+\033[34m | \  / |_   _ ___ _  ___\033[35m| |  | | _____      ___ __ | | ___   __ _  __| | ___ _ __ \033[0m
+\033[34m | |\/| | | | / __| |/ __\033[35m| |  | |/ _ \ \ /\ / / '_ \| |/ _ \ / _` |/ _` |/ _ \ '__|\033[0m
+\033[34m | |  | | |_| \__ \ | (__\033[35m| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   \033[0m
+\033[34m |_|  |_|\__,_|___/_|\___\033[35m|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   \033[0m
 ''')
-print("="*120)
-print("歌曲自动下载至当前目录MusicB中\n歌词自动下载至当前目录LyricB中\n"+("="*120))
+print("="*width)
+print("歌曲自动下载至目录"+MusicDirName+"中\n歌词自动下载至目录"+LyricDirName+"中\n"+("="*width))
 while True:
     if mode == 0:
-        print("下载网易云单曲  |  1")
-        print("下载网易云歌单  |  2")
-        print("下载QQ音乐单曲  |  3")
-        print("下载QQ音乐歌单  |  4")
-        print("下载网易云专辑  |  5")
-        mode = input("输入数字选择:   |  ")
+        print("下载网易云单曲  \033[36m|\033[0m  1")
+        print("下载网易云歌单  \033[36m|\033[0m  2")
+        print("下载QQ音乐单曲  \033[36m|\033[0m  3")
+        print("下载QQ音乐歌单  \033[36m|\033[0m  4")
+        print("下载网易云专辑  \033[36m|\033[0m  5")
+        mode = input("输入数字选择:   \033[36m|\033[0m  ")
     start = Start()
     if start != 0:
-        print("="*120)
-        print("开始下载歌曲")
+        print("="*width)
+        print("\033[32m开始下载歌曲\033[0m")
     if start == -1:
         mode = 0
-        os.system("cls")
-        print("="*120)
-        print("请输入合法ID!")
+        # os.system("cls")
+        print("="*width)
+        print("\033[33m请输入合法ID!\033[0m")
         continue
     if start == 0:
         mode = 0
-        os.system("cls")
-        print("="*120)
-        print("请输入正确数字!")
+        # os.system("cls")
+        print("="*width)
+        print("\033[33m请输入正确数字!\033[0m")
         continue
-    # if start == 5:
-    #     print("="*120)
-    #     os.system("cls")
-    #     Album()
     if start == 1:
         if Music() == 0:
-            print("="*120)
-            print("ID有错误!请检查")
-            os.system("pause")
-        # print("歌曲下载完成!是否下载歌词?\n取消请直接关闭窗口")
-        # os.system("pause")
+            print("="*width)
+            print("\033[33mID有错误!请检查\033[0m")
         else:
-            #Lyric()
-            print("="*120)
-            print("下载完成!感谢使用!\n请直接关闭窗口或继续")
-            print("="*120)
-            os.system("pause")
+            print("="*width)
+            print("\033[32m下载完成!感谢使用!\n\033[35m请直接关闭窗口或继续\033[0m")
+            print("="*width)
 
