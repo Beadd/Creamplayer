@@ -125,7 +125,11 @@ def Music():
         eyed3
         '''
         if eyed3exist:
-            audiofile = eyed3.load(name_url)
+            try:
+                audiofile = eyed3.load(name_url)
+            except:
+                print("打开序号"+str(counter)+"音乐失败,自动跳过")
+                continue
             #artist
             if data['artist'] is not 'NoneType':
                 audiofile.tag.artist = data['artist']
