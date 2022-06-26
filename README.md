@@ -17,7 +17,7 @@ pip install eyeD3
 python MusicDownloader.py
 ```
 
-# 目前进度 Progress
+# 进度 Progress
 - [x] 网易云音乐下载
 - [x] 网易云歌单批量下载
 - [x] 网易云会员VIP音乐下载
