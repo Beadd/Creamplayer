@@ -1,11 +1,13 @@
 # 关于 About
-一键下载网易云/QQ歌歌单,包括vip
-# 简单使用 Simply use
-## 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)
+一键下载网易云/QQ歌歌单包括vip
+# 使用 How
+## 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.exe
 下载运行即可,包含eyed3,无需pip,若无法使用请用下面的方法
 
 
-## 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py需要requests库支持
+## 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py
+
+需要requests库支持
 ```
 pip install requests
 ```
