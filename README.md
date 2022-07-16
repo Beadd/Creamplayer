@@ -1,5 +1,5 @@
 # 关于 About
-一键下载网易云/QQ歌歌单包括vip
+一键批量下载网易云/QQ歌单歌曲免vip工具
 # 使用 How
 ## 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.exe
 下载运行即可,包含eyed3,无需pip,若无法使用请用下面的方法
