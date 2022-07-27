@@ -14,7 +14,7 @@
 <img src="https://img.shields.io/github/watchers/beadd/musicdownloader?style=flat-square" alt="watchers">
 
 # 使用 How
-## 1.  exe下载,前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.exe
+## 1.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.exe
 下载运行即可,包含eyed3,无需pip,若无法使用请用下面的方法
 
 
@@ -45,8 +45,8 @@ pip install eyeD3
 ## 关于EyeD3
 - [x] 歌曲封面图片元
 - [x] 歌曲专辑ID元
-- [x] 歌曲名称元(标题)
-- [x] 歌曲歌手元(参与创作的艺术家)
+- [x] 歌曲名称元
+- [x] 歌曲歌手元
 - [x] 歌曲歌词嵌入
 
 # 感谢 Thanks
