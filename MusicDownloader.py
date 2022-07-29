@@ -101,7 +101,7 @@ def Music():
     # download
     for data in data:
         # os.system("cls")
-        print(str(counter) + ' ' + data['name'] + '...',end="")
+        print(str(counter) + ' ' + data['name'] + '...')
         name = data['name']
         for i in string:
             if i in name:
@@ -109,7 +109,6 @@ def Music():
         name_url = MusicDirName + "/" + name + ".mp3"
         url = data['url']
         req = requests.get(url)
-        #print(" 状态码: %s" %req.status_code)
         if req.content == None:
             print("\n\033[33m返回为空,自动跳过,不做统计\033[0m\n",end="")
             continue
