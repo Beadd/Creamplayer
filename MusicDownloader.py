@@ -109,22 +109,23 @@ def Music():
         name_url = MusicDirName + "/" + name + ".mp3"
         url = data['url']
         req = requests.get(url)
-        if req.text == None or req.text == '':
+        #print(" 状态码: %s" %req.status_code)
+        if req.content == None:
             print("\n\033[33m返回为空,自动跳过,不做统计\033[0m\n",end="")
             continue
         with open(name_url, "wb") as code:
             code.write(req.content)
         #download Lyric
         req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
-        print('  歌词下载完成',end="")
-        if req_lyric.text != '':
+        if eyed3exist == False and req_lyric.text != '':
+            print('  歌词已保存至lrc',end="")
             if (os.path.exists(LyricDirName) == False):
                 os.makedirs(LyricDirName)
             lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
             with open(lrc_Name_Url, "wb") as code:
                 code.write(req_lyric.content)
-        else:
-            print("\n\033[33m序号为"+str(counter)+"歌曲歌词为空\033[0m")
+        if req_lyric.text == '':
+            print("\n\033[33m序号"+str(counter)+"歌曲歌词为空\033[0m")
         '''
         eyed3
         '''
@@ -137,9 +138,11 @@ def Music():
             #artist
             if data['artist'] != 'NoneType':
                 audiofile.tag.artist = data['artist']
+                print("  已内嵌歌手",end="")
             #title
             if data['name'] != None:
                 audiofile.tag.title = data['name']
+                print("  已内嵌名称",end="")
             #image
             if data['pic'] != None:
                 audio_Image = requests.get(data['pic'])
@@ -149,6 +152,7 @@ def Music():
                     code.write(audio_Image.content)
                 imageDate = open(MusicDirName+"/pic.jpg", "rb").read()
                 audiofile.tag.images.set(3, imageDate, "image/jpeg")
+                print("  已内嵌封面",end="")
                 #delete pic
                 if (os.path.exists(MusicDirName+"/pic.jpg") != False):
                     os.remove("./"+MusicDirName+"/pic.jpg")
@@ -166,7 +170,7 @@ def Music():
         '''
         alright eyed3
         '''
-        print('')
+        print('\n'+'-'*50)
         counter += 1
 
 
@@ -266,7 +270,12 @@ print('''
 \033[34m |_|  |_|\__,_|___/_|\___\033[35m|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   \033[0m
 ''')
 print("="*width)
-print("歌曲自动下载至目录"+MusicDirName+"中\n歌词自动下载至目录"+LyricDirName+"中\n"+("="*width))
+print("歌曲自动下载至目录"+MusicDirName+"中\n歌词自动下载至目录"+LyricDirName+"中")
+if eyed3exist:
+    print("eyeD3已启用")
+else:
+    print("eyeD3未启用")
+print("="*width)
 while True:
     if mode == 0:
         print("下载网易云单曲  \033[36m|\033[0m  1")
