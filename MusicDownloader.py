@@ -92,7 +92,7 @@ def Start():
 def Music():
     global counter
     global size
-    counter=1
+    counter=0
     size=0
     num=1
     """source == response"""
