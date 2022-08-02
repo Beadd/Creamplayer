@@ -49,7 +49,7 @@ header163 = {
 
 def plog(pinfo,loginfo):
     print(pinfo,end='')
-    log=open(logfile,"a")
+    log=open(logfile,'a',encoding='utf-8')
     log.write(loginfo+"\n")
     log.close()
 
