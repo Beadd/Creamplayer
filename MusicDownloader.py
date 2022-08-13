@@ -17,6 +17,8 @@ except ImportError:
 '''
 alright eyed3
 '''
+
+
 mode = 0
 path = "path"
 string = "\/:*?\">|"
@@ -149,8 +151,9 @@ def Music():
             #image
             if data['pic'] != None:
                 audio_Image = requests.get(data['pic'])
-                audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
-                plog("  已内嵌封面","  封面已嵌入")
+                if audio_Image.ok != False:
+                    audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
+                    plog("  已内嵌封面","  封面已嵌入")
             #lyrics
             if req_lyric.text != '':
                 audiofile.tag.lyrics.set(req_lyric.text)
