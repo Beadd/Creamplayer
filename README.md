@@ -1,5 +1,5 @@
 # 关于 About
-一键批量下载网易云/QQ歌单歌曲免vip工具
+一键批量下载网易云/QQ歌单歌曲工具
 <br><br>
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat-square" alt="license">
 <img src="https://img.shields.io/github/last-commit/beadd/musicdownloader.svg?style=flat-square" alt="last commit">
@@ -33,7 +33,7 @@ pip install eyeD3
 # 进度 Progress
 - [x] 网易云音乐下载
 - [x] 网易云歌单批量下载
-- [x] 网易云会员VIP音乐下载
+- [ ] 网易云会员VIP音乐下载(近期API免VIP失效)
 - [x] 网易云我喜欢的歌曲下载 
 - [x] 网易云专辑下载
 - [x] QQ音乐音乐下载
