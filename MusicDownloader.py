@@ -110,25 +110,33 @@ def Music():
             if i in name:
                 name = "NameFalseNo." + str(counter)
         name_url = MusicDirName + "/" + name + ".mp3"
-        url = data['url']
-        req = requests.get(url)
-        if req.content == None:
-            plog("\n\033[33m下载失败,自动跳过\033[0m\n","  下载失败")
-            continue
-        with open(name_url, "wb") as code:
-            code.write(req.content)
-        if not os.path.getsize(name_url):
-            os.remove(name_url)
-            plog('\n\033[33m下载失败,自动跳过\033[0m\n','  下载失败')
-            continue
-        plog('  '+str(os.path.getsize(name_url))+'字节\n','  大小='+str(os.path.getsize(name_url)))
-
+        # 检测歌曲文件存在并跳过
+        if os.path.exists(name_url) == True:
+            plog("\n\033[33m歌曲已存在,自动跳过\033[0m\n","  下载失败")
+        else:
+            url = data['url']
+            req = requests.get(url)
+            if req.content == None:
+                plog("\n\033[33m下载失败,自动跳过\033[0m\n","  下载失败")
+                continue
+            with open(name_url, "wb") as code:
+                code.write(req.content)
+            if not os.path.getsize(name_url):
+                os.remove(name_url)
+                plog('\n\033[33m下载失败,自动跳过\033[0m\n','  下载失败')
+                continue
+            plog('  '+str(os.path.getsize(name_url))+'字节\n','  大小='+str(os.path.getsize(name_url)))
+        # 检测歌词文件存在并跳过
         req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
         if eyed3exist == False and req_lyric.text != '':
             lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
-            with open(lrc_Name_Url, "wb") as code:
-                code.write(req_lyric.content)
-            plog('  歌词已保存至lrc\n','  歌词已保存至lrc文件')
+            if os.path.exists(lrc_Name_Url) == True:
+                plog("\n\033[33m歌词已存在,自动跳过\033[0m\n","  下载失败")
+                continue
+            else:
+                with open(lrc_Name_Url, "wb") as code:
+                    code.write(req_lyric.content)
+                plog('  歌词已保存至lrc\n','  歌词已保存至lrc文件')
         if req_lyric.text == '':
             plog("\n\033[33m歌曲"+name+"歌词为空\033[0m","  歌词为空")
         '''
@@ -298,4 +306,3 @@ while True:
             print("="*width)
             print("\033[32m下载完成!已下载%s首歌曲，共%s字节。感谢使用!\n\033[35m请直接关闭窗口或继续\033[0m" % (str(counter),str(size)))
             print("="*width)
-
