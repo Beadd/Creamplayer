@@ -128,7 +128,7 @@ def Music():
             plog('  '+str(os.path.getsize(name_url))+'字节\n','  大小='+str(os.path.getsize(name_url)))
         # 检测歌词文件存在并跳过
         req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
-        if eyed3exist == False and req_lyric.text != '':
+        if req_lyric.text != '':
             lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
             if os.path.exists(lrc_Name_Url) == True:
                 plog("\n\033[33m歌词已存在,自动跳过\033[0m\n","  下载失败")
@@ -304,5 +304,7 @@ while True:
             print("\033[33mID有错误!请检查\033[0m")
         else:
             print("="*width)
-            print("\033[32m下载完成!已下载%s首歌曲，共%s字节。感谢使用!\n\033[35m请直接关闭窗口或继续\033[0m" % (str(counter),str(size)))
+            print("\033[32m下载完成!已下载%s首歌曲，共%s字节。感谢使用!\n\
+Github: https://github.com/Beadd/MusicDownloader\n\
+\033[35m请直接关闭窗口或继续\033[0m" % (str(counter),str(size)))
             print("="*width)
