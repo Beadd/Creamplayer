@@ -22,6 +22,8 @@ alright eyed3
 mode = 0
 path = "path"
 string = "\/:*?\">|"
+NameAddArtist = True    #是否歌曲名后加歌手
+DownLoadLyric = True    #是否下载歌曲的歌词
 LyricDirName = 'MusicB' #'LyricB'
 MusicDirName = 'MusicB'
 LogDirName = 'LogB'
@@ -54,42 +56,7 @@ def plog(pinfo,loginfo):
     log=open(logfile,'a',encoding='utf-8')
     log.write(loginfo+"\n")
     log.close()
-
-def Start():
-    global path
-    global mode
-    if mode == 'q' or mode =='quit':
-        exit()
-    if mode == "1":
-        print("="*width)
-        id = input("请输入网易云单曲ID:")
-        if id.isdigit() == 0:
-            return -1
-        path = "http://api.injahow.cn/meting/?type=song&id=" + str(id)
-        return 1
-    if mode == "2":
-        print("="*width)
-        id = input("请输入网易云歌单ID:")
-        if id.isdigit() == 0:
-            return -1
-        path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(id)
-        return 1
-    if mode == "3":
-        print("="*width)
-        id = input("请输入QQ音乐单曲ID:")
-        path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(id)
-        return 1
-    if mode == "4":
-        print("="*width)
-        id = input("请输入QQ音乐歌单ID:")
-        path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(id)
-        return 1
-    if mode == '5':
-        print("="*width)
-        Album()
-    else:
-        return 0
-
+    
     
 def Music():
     global counter
@@ -103,16 +70,22 @@ def Music():
     if 'error' in data:
         return 0
     for data in data:
-        plog(str(num) + ' ' + data['name'],str(num) + ' ' + data['name'])
-        num += 1
         name = data['name']
+        if NameAddArtist:
+            artist = data['artist']
+            for i in string:
+                if i in artist: artist = artist.replace(i, "-")
+            name = name + " - " + artist
+        
+        plog(str(num) + ' ' + name + '\n', str(num) + ' ' + name)
+        num += 1
         for i in string:
             if i in name:
-                name = "NameFalseNo." + str(counter)
+                name = name.replace(i, "-")
         name_url = MusicDirName + "/" + name + ".mp3"
         # 检测歌曲文件存在并跳过
         if os.path.exists(name_url) == True:
-            plog("\n\033[33m歌曲已存在,自动跳过\033[0m\n","  下载失败")
+            plog("\033[33m歌曲已存在,自动跳过\033[0m\n","  自动跳过")
         else:
             url = data['url']
             req = requests.get(url)
@@ -126,19 +99,24 @@ def Music():
                 plog('\n\033[33m下载失败,自动跳过\033[0m\n','  下载失败')
                 continue
             plog('  '+str(os.path.getsize(name_url))+'字节\n','  大小='+str(os.path.getsize(name_url)))
-        # 检测歌词文件存在并跳过
-        req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
-        if req_lyric.text != '':
-            lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
-            if os.path.exists(lrc_Name_Url) == True:
-                plog("\n\033[33m歌词已存在,自动跳过\033[0m\n","  下载失败")
-                continue
-            else:
-                with open(lrc_Name_Url, "wb") as code:
-                    code.write(req_lyric.content)
-                plog('  歌词已保存至lrc\n','  歌词已保存至lrc文件')
-        if req_lyric.text == '':
-            plog("\n\033[33m歌曲"+name+"歌词为空\033[0m","  歌词为空")
+        
+        if DownLoadLyric:
+            req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
+            if req_lyric.text != '':
+                lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
+                if NameAddArtist:
+                    lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
+                # 检测歌词文件存在并跳过
+                if os.path.exists(lrc_Name_Url) == True:
+                    plog("\033[33m歌词已存在,自动跳过\033[0m\n","  自动跳过")
+                    continue
+                else:
+                    with open(lrc_Name_Url, "wb") as code:
+                        code.write(req_lyric.content)
+                    plog('  歌词已保存至lrc\n','  歌词已保存至lrc文件')
+            if req_lyric.text == '':
+                plog("\n\033[33m歌曲"+name+"歌词为空\033[0m","  歌词为空")
+
         '''
         eyed3
         '''
@@ -174,10 +152,11 @@ def Music():
                 audiofile.tag.save(encoding='utf-8')
                 plog("","  已保存ID3信息")
             #save alright
+            print("")
         '''
         alright eyed3
         '''
-        print('\n'+'-'*50)
+        print('-'*33)
         size += os.path.getsize(name_url)
         counter += 1
 
@@ -197,7 +176,7 @@ def Album():
         name = data1[0]['name']
         for i in string:
             if i in name:
-                name = "NameFalseId." + str(M_id)
+                name = name.replace(i, "-")
         name_url = MusicDirName + "/" + name + ".mp3"
         url = data1[0]['url']
         req = requests.get(url,proxies=proxiesB)
@@ -205,12 +184,13 @@ def Album():
             os.makedirs(MusicDirName)
         with open(name_url, "wb") as code:
             code.write(req.content)
-        url_lyric = data1[0]['lrc']
-        req_lyric = requests.get(url_lyric)
-        if not eyed3exist and req_lyric.text != '':
-            lrc_Name_Url = LyricDirName + "/" + data1[0]['name'] + ".lrc"
-            with open(lrc_Name_Url, "wb") as code:
-                code.write(req_lyric.content)
+        if DownLoadLyric:
+            url_lyric = data1[0]['lrc']
+            req_lyric = requests.get(url_lyric)
+            if not eyed3exist and req_lyric.text != '':
+                lrc_Name_Url = LyricDirName + "/" + data1[0]['name'] + ".lrc"
+                with open(lrc_Name_Url, "wb") as code:
+                    code.write(req_lyric.content)
         '''
         eyed3
         '''
@@ -261,7 +241,62 @@ def Album():
     for i in range(0,num):
         plog(str(i+1) +" "+ data['album']['songs'][i]['name']+'\n',str(i+1) +" "+ data['album']['songs'][i]['name'])
         MusicLyricDownload(data['album']['songs'][i]['id'],albumId,header163,proxiesB)
-    print("\033[32m下载完成!已下载%s首歌曲，共%s字节。感谢使用!\n\033[35m请直接关闭窗口或继续\033[0m" % (str(counter),str(size)))
+    print("\033[32m下载完成!已下载%s首歌曲,共%s字节。感谢使用!\n\033[35m请直接关闭窗口或继续\033[0m" % (str(counter),str(size)))
+
+
+
+def Setting():
+    global NameAddArtist
+    global DownLoadLyric
+    print("歌曲名称后加歌手:" + "  \033[36m|\033[0m  1" + "(" + str(NameAddArtist) + ")")
+    print("歌曲是否下载歌词:" + "  \033[36m|\033[0m  2" + "(" + str(DownLoadLyric) + ")")
+    set = input("输入数字自动修改:  \033[36m|\033[0m  ")
+    if set == '1':
+        NameAddArtist = not NameAddArtist
+        print("歌曲名称后加歌手:" + "  \033[36m|\033[0m  1" + "(" + str(NameAddArtist) + ")")
+    if set == '2':
+        DownLoadLyric = not DownLoadLyric
+        print("歌曲是否下载歌词:" + "  \033[36m|\033[0m  2" + "(" + str(DownLoadLyric) + ")")
+    else: return 0
+
+
+def Start():
+    global path
+    global mode
+    if mode == 'q' or mode == 'quit' or mode == 'exit':
+        exit()
+    if mode == "1":
+        print("="*width, end='')
+        id = input("请输入网易云单曲ID:")
+        if id.isdigit() == 0:
+            return -1
+        path = "http://api.injahow.cn/meting/?type=song&id=" + str(id)
+        return 1
+    if mode == "2":
+        print("="*width, end='')
+        id = input("请输入网易云歌单ID:")
+        if id.isdigit() == 0:
+            return -1
+        path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(id)
+        return 1
+    if mode == "3":
+        print("="*width, end='')
+        id = input("请输入QQ音乐单曲ID:")
+        path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(id)
+        return 1
+    if mode == "4":
+        print("="*width, end='')
+        id = input("请输入QQ音乐歌单ID:")
+        path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(id)
+        return 1
+    if mode == '5':
+        print("="*width, end='')
+        Album()
+    if mode == '6':
+        print("="*width, end='')
+        Setting()
+        return 6
+    else: return 0
 
 
 print('''
@@ -272,13 +307,13 @@ print('''
 \033[34m | |  | | |_| \__ \ | (__\033[35m| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   \033[0m
 \033[34m |_|  |_|\__,_|___/_|\___\033[35m|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   \033[0m
 ''')
-print("="*width)
+print("="*width, end='')
 print("歌曲自动下载至目录 "+MusicDirName+" 中\n歌词自动下载至目录 "+LyricDirName+" 中\n日志保存于文件 "+logfile+" 中")
 if eyed3exist:
     print("eyeD3已启用")
 else:
     print("eyeD3未启用")
-print("="*width)
+print("="*width, end='')
 while True:
     if mode == 0:
         print("下载网易云单曲  \033[36m|\033[0m  1")
@@ -286,25 +321,29 @@ while True:
         print("下载QQ音乐单曲  \033[36m|\033[0m  3")
         print("下载QQ音乐歌单  \033[36m|\033[0m  4")
         print("下载网易云专辑  \033[36m|\033[0m  5")
+        print("歌曲下载项设置  \033[36m|\033[0m  6")
         mode = input("输入数字选择:   \033[36m|\033[0m  ")
     start = Start()
     if start == -1:
         mode = 0
-        print("="*width)
+        print("="*width, end='')
         print("\033[33m请输入合法ID!\033[0m")
         continue
     if start == 0:
         mode = 0
-        print("="*width)
+        print("="*width, end='')
         print("\033[33m请输入正确数字!\033[0m")
+        continue
+    if start == 6:
+        mode = 0
+        print("="*width, end='')
         continue
     if start == 1:
         if Music() == 0:
-            print("="*width)
+            print("="*width, end='')
             print("\033[33mID有错误!请检查\033[0m")
         else:
-            print("="*width)
-            print("\033[32m下载完成!已下载%s首歌曲，共%s字节。感谢使用!\n\
-Github: https://github.com/Beadd/MusicDownloader\n\
-\033[35m请直接关闭窗口或继续\033[0m" % (str(counter),str(size)))
-            print("="*width)
+            print("="*width, end='')
+            print("\033[32mGithub: https://github.com/Beadd/MusicDownloader\n\
+下载完成!已下载%s首歌曲,共%s字节。感谢使用!\n\
+\033[35m继续或输入 q 以退出\033[0m" % (str(counter),str(size)))
