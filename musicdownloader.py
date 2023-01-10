@@ -18,7 +18,7 @@ except ImportError:
 alright eyed3
 '''
 
-
+g_id = 0
 mode = 0
 path = "path"
 string = "\/:*?\">|"
@@ -59,6 +59,7 @@ def plog(pinfo,loginfo):
     
     
 def Music():
+    global g_id
     global counter
     global size
     counter=0
@@ -135,11 +136,23 @@ def Music():
                 audiofile.tag.artist = data['artist']
                 plog("  已内嵌歌手","  歌手名"+data['artist']+"已嵌入")
             #image
-            if data['pic'] != None:
-                audio_Image = requests.get(data['pic'])
+            try:
+                url163_song_detail = "http://music.163.com/api/song/detail/?id=" + str(g_id) +"&ids=%5B" + str(g_id) + "%5D"
+                response_song_detail = requests.get(url163_song_detail, headers=header163, proxies=proxiesB)
+                data163_song_detail = json.loads(response_song_detail.text)
+                url_song_image = data163_song_detail['songs'][0]['album']['blurPicUrl']
+                audio_Image = requests.get(url_song_image, headers=header163, proxies=proxiesB)
                 if audio_Image.ok != False:
                     audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
                     plog("  已内嵌封面","  封面已嵌入")
+                else:
+                    plog("  网易云API封面出错","  网易云API封面出错")
+            except:
+                if data['pic'] != None:
+                    audio_Image = requests.get(data['pic'])
+                    if audio_Image.ok != False:
+                        audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
+                        plog("  已内嵌封面","  封面已嵌入")
             #lyrics
             if req_lyric.text != '':
                 audiofile.tag.lyrics.set(req_lyric.text)
@@ -261,6 +274,7 @@ def Setting():
 
 
 def Start():
+    global g_id
     global path
     global mode
     if mode == 'q' or mode == 'quit' or mode == 'exit':
@@ -271,6 +285,7 @@ def Start():
         if id.isdigit() == 0:
             return -1
         path = "http://api.injahow.cn/meting/?type=song&id=" + str(id)
+        g_id = id
         return 1
     if mode == "2":
         print("="*width, end='')
@@ -278,6 +293,7 @@ def Start():
         if id.isdigit() == 0:
             return -1
         path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(id)
+
         return 1
     if mode == "3":
         print("="*width, end='')
