@@ -1,4 +1,4 @@
-# coding:UTF-8
+# coding=UTF-8
 
 import os
 import re
@@ -22,8 +22,9 @@ g_id = 0
 mode = 0
 path = "path"
 string = "\/:*?\">|"
-NameAddArtist = True    #是否歌曲名后加歌手
-DownLoadLyric = True    #是否下载歌曲的歌词
+NameAddArtist = True         #是否歌曲名后加歌手
+DownLoadLyric = True         #是否下载歌曲的歌词
+DownLoadCoverImage = True    #是否下载超高清封面
 LyricDirName = 'MusicB' #'LyricB'
 MusicDirName = 'MusicB'
 LogDirName = 'LogB'
@@ -60,6 +61,7 @@ def plog(pinfo,loginfo):
     
 def Music():
     global g_id
+    global mode
     global counter
     global size
     counter=0
@@ -101,22 +103,23 @@ def Music():
                 continue
             plog('  '+str(os.path.getsize(name_url))+'字节\n','  大小='+str(os.path.getsize(name_url)))
         
-        if DownLoadLyric:
+        if DownLoadLyric or eyed3exist:
             req_lyric = requests.get(data['lrc'], headers=header, proxies=proxiesB)
-            if req_lyric.text != '':
-                lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
-                if NameAddArtist:
+            if DownLoadLyric:
+                if req_lyric.text != '':
                     lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
-                # 检测歌词文件存在并跳过
-                if os.path.exists(lrc_Name_Url) == True:
-                    plog("\033[33m歌词已存在,自动跳过\033[0m\n","  自动跳过")
-                    continue
-                else:
-                    with open(lrc_Name_Url, "wb") as code:
-                        code.write(req_lyric.content)
-                    plog('  歌词已保存至lrc\n','  歌词已保存至lrc文件')
-            if req_lyric.text == '':
-                plog("\n\033[33m歌曲"+name+"歌词为空\033[0m","  歌词为空")
+                    if NameAddArtist:
+                        lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
+                    # 检测歌词文件存在并跳过
+                    if os.path.exists(lrc_Name_Url) == True:
+                        plog("\033[33m歌词已存在,自动跳过\033[0m\n","  自动跳过")
+                        continue
+                    else:
+                        with open(lrc_Name_Url, "wb") as code:
+                            code.write(req_lyric.content)
+                        plog('  歌词已保存至lrc\n','  歌词已保存至lrc文件')
+                if req_lyric.text == '':
+                    plog("\n\033[33m歌曲"+name+"歌词为空\033[0m","  歌词为空")
 
         '''
         eyed3
@@ -137,13 +140,23 @@ def Music():
                 plog("  已内嵌歌手","  歌手名"+data['artist']+"已嵌入")
             #image
             try:
-                url163_song_detail = "http://music.163.com/api/song/detail/?id=" + str(g_id) +"&ids=%5B" + str(g_id) + "%5D"
+                if not DownLoadCoverImage:
+                    raise ValueError("DownLoadCoverImage False")
+                url_song_id = data['url']
+                song_id = re.findall(r'\d+$', url_song_id)
+                song_id  = song_id[-1]
+
+                url163_song_detail = "http://music.163.com/api/song/detail/?id=" + song_id +"&ids=%5B" + song_id + "%5D"
                 response_song_detail = requests.get(url163_song_detail, headers=header163, proxies=proxiesB)
                 data163_song_detail = json.loads(response_song_detail.text)
                 url_song_image = data163_song_detail['songs'][0]['album']['blurPicUrl']
                 audio_Image = requests.get(url_song_image, headers=header163, proxies=proxiesB)
                 if audio_Image.ok != False:
-                    audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
+                    type = url_song_image[-3:]
+                    if type == 'jpg' or type == 'peg':
+                        audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
+                    if type == 'png':
+                        audiofile.tag.images.set(3, audio_Image.content, "image/png")
                     plog("  已内嵌封面","  封面已嵌入")
                 else:
                     plog("  网易云API封面出错","  网易云API封面出错")
@@ -197,13 +210,14 @@ def Album():
             os.makedirs(MusicDirName)
         with open(name_url, "wb") as code:
             code.write(req.content)
-        if DownLoadLyric:
+        if DownLoadLyric or eyed3exist:
             url_lyric = data1[0]['lrc']
             req_lyric = requests.get(url_lyric)
-            if not eyed3exist and req_lyric.text != '':
-                lrc_Name_Url = LyricDirName + "/" + data1[0]['name'] + ".lrc"
-                with open(lrc_Name_Url, "wb") as code:
-                    code.write(req_lyric.content)
+            if DownLoadLyric:
+                if req_lyric.text != '':
+                    lrc_Name_Url = LyricDirName + "/" + data1[0]['name'] + ".lrc"
+                    with open(lrc_Name_Url, "wb") as code:
+                        code.write(req_lyric.content)
         '''
         eyed3
         '''
@@ -218,10 +232,28 @@ def Album():
                 audiofile.tag.artist = data1[0]['artist']
                 plog("  已内嵌歌手","  歌手名"+data1[0]['artist']+"已嵌入")
             #image
-            if data1[0]['pic'] != None:
-                audio_Image = requests.get(data1[0]['pic'])
-                audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
-                plog("  已内嵌封面","  封面已嵌入")
+            try:
+                if DownLoadCoverImage:
+                    raise ValueError("DownLoadCoverImage False")
+                url163_song_detail = "http://music.163.com/api/song/detail/?id=" + str(M_id) +"&ids=%5B" + str(M_id) + "%5D"
+                response_song_detail = requests.get(url163_song_detail, headers=header163, proxies=proxiesB)
+                data163_song_detail = json.loads(response_song_detail.text)
+                url_song_image = data163_song_detail['songs'][0]['album']['blurPicUrl']
+                audio_Image = requests.get(url_song_image, headers=header163, proxies=proxiesB)
+                if audio_Image.ok != False:
+                    type = url_song_image[-3:]
+                    if type == 'jpg' or type == 'peg':
+                        audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
+                    if type == 'png':
+                        audiofile.tag.images.set(3, audio_Image.content, "image/png")
+                    plog("  已内嵌封面","  封面已嵌入")
+                else:
+                    plog("  网易云API封面出错","  网易云API封面出错")
+            except:
+                if data1[0]['pic'] != None:
+                    audio_Image = requests.get(data1[0]['pic'])
+                    audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
+                    plog("  已内嵌封面","  封面已嵌入")
             #lyrics
             if req_lyric.text != '':
                 audiofile.tag.lyrics.set(req_lyric.text)
@@ -261,8 +293,10 @@ def Album():
 def Setting():
     global NameAddArtist
     global DownLoadLyric
+    global DownLoadCoverImage
     print("歌曲名称后加歌手:" + "  \033[36m|\033[0m  1" + "(" + str(NameAddArtist) + ")")
     print("歌曲是否下载歌词:" + "  \033[36m|\033[0m  2" + "(" + str(DownLoadLyric) + ")")
+    print("歌曲启用高清封面:" + "  \033[36m|\033[0m  3" + "(" + str(DownLoadCoverImage) + ")")
     set = input("输入数字自动修改:  \033[36m|\033[0m  ")
     if set == '1':
         NameAddArtist = not NameAddArtist
@@ -270,6 +304,9 @@ def Setting():
     if set == '2':
         DownLoadLyric = not DownLoadLyric
         print("歌曲是否下载歌词:" + "  \033[36m|\033[0m  2" + "(" + str(DownLoadLyric) + ")")
+    if set == '3':
+        DownLoadCoverImage = not DownLoadCoverImage
+        print("歌曲启用高清封面:" + "  \033[36m|\033[0m  3" + "(" + str(DownLoadCoverImage) + ")")
     else: return 0
 
 
