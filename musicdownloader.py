@@ -36,7 +36,7 @@ if (os.path.exists(MusicDirName) == False):
 if (os.path.exists(LyricDirName) == False):
     os.makedirs(LyricDirName)
 
-width = os.get_terminal_size().columns
+width = os.get_terminal_size().columns#100
 
 proxiesB = {"http": None, "https": None}
 header = {
@@ -74,6 +74,11 @@ def Music():
         return 0
     for data in data:
         name = data['name']
+        url_song_id = data['url']
+        sid = re.findall(r'id=(.*?)$', url_song_id) 
+        sid.append("0")
+        FileExist = False
+        NameCount = 1
         if NameAddArtist:
             artist = data['artist']
             for i in string:
@@ -87,7 +92,22 @@ def Music():
                 name = name.replace(i, "-")
         name_url = MusicDirName + "/" + name + ".mp3"
         # 检测歌曲文件存在并跳过
-        if os.path.exists(name_url) == True:
+        if eyed3exist:
+            while os.path.isfile(name_url):
+                try:
+                    audiofile = eyed3.load(name_url)
+                except:
+                    plog("\n\033[33m打开序号"+str(counter)+"音乐失败,自动跳过\033[0m",'  eyeD3打开失败')
+                    continue
+                if audiofile.tag.copyright==sid[0]:
+                    FileExist=True
+                    break
+                else:
+                    name_url = MusicDirName + "/" + name + "_" + str(NameCount) + ".mp3"
+                    NameCount += 1
+        else:
+            FileExist = not(os.path.exists(name_url))
+        if FileExist:
             plog("\033[33m歌曲已存在,自动跳过\033[0m\n","  自动跳过")
         else:
             url = data['url']
@@ -111,10 +131,14 @@ def Music():
                     if NameAddArtist:
                         lrc_Name_Url  = LyricDirName + "/" + name + ".lrc"
                     # 检测歌词文件存在并跳过
-                    if os.path.exists(lrc_Name_Url) == True:
+                    if FileExist:
                         plog("\033[33m歌词已存在,自动跳过\033[0m\n","  自动跳过")
                         continue
                     else:
+                        NameCount = 1
+                        while(os.path.exists(lrc_Name_Url)):
+                            lrc_Name_Url = LyricDirName + "/" + name + "_" + str(NameCount) + ".lrc"
+                            NameCount += 1                        
                         with open(lrc_Name_Url, "wb") as code:
                             code.write(req_lyric.content)
                         plog('  歌词已保存至lrc\n','  歌词已保存至lrc文件')
@@ -138,6 +162,10 @@ def Music():
             if data['artist'] != 'NoneType':
                 audiofile.tag.artist = data['artist']
                 plog("  已内嵌歌手","  歌手名"+data['artist']+"已嵌入")
+            #id
+            if data['url'] != 'NoneType':
+                audiofile.tag.copyright = sid[0]
+                plog("  已内嵌id","  id"+sid[0]+"已嵌入")            
             #image
             try:
                 if not DownLoadCoverImage:
@@ -196,6 +224,7 @@ def Album():
     def MusicLyricDownload(M_id,M_albumId,M_header,M_proxies): #位置移动
         global size
         global counter
+        NameCount = 1
         M_path = 'https://api.injahow.cn/meting/?type=song&id=' + str(M_id)
         response = requests.get(M_path,headers=header163,proxies=proxiesB)
         data1 = json.loads(response.text)
@@ -204,6 +233,9 @@ def Album():
             if i in name:
                 name = name.replace(i, "-")
         name_url = MusicDirName + "/" + name + ".mp3"
+        while(os.path.exists(name_url)):
+            name_url = MusicDirName + "/" + name + "_" + str(namecount) +".mp3"
+            namecount += 1        
         url = data1[0]['url']
         req = requests.get(url,proxies=proxiesB)
         if (os.path.exists(MusicDirName) == False):
