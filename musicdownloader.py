@@ -36,7 +36,7 @@ if (os.path.exists(MusicDirName) == False):
 if (os.path.exists(LyricDirName) == False):
     os.makedirs(LyricDirName)
 
-width = 100#os.get_terminal_size().columns
+width = os.get_terminal_size().columns#100
 
 proxiesB = {"http": None, "https": None}
 header = {
