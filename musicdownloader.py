@@ -106,7 +106,7 @@ def Music():
                     name_url = MusicDirName + "/" + name + "_" + str(NameCount) + ".mp3"
                     NameCount += 1
         else:
-            FileExist = not(os.path.exists(name_url))
+            FileExist = os.path.exists(name_url)
         if FileExist:
             plog("\033[33m歌曲已存在,自动跳过\033[0m\n","  自动跳过")
         else:
