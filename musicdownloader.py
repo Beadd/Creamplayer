@@ -45,11 +45,13 @@ def GetMusicName(data):
         name = name + " - " + artist
     return name
 
-def GetMusicPath(name, if_get_music_dir_name = False):
+def GetMusicPath(name, if_get_music_dir_name = False, name_counter = 0):
     music_dir_name = "MusicB"
     if if_get_music_dir_name:
         return music_dir_name
     music_path = music_dir_name + '/' + name + ".mp3"
+    if name_counter != 0:
+        music_path = music_dir_name + '/' + name + "(" + str(name_counter) + ")" + ".mp3"
     return music_path
 
 def GetMusicLyricPath(name, if_get_lyric_dir_name = False):
@@ -61,12 +63,27 @@ def GetMusicLyricPath(name, if_get_lyric_dir_name = False):
 
 def GetSid(music_url):
     sid = re.findall(r'id=(.*?)$', music_url) 
-    return sid
+    return str(sid[0])
 
-def CheckMusicExist(path, sid):
-    name_count = 1
+def CheckMusicExist(path, sid, name):
+    '''存在返回True,不存在返回path'''
     if not g_eyed3_exist:
-        return os.path.exists(path)
+        if os.path.exists(path):
+            return True
+        else: return path
+    counter = 1
+    while os.path.exists(path):
+        try: audiofile = eyed3.load(path)
+        except: 
+            Plog("\n\033[33m检测音乐eyed3失败,自动跳过\033[0m")
+            return True
+        try: id = audiofile.tag.copyright 
+        except:
+            Plog("\n\033[33m检测音乐eyed3失败,自动跳过\033[0m")
+            return True
+        if id == sid: return True
+        path = GetMusicPath(name, False, counter)
+    return path
 
 
 def MusicFileDownload(data, headers, proxies):
@@ -76,8 +93,8 @@ def MusicFileDownload(data, headers, proxies):
     sid = GetSid(music_url)
     Plog(name + '\n')
     # 检测歌曲文件存在
-    music_exist = CheckMusicExist(music_path, sid)
-    if music_exist:
+    music_path = CheckMusicExist(music_path, sid, name)
+    if music_path == True:
         Plog("\033[33m歌曲已存在,自动跳过\033[0m\n")
         return "exist"
     music_req = requests.get(music_url, headers=headers, proxies=proxies)
@@ -88,7 +105,7 @@ def MusicFileDownload(data, headers, proxies):
         code.write(music_req.content)
     if not os.path.getsize(music_path):
         Plog('\n\033[33mGetsize失败,自动跳过\033[0m\n')
-        return
+        return "getsize"
     Plog('  ' + str(os.path.getsize(music_path)) + '字节\n')
     return 
 
@@ -178,22 +195,32 @@ def MusicEyed3Add(data, headers, proxies, header163, album_id = 0):
     print("")
 
 
-def MusicMode(api_path, headers, proxies, header163):
-    response = requests.get(api_path, headers = headers, proxies = proxies)
+def MusicMode(api_path, headers, proxies, header163, show_github = True):
+    try: response = requests.get(api_path, headers = headers, proxies = proxies)
+    except: Plog("连接错误:请关闭加速器后重试...\n");return
     data = json.loads(response.text)
-    if 'error' in data: return 0
+    if 'error' in data: 
+        print("=" * g_width, end='')
+        print("\033[33m请输入合法ID!\033[0m")
+        return 
     counter = 0 + 1
     for data in data:
         Plog(str(counter) + " ")
         result = MusicFileDownload(data, headers, proxies)
         if result == "exist":
             continue
+        if result == "getsize":
+            continue
         if g_eyed3_exist:
             MusicEyed3Add(data, headers, proxies, header163)
         if set_download_lyric:
             MusicLyricDownload(data, headers, proxies)
         counter += 1
-
+    if show_github:
+        print("=" * g_width, end='')
+        print("\033[32mGithub: https://github.com/Beadd/MusicDownloader\n\
+下载完成!已下载%s首歌曲。感谢使用!\n\
+\033[35m继续或输入 q 以退出\033[0m" % (str(counter - 1)))
 
 def AlbumMode(api_path, headers, proxies, header163):
     response = requests.get(api_path, headers = header163, proxies = proxies)
@@ -205,11 +232,12 @@ def AlbumMode(api_path, headers, proxies, header163):
     for i in range(0, num):
         id = data163['album']['songs'][i]['id']
         api_path = "http://api.injahow.cn/meting/?type=song&id=" + str(id)
-        response = requests.get(api_path, headers = headers, proxies = proxies)
+        try: response = requests.get(api_path, headers = headers, proxies = proxies)
+        except: Plog("连接错误:请关闭加速器后重试...\n");return
         data = json.loads(response.text)
         if 'error' in data: return 0
         Plog("Album")
-        MusicMode(api_path, headers, proxies, header163)
+        MusicMode(api_path, headers, proxies, header163, False)
 
 
 print('''
