@@ -7,6 +7,15 @@ import sys
 import json
 import time
 import requests
+import secrets
+import base64
+from Crypto.Cipher import AES
+import rsa
+import binascii
+import rsa.randnum
+import rsa.common
+import rsa.transform
+import rsa.core
 '''''''''eyed3'''''''''
 g_eyed3_exist = True
 try: import eyed3
@@ -240,6 +249,12 @@ def AlbumMode(api_path, headers, proxies, header163):
         MusicMode(api_path, headers, proxies, header163, False)
 
 
+
+
+
+
+
+
 print('''
 \033[34m  __  __           _     \033[35m _____                      _                 _           \033[0m
 \033[34m |  \/  |         (_)    \033[35m|  __ \                    | |               | |          \033[0m
@@ -255,6 +270,11 @@ Plog("日志保存于文件 " + g_logfile + " 中")
 if g_eyed3_exist: print("eyeD3已启用")
 else: print("eyeD3未启用")
 
+base62 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+iv = '0102030405060708'
+presetKey = '0CoJUm6Qyw8W8jud'
+publicKey = '-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDgtQn2JZ34ZC28NWYpAUd98iZ37BUrX/aKzmFbt7clFSs6sXqHauqKWqdtLkF2KexO40H1YTX8z2lSgBBOAxLsvaklV8k4cBFK9snQXE9/DDaFt6Rr7iVZMldczhC0JNgTz+SHXT6CBHuX3e9SdB1Ua44oncaTWz7OBGLbCiK45wIDAQAB\n-----END PUBLIC KEY-----'
+anonymous_token = "bf8bfeabb1aa84f9c8c3906c04a04fb864322804c83f5d607e91a04eae463c9436bd1a17ec353cf780b396507a3f7464e8a60f4bbc019437993166e004087dd32d1490298caf655c2353e58daa0bc13cc7d5c198250968580b12c1b8817e3f5c807e650dd04abd3fb8130b7ae43fcc5b"
 g_proxies = { "http": None, "https": None }
 g_header = {
     'User-Agent':
@@ -268,6 +288,99 @@ g_header163 = { # 直接请求网易云API所需
     #'cookie':'NMTID=00O-UfVMage_XYVb01NofLYtGWN81wAAAGA6ROCHA; _ntes_nnid=0026f9a21f511bc7b813bc8257738ed7,1653178475744; _ntes_nuid=0026f9a21f511bc7b813bc8257738ed7; WNMCID=uzisge.1653178476562.01.0; WEVNSM=1.0.0; WM_TID=%2F8H5Vyp5GQxFUQERQRbFEfFcaI581rZl; _iuqxldmzr_=32; WM_NI=PvUHSZ6ODGORWadg5DK7d9SzSwgDNsEV3JehG9upEAJGRraJCFze%2B3Ix2YL4zAo9ukl3%2FPe2aI2kTlTFY9G%2Fgxu6Au7OWvM7p%2BiGGmIwnpbjRkJw9a7fOaUYlUq%2FU88eNlU%3D; WM_NIKE=9ca17ae2e6ffcda170e2e6eed1bc47b5efc0a7c46e95868aa2d84a939b9ab1c54ebced8cd9aa3baeb8bbaff02af0fea7c3b92a94aa9ba9d252f6918ca8ce5a95bfac88b85089e9acdad27291a9a9a5cd79878afdabe86485e7bb91c84b8a999e93e442819ab686aa398ba8febacf40ba9fa1daf861b0ede1b1e83aa397fe8cd768989a97dac625a5a8bbd7c47ff5919997d03db4f5a7a8c6678ba9a291e16292b58698bc6bf5ba8182d853b08bbfd0d834fcbb828dd837e2a3; JSESSIONID-WYYY=bTf0dAu0K3KzvcZDWFId0KCqJfkUUz%2Fnld6U6IhcZ2GBcGnbR%2B6P54Ex4sP%2B5aXIjrwtEDDyIaj%2FG5RM7gozKnk0%5C2cGnPn%2FtobEaEbkoGMTgAWXBWwzoWBkF5k3z1HSWb%5CND2rHARn0Ap7A85W7B%2BQ0D4DO5%2F%2F8Q3%2BjH0mjM%2B9%5CF%2FCq%3A1654302417314'
     'cookie':'JSESSIONID-WYYY=MqngSDeeeN%2FZRbE7Vmz7zZ1g9U3fs5SAD%5CbS23A0eW%2FhqzUHpYMX9jVlVgPosnC5wJdYO7se20QsYn45DoJor%5Cskxna6I%5CQKW733yxHugKPmYvN%2FP0%2BQOpOwkZJumC6t0QCh9rdwbk06t4TnjlMg%2Fa5Ooj1CW4idEdZq4VBMsDsIEhM3%3A1654304708419; _iuqxldmzr_=32; _ntes_nnid=59c0c0c4fc69665b6261b45f5e44fe4a,1654302908431; _ntes_nuid=59c0c0c4fc69665b6261b45f5e44fe4a; NMTID=00O-D3f-9XeBnQh0Ei2qy1d-ULEVSUAAAGBLCI6vA; WEVNSM=1.0.0; WNMCID=tqqzib.1654302908799.01.0; WM_NI=EROpEfsIky5J3M1%2F2Uw0BlLsOXn0anY7%2BSg1r8Y7PB%2B37llD5L2xuZ6sKBgI7WCTj5wOcXoIPycPEUR6dtcJmPPozE646Hv2qifgkQ76N5QKrDtVgERuCcCub6j65tgtVTU%3D; WM_NIKE=9ca17ae2e6ffcda170e2e6eeafdb6aa79efbd5ed6383928eb7d44e878e8e82d54bf4b2a9a5d16da7aba6d6c52af0fea7c3b92a878e8191c86eb197a59ab842f193ffd0b15fb5f08e8dcf798d88a2d1e4669be9e5b4e63bb2e897d8d34ae9edf98def50f794fe99f852f6ad85a3e643f5898db5e93fb591adb9ee4394a7adb1c85f92eaac95e242af90a090f94ff6ecfaa9f53ab3b7aa88ea5bf5ea82d6d441b29cbcb7e64f92ab8d84c27fa2eaa6d7b880a5ac9ab5d837e2a3; WM_TID=Pc31v8zNG7tFVRUUQAKVUgm1GFke%2Fj9Q'
 }
+
+    # Padding method of RSA_NO_PADDING
+def rsa_no_padding(message, target_length):
+    message = message[::-1]
+    max_msglength = target_length - 11
+    msglength = len(message)
+ 
+    if msglength > max_msglength:
+        raise OverflowError('%i bytes needed for message, but there is only'
+                            ' space for %i' % (msglength, max_msglength))
+    padding_length = target_length - msglength - 3
+ 
+    return b''.join([b'\x00\x00',padding_length * b'\x00',b'\x00',message])
+
+def encrypt (data) :
+    bs = AES.block_size
+    aes_pad = lambda s: s + (bs - len(s) % bs) * chr(bs - len(s) % bs)
+
+    data_encrypted = {}
+    data_text = json.dumps(data)
+    random_byte_array = secrets.token_bytes(16)
+    secret_key = "".join(map(lambda n : base62[n%62], random_byte_array))
+
+    # AES encrypt
+    preset_chiper = AES.new(key=bytes(presetKey, 'utf-8'), mode=AES.MODE_CBC, iv=bytes(iv, 'utf-8'))
+    preset_encrypted = preset_chiper.encrypt(bytes(aes_pad(data_text), 'utf-8'))
+    preset_encrypted_b64 = base64.b64encode(preset_encrypted).decode('ascii')
+
+    secret_chiper = AES.new(key=bytes(secret_key, 'utf-8'), mode=AES.MODE_CBC, iv=bytes(iv, 'utf-8'))
+    secret_encrypted = secret_chiper.encrypt(bytes(aes_pad(preset_encrypted_b64), 'utf-8'))
+    secret_encrypted_b64 = base64.b64encode(secret_encrypted).decode('ascii')
+
+    data_encrypted['params'] = secret_encrypted_b64
+
+    # RSA encrypt
+    rsa_pub = rsa.PublicKey.load_pkcs1_openssl_pem(bytes(publicKey, 'utf-8'))
+    keylength = rsa.common.byte_size(rsa_pub.n)
+    padded_message = rsa_no_padding(bytes(secret_key, 'utf-8'), keylength)
+ 
+    payload = rsa.transform.bytes2int(padded_message)
+    encrypted = rsa.core.encrypt_int(payload, rsa_pub.e, rsa_pub.n)
+    block = rsa.transform.int2bytes(encrypted, keylength)
+
+    data_encrypted['encSecKey'] = block.hex()
+
+    return data_encrypted
+
+    # Get All Albums
+def ArtistAlbumList (artist_id) :
+    album_list = []
+    cookies = {
+        '__remember_me': True,
+        'NMTID': secrets.token_bytes(16).hex(),
+        '_ntes_nuid': secrets.token_bytes(16).hex(),
+        'MUSIC_A': anonymous_token,
+      }
+    # url = "https://www.httpbin.org/post"
+    url = "https://music.163.com/weapi/artist/albums/" + artist_id
+    # print(url)
+    limit = 30
+    offset = 0
+    total = True
+    data = { 'limit': limit, 'offset': offset, 'total': total , }
+    headers = g_header
+    headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    cookies_val = ''
+    for key in cookies:
+         cookies_val += (str(key) + '=' + str(cookies[key]) + '; ')
+    # print(cookies_val)
+    headers['Cookies'] = cookies_val
+
+    # data = {"encSecKey":"1a9e1c34f0f8e3420293845fc24b4a79bae53f150e09b2bad6c88d8db6379781c14dadffe91f12e081abb6e0c7f1efd889c025946e2e855f5b1312806c133451f4ba57afd9ea5b9e4286afc379c6321d882574e68b18436909a646fe89319196a2c37ef2a5730a27e4325bc531e895ecfd9494c9a847e061ce54d3cf47fc6236","params":"9bhq3DTYBbw3wwGUysFiAmSg5AYSq6+EJDcV02bM87rQFR3OFUCPAUfQAEor9HzgiHR+HTtkuylKfUzfe97DTgG8ljRT146dhDY52qZpbVC/7Z/KsTUnMD1sl/FRzSt9"}
+    while True:
+    # for num in range(2):
+        enc_data = encrypt(data)
+        r = requests.post(url=url, headers=headers, data=enc_data)
+        album = json.loads(r.text)
+        # print(r.text)
+
+        hot_album = album['hotAlbums']
+        for ab in hot_album:
+            album_list.append(ab['id'])
+
+        data['offset'] = data['offset'] + data['limit']
+        # print(album['more'])
+        # print(data)
+        if (album['more'] == False) :
+            break
+
+    return album_list
+
+
+
 
 def CheckIdFalse(id):
     if id.isdigit() == 0: 
@@ -304,7 +417,8 @@ while True:
     print("下载QQ音乐单曲  \033[36m|\033[0m  3")
     print("下载QQ音乐歌单  \033[36m|\033[0m  4")
     print("下载网易云专辑  \033[36m|\033[0m  5")
-    print("歌曲下载项设置  \033[36m|\033[0m  6")
+    print("网易云歌手下载  \033[36m|\033[0m  6")
+    print("歌曲下载项设置  \033[36m|\033[0m  7")
     mode = input("输入数字选择:   \033[36m|\033[0m  ")
     if mode == 'q' or mode == 'quit' or mode == 'exit': exit()
     if mode == '1':
@@ -336,6 +450,14 @@ while True:
         api_path ="http://music.163.com/api/album/" + id + "?ext=true&id=" + id + "&offset=0&total=true&limit=10"
         AlbumMode(api_path, g_header, g_proxies, g_header163)
     if mode == '6':
+        print("=" * g_width, end='')
+        id = input("请输入歌手专辑页ID:")
+        if CheckIdFalse(id): continue
+        album_list = ArtistAlbumList(id)
+        for album in album_list:
+            api_path ="http://music.163.com/api/album/" + str(album) + "?ext=true&id=" + str(album) + "&offset=0&total=true&limit=10"
+            AlbumMode(api_path, g_header, g_proxies, g_header163)
+    if mode == '7':
         print("=" * g_width, end='')
         Setting()
     print("=" * g_width, end='')
