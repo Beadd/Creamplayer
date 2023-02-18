@@ -20,9 +20,10 @@
 
 ## 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py
 
-需要requests库支持
+运行MusicDownloader.py所需库：
 ```
 pip install requests
+pip install pycryptdome
 ```
 
 可选择:安装eyeD3库可以对下载的歌曲增加元元素,但不是必须。
