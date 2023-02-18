@@ -24,6 +24,7 @@
 ```
 pip install requests
 pip install pycryptdome
+pip install rsa
 ```
 
 可选择:安装eyeD3库可以对下载的歌曲增加元元素,但不是必须。
