@@ -53,6 +53,7 @@ pip install eyeD3
 
 # 感谢 Thanks
 - [Meting-api](https://github.com/injahow/meting-api)
-- [APlayer](https://github.com/DIYgod/APlayer)
-# 许可证 License
-[MIT](https://github.com/Beadd/MusicDownloader/blob/main/LICENSE) license.
+## 贡献者 Contributors
+<a href="https://github.com/beadd/musicdownloader/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=beadd/musicdownloader" />
+</a>
