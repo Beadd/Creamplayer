@@ -92,6 +92,7 @@ def CheckMusicExist(path, sid, name):
             return True
         if id == sid: return True
         path = GetMusicPath(name, False, counter)
+        counter += 1
     return path
 
 
@@ -116,11 +117,10 @@ def MusicFileDownload(data, headers, proxies):
         Plog('\n\033[33mGetsize失败,自动跳过\033[0m\n')
         return "getsize"
     Plog('  ' + str(os.path.getsize(music_path)) + '字节\n')
-    return 
+    return music_path
 
-def MusicLyricDownload(data, headers, proxies):
-    name = GetMusicName(data)
-    lyric_path = GetMusicLyricPath(name)
+def MusicLyricDownload(data, music_path, headers, proxies):
+    lyric_path = re.sub(r"\.mp3$", ".lrc", music_path)
     lyric_url = data['lrc']
     lyric_response = requests.get(lyric_url, headers=headers, proxies=proxies)
     if lyric_response.text == '':
@@ -128,7 +128,7 @@ def MusicLyricDownload(data, headers, proxies):
         return 
     with open(lyric_path, "wb") as code:
         code.write(lyric_response.content)
-    Plog('  歌词已保存至' + GetMusicLyricPath(name, True) + '\n')
+    Plog('  歌词已保存至' + GetMusicLyricPath(0, True) + '\n')
     return
 
 
@@ -160,9 +160,7 @@ def MusicEyed3CoverImageLow(data, audiofile):
         Plog("  已内嵌封面")
 
 
-def MusicEyed3Add(data, headers, proxies, header163, album_id = 0):
-    name = GetMusicName(data)
-    music_path = GetMusicPath(name)
+def MusicEyed3Add(data, music_path, headers, proxies, header163, album_id = 0):
     try: audiofile = eyed3.load(music_path)
     except: 
         Plog("\n\033[33mEyed3: 打开音乐音乐失败,自动跳过\033[0m")
@@ -215,15 +213,15 @@ def MusicMode(api_path, headers, proxies, header163, show_github = True):
     counter = 0 + 1
     for data in data:
         Plog(str(counter) + " ")
-        result = MusicFileDownload(data, headers, proxies)
-        if result == "exist":
+        music_path = MusicFileDownload(data, headers, proxies)
+        if music_path == "exist":
             continue
-        if result == "getsize":
+        if music_path == "getsize":
             continue
         if g_eyed3_exist:
-            MusicEyed3Add(data, headers, proxies, header163)
+            MusicEyed3Add(data, music_path, headers, proxies, header163)
         if set_download_lyric:
-            MusicLyricDownload(data, headers, proxies)
+            MusicLyricDownload(data, music_path, headers, proxies)
         counter += 1
     if show_github:
         print("=" * g_width, end='')
