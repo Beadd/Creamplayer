@@ -418,7 +418,7 @@ while True:
     print("网易云歌手下载  \033[36m|\033[0m  6")
     print("歌曲下载项设置  \033[36m|\033[0m  7")
     mode = input("输入数字选择:   \033[36m|\033[0m  ")
-    if mode == 'q' or mode == 'quit' or mode == 'exit': exit()
+    if mode == 'q' or mode == 'quit' or mode == 'exit': sys.exit()
     if mode == '1':
         print("=" * g_width, end='')
         id = input("请输入网易云单曲ID:")
