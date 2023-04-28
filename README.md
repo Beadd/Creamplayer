@@ -23,7 +23,7 @@
 运行MusicDownloader.py所需库：
 ```
 pip install requests
-pip install pycryptdome
+pip install pycryptodome
 pip install rsa
 ```
 
