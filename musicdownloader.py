@@ -23,6 +23,7 @@ except ImportError: g_eyed3_exist = False
 '''''''''eyed3'''''''''
 
 set_name_add_artist = True
+set_artist_add_name = False
 set_download_lyric = True
 set_download_cover_image_height = True
 
@@ -52,6 +53,10 @@ def GetMusicName(data):
         artist = data['artist']
         artist = NameReplace(artist)
         name = name + " - " + artist
+    if set_artist_add_name:
+        artist = data['artist']
+        artist = NameReplace(artist)
+        name = artist + " - " + name
     return name
 
 def GetMusicPath(name, if_get_music_dir_name = False, name_counter = 0):
@@ -389,19 +394,24 @@ def CheckIdFalse(id):
 
 def Setting():
     global set_name_add_artist
+    global set_artist_add_name
     global set_download_lyric
     global set_download_cover_image_height
     print("歌曲名称后加歌手:" + "  \033[36m|\033[0m  1" + "(" + str(set_name_add_artist) + ")")
-    print("歌曲是否下载歌词:" + "  \033[36m|\033[0m  2" + "(" + str(set_download_lyric) + ")")
-    print("歌曲启用高清封面:" + "  \033[36m|\033[0m  3" + "(" + str(set_download_cover_image_height) + ")")
+    print("歌曲名称前加歌手:" + "  \033[36m|\033[0m  2" + "(" + str(set_artist_add_name) + ")")
+    print("歌曲是否下载歌词:" + "  \033[36m|\033[0m  3" + "(" + str(set_download_lyric) + ")")
+    print("歌曲启用高清封面:" + "  \033[36m|\033[0m  4" + "(" + str(set_download_cover_image_height) + ")")
     set = input("输入数字自动修改:  \033[36m|\033[0m  ")
     if set == '1':
         set_name_add_artist = not set_name_add_artist
         print("歌曲名称后加歌手:" + "  \033[36m|\033[0m  1" + "(" + str(set_name_add_artist) + ")")
     if set == '2':
+        set_artist_add_name = not set_artist_add_name
+        print("歌曲名称前加歌手:" + "  \033[36m|\033[0m  2" + "(" + str(set_artist_add_name) + ")")
+    if set == '3':
         set_download_lyric = not set_download_lyric
         print("歌曲是否下载歌词:" + "  \033[36m|\033[0m  2" + "(" + str(set_download_lyric) + ")")
-    if set == '3':
+    if set == '4':
         set_download_cover_image_height = not set_download_cover_image_height
         print("歌曲启用高清封面:" + "  \033[36m|\033[0m  3" + "(" + str(set_download_cover_image_height) + ")")
     else: return 0
