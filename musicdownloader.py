@@ -383,7 +383,17 @@ def ArtistAlbumList (artist_id) :
     return album_list
 
 
-
+def GetMusicID(id):
+    if "id=" in id:
+        id = re.findall(r'id=(.*?)$', id) 
+        return id[0]
+    if "songDetail/" in id:
+        id = re.findall(r"songDetail/(\w+)", id)
+        return id[0]
+    if "playlist/" in id:
+        id = re.findall(r"playlist/(\w+)", id)
+        return id[0]
+    return id
 
 def CheckIdFalse(id):
     if id.isdigit() == 0: 
@@ -432,34 +442,40 @@ while True:
     if mode == '1':
         print("=" * g_width, end='')
         id = input("请输入网易云单曲ID:")
+        id = GetMusicID(id)
         if CheckIdFalse(id): continue
         api_path = "http://api.injahow.cn/meting/?type=song&id=" + str(id)
         MusicMode(api_path, g_header, g_proxies, g_header163)
     if mode == "2":
         print("=" * g_width, end='')
         id = input("请输入网易云歌单ID:")
+        id = GetMusicID(id)
         if CheckIdFalse(id): continue
         api_path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(id)
         MusicMode(api_path, g_header, g_proxies, g_header163)
     if mode == "3":
         print("=" * g_width, end='')
         id = input("请输入QQ音乐单曲ID:")
+        id = GetMusicID(id)
         api_path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(id)
         MusicMode(api_path, g_header, g_proxies, g_header163)
     if mode == "4":
         print("=" * g_width, end='')
         id = input("请输入QQ音乐歌单ID:")
+        id = GetMusicID(id)
         api_path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(id)
         MusicMode(api_path, g_header, g_proxies, g_header163)
     if mode == '5':
         print("=" * g_width, end='')
         id = input("请输入专辑ID:")
+        id = GetMusicID(id)
         if CheckIdFalse(id): continue
         api_path ="http://music.163.com/api/album/" + id + "?ext=true&id=" + id + "&offset=0&total=true&limit=10"
         AlbumMode(api_path, g_header, g_proxies, g_header163)
     if mode == '6':
         print("=" * g_width, end='')
         id = input("请输入歌手专辑页ID:")
+        id = GetMusicID(id)
         if CheckIdFalse(id): continue
         album_list = ArtistAlbumList(id)
         for album in album_list:
