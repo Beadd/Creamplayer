@@ -22,7 +22,7 @@ try: import eyed3
 except ImportError: g_eyed3_exist = False
 '''''''''eyed3'''''''''
 
-set_name_add_artist = True
+set_name_add_artist = False
 set_artist_add_name = False
 set_download_lyric = True
 set_download_cover_image_height = True
