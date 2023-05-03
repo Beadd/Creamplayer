@@ -1,283 +1,59 @@
+"""
+@repo: github.com/Beadd/MusicDownloader
+为方便使用,只有一个文件,空20行分割成多段
+注意: 
+- 全局变量在开头添加g_前缀
+- 除注释外,禁用全角
+"""
 # coding=UTF-8
-# use the word 'music' instead of 'song'
+# pylint: disable=W0702
+# pylint: disable=invalid-name
+# pylint: disable=unused-import
+# pylint: disable=line-too-long
+# pylint: disable=global-statement
+# pylint: disable=multiple-statements
+# pylint: disable=trailing-whitespace
+# pylint: disable=consider-using-dict-items
+# pylint: disable=anomalous-backslash-in-string
 
+import base64
+import json
 import os
 import re
-import sys
-import json
-import time
-import requests
 import secrets
-import base64
-from Crypto.Cipher import AES
-import rsa
-import binascii
-import rsa.randnum
-import rsa.common
-import rsa.transform
-import rsa.core
-'''''''''eyed3'''''''''
-g_eyed3_exist = True
-try: import eyed3
-except ImportError: g_eyed3_exist = False
-'''''''''eyed3'''''''''
+import sys
+import time
 
+import binascii
+import rsa.core
+import rsa.common
+import rsa.randnum
+import rsa.transform
+import rsa
+import requests
+
+from Crypto.Cipher import AES
+from colorama import init
+from termcolor import colored
+
+# 有时eyed3会不太妙，使文件可以脱离eyed3运行
+try: import eyed3; g_eyed3_exist = True
+except ImportError: g_eyed3_exist = False
+
+
+# 设置选项，使用set_代替g_，在mode_setting函数里被更改
 set_name_add_artist = False
 set_artist_add_name = False
 set_download_lyric = True
 set_download_cover_image_height = True
 
-g_width = os.get_terminal_size().columns
-g_log_dir = "MusicLogB"
-g_logfile = g_log_dir + "/" + str(
-    time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))) + ".log"
-
-def Plog(pinfo, if_printf = True):
-    if if_printf:
-        print(pinfo, end = '')
-    if not os.path.exists(g_log_dir):
-        os.makedirs(g_log_dir)
-    log = open(g_logfile, 'a', encoding='utf-8')
-    log.write(str(pinfo) + "\n")
-    log.close()
-
-def NameReplace(name):
-    for i in "\/:*?\">|":
-        if i in name: name = name.replace(i, "-")
-    return name
-
-def GetMusicName(data):
-    name = data['name']
-    name = NameReplace(name)
-    if set_name_add_artist:
-        artist = data['artist']
-        artist = NameReplace(artist)
-        name = name + " - " + artist
-    if set_artist_add_name:
-        artist = data['artist']
-        artist = NameReplace(artist)
-        name = artist + " - " + name
-    return name
-
-def GetMusicPath(name, if_get_music_dir_name = False, name_counter = 0):
-    music_dir_name = "MusicB"
-    if if_get_music_dir_name:
-        return music_dir_name
-    music_path = music_dir_name + '/' + name + ".mp3"
-    if name_counter != 0:
-        music_path = music_dir_name + '/' + name + "(" + str(name_counter) + ")" + ".mp3"
-    return music_path
-
-def GetMusicLyricPath(name, if_get_lyric_dir_name = False):
-    lyric_dir_name = "MusicB"
-    if if_get_lyric_dir_name:
-        return lyric_dir_name
-    lyric_path  = lyric_dir_name + "/" + name + ".lrc"
-    return lyric_path
-
-def GetSid(music_url):
-    sid = re.findall(r'id=(.*?)$', music_url) 
-    return str(sid[0])
-
-def CheckMusicExist(path, sid, name):
-    '''存在返回True,不存在返回path'''
-    if not g_eyed3_exist:
-        if os.path.exists(path):
-            return True
-        else: return path
-    counter = 1
-    while os.path.exists(path):
-        try: audiofile = eyed3.load(path)
-        except: 
-            Plog("\n\033[33m检测音乐eyed3失败,自动跳过\033[0m")
-            return True
-        try: id = audiofile.tag.copyright 
-        except:
-            Plog("\n\033[33m检测音乐eyed3失败,自动跳过\033[0m")
-            return True
-        if id == sid: return True
-        path = GetMusicPath(name, False, counter)
-        counter += 1
-    return path
-
-
-def MusicFileDownload(data, headers, proxies):
-    name = GetMusicName(data)
-    music_path = GetMusicPath(name)
-    music_url = data['url']
-    sid = GetSid(music_url)
-    Plog(name + '\n')
-    # 检测歌曲文件存在
-    music_path = CheckMusicExist(music_path, sid, name)
-    if music_path == True:
-        Plog("\033[33m歌曲已存在,自动跳过\033[0m\n")
-        return "exist"
-    music_req = requests.get(music_url, headers=headers, proxies=proxies)
-    if music_req.content == None:
-        Plog("\n\033[33m下载失败,自动跳过\033[0m\n")
-        return
-    with open(music_path, "wb") as code:
-        code.write(music_req.content)
-    if not os.path.getsize(music_path):
-        Plog('\n\033[33mGetsize失败,自动跳过\033[0m\n')
-        return "getsize"
-    Plog('  ' + str(os.path.getsize(music_path)) + '字节\n')
-    return music_path
-
-def MusicLyricDownload(data, music_path, headers, proxies):
-    lyric_path = re.sub(r"\.mp3$", ".lrc", music_path)
-    lyric_url = data['lrc']
-    lyric_response = requests.get(lyric_url, headers=headers, proxies=proxies)
-    if lyric_response.text == '':
-        Plog('\n\033[33m错误:歌词文件为空,自动跳过\033[0m\n')
-        return 
-    with open(lyric_path, "wb") as code:
-        code.write(lyric_response.content)
-    Plog('  歌词已保存至' + GetMusicLyricPath(0, True) + '\n')
-    return
-
-
-def MusicEyed3CoverImageHeight(data, audiofile, header163, proxies):
-    url_song_id = data['url']
-    song_id = re.findall(r'\d+$', url_song_id)
-    song_id  = song_id[-1]
-    url163_song_detail = "http://music.163.com/api/song/detail/?id=" + song_id +"&ids=%5B" + song_id + "%5D"
-    response_song_detail = requests.get(url163_song_detail, headers=header163, proxies=proxies)
-    data163_song_detail = json.loads(response_song_detail.text)
-    url_song_image = data163_song_detail['songs'][0]['album']['blurPicUrl']
-    audio_Image = requests.get(url_song_image, headers=header163, proxies=proxies)
-    if audio_Image.ok == False:
-        Plog("  网易云API封面出错")
-        return
-    type = url_song_image[-3:]
-    if type == 'jpg' or type == 'peg':
-        audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
-    if type == 'png':
-        audiofile.tag.images.set(3, audio_Image.content, "image/png")
-    Plog("  已内嵌封面")
-
-def MusicEyed3CoverImageLow(data, audiofile):
-    if data['pic'] == None: 
-        return
-    audio_Image = requests.get(data['pic'])
-    if audio_Image.ok != False:
-        audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
-        Plog("  已内嵌封面")
-
-
-def MusicEyed3Add(data, music_path, headers, proxies, header163, album_id = 0):
-    try: audiofile = eyed3.load(music_path)
-    except: 
-        Plog("\n\033[33mEyed3: 打开音乐音乐失败,自动跳过\033[0m")
-        return
-    #title
-    if data['name'] != None:
-        audiofile.tag.title = data['name']
-        Plog("  已内嵌名称")
-    #artist
-    if data['artist'] != 'NoneType':
-        audiofile.tag.artist = data['artist']
-        Plog("  已内嵌歌手")
-    #id
-    if data['url'] != 'NoneType':
-        sid = GetSid(data['url'])
-        audiofile.tag.copyright = str(sid)
-        Plog("  已内嵌id")
-    #image
-    if set_download_cover_image_height:
-        try: MusicEyed3CoverImageHeight(data, audiofile, header163, proxies)
-        except: MusicEyed3CoverImageLow(data, audiofile)
-    if not set_download_cover_image_height:
-        MusicEyed3CoverImageLow(data, audiofile)
-    #lyrics
-    lyric_response = requests.get(data['lrc'], headers=headers, proxies=proxies)
-    if lyric_response.text != '':
-        audiofile.tag.lyrics.set(lyric_response.text)
-        Plog("  已内嵌歌词")
-    else:
-        Plog("\n\033[33m歌词为空,eyed3嵌入失败,自动跳过\033[0m\n")
-    #album
-    if not album_id == 0:
-        audiofile.tag.album = str(album_id)
-        Plog("  已内嵌专辑")
-    #save alright
-    if data['name'] != None:
-        audiofile.tag.save(encoding='utf-8')
-        Plog("  已保存ID3信息", False)
-    print("")
-
-
-def MusicMode(api_path, headers, proxies, header163, show_github = True):
-    try: response = requests.get(api_path, headers = headers, proxies = proxies)
-    except: Plog("连接错误:请关闭加速器后重试...\n");return
-    data = json.loads(response.text)
-    if 'error' in data: 
-        print("=" * g_width, end='')
-        print("\033[33m请输入合法ID!\033[0m")
-        return 
-    counter = 0 + 1
-    for data in data:
-        Plog(str(counter) + " ")
-        music_path = MusicFileDownload(data, headers, proxies)
-        if music_path == "exist":
-            continue
-        if music_path == "getsize":
-            continue
-        if g_eyed3_exist:
-            MusicEyed3Add(data, music_path, headers, proxies, header163)
-        if set_download_lyric:
-            MusicLyricDownload(data, music_path, headers, proxies)
-        counter += 1
-    if show_github:
-        print("=" * g_width, end='')
-        print("\033[32mGithub: https://github.com/Beadd/MusicDownloader\n\
-下载完成!已下载%s首歌曲。感谢使用!\n\
-\033[35m继续或输入 q 以退出\033[0m" % (str(counter - 1)))
-
-def AlbumMode(api_path, headers, proxies, header163):
-    response = requests.get(api_path, headers = header163, proxies = proxies)
-    data163 = json.loads(response.text)
-    if data163['code'] != 200:
-        print("\033[33mAPI调用失败!")
-        return
-    num = data163['album']['size']
-    for i in range(0, num):
-        id = data163['album']['songs'][i]['id']
-        api_path = "http://api.injahow.cn/meting/?type=song&id=" + str(id)
-        try: response = requests.get(api_path, headers = headers, proxies = proxies)
-        except: Plog("连接错误:请关闭加速器后重试...\n");return
-        data = json.loads(response.text)
-        if 'error' in data: return 0
-        Plog("Album")
-        MusicMode(api_path, headers, proxies, header163, False)
-
-
-
-
-
-
-
-
-print('''
-\033[34m  __  __           _     \033[35m _____                      _                 _           \033[0m
-\033[34m |  \/  |         (_)    \033[35m|  __ \                    | |               | |          \033[0m
-\033[34m | \  / |_   _ ___ _  ___\033[35m| |  | | _____      ___ __ | | ___   __ _  __| | ___ _ __ \033[0m
-\033[34m | |\/| | | | / __| |/ __\033[35m| |  | |/ _ \ \ /\ / / '_ \| |/ _ \ / _` |/ _` |/ _ \ '__|\033[0m
-\033[34m | |  | | |_| \__ \ | (__\033[35m| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   \033[0m
-\033[34m |_|  |_|\__,_|___/_|\___\033[35m|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   \033[0m
-''')
-print("=" * g_width, end='')
-Plog("歌曲自动下载至目录 " + GetMusicPath("", True) + "中\n")
-Plog("歌词自动下载至目录 " + GetMusicLyricPath("", True) + "中\n")
-Plog("日志保存于文件 " + g_logfile + " 中")
-if g_eyed3_exist: print("eyeD3已启用")
-else: print("eyeD3未启用")
-
-base62 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-iv = '0102030405060708'
-presetKey = '0CoJUm6Qyw8W8jud'
-publicKey = '-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDgtQn2JZ34ZC28NWYpAUd98iZ37BUrX/aKzmFbt7clFSs6sXqHauqKWqdtLkF2KexO40H1YTX8z2lSgBBOAxLsvaklV8k4cBFK9snQXE9/DDaFt6Rr7iVZMldczhC0JNgTz+SHXT6CBHuX3e9SdB1Ua44oncaTWz7OBGLbCiK45wIDAQAB\n-----END PUBLIC KEY-----'
-anonymous_token = "bf8bfeabb1aa84f9c8c3906c04a04fb864322804c83f5d607e91a04eae463c9436bd1a17ec353cf780b396507a3f7464e8a60f4bbc019437993166e004087dd32d1490298caf655c2353e58daa0bc13cc7d5c198250968580b12c1b8817e3f5c807e650dd04abd3fb8130b7ae43fcc5b"
+g_music_dir_name = "MusicB"
+g_width = os.get_terminal_size().columns # 为了打印一整行的分隔符
+g_base62 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+g_iv = '0102030405060708'
+g_presetKey = '0CoJUm6Qyw8W8jud'
+g_publicKey = '-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDgtQn2JZ34ZC28NWYpAUd98iZ37BUrX/aKzmFbt7clFSs6sXqHauqKWqdtLkF2KexO40H1YTX8z2lSgBBOAxLsvaklV8k4cBFK9snQXE9/DDaFt6Rr7iVZMldczhC0JNgTz+SHXT6CBHuX3e9SdB1Ua44oncaTWz7OBGLbCiK45wIDAQAB\n-----END PUBLIC KEY-----'
+g_anonymous_token = "bf8bfeabb1aa84f9c8c3906c04a04fb864322804c83f5d607e91a04eae463c9436bd1a17ec353cf780b396507a3f7464e8a60f4bbc019437993166e004087dd32d1490298caf655c2353e58daa0bc13cc7d5c198250968580b12c1b8817e3f5c807e650dd04abd3fb8130b7ae43fcc5b"
 g_proxies = { "http": None, "https": None }
 g_header = {
     'User-Agent':
@@ -292,44 +68,282 @@ g_header163 = { # 直接请求网易云API所需
     'cookie':'JSESSIONID-WYYY=MqngSDeeeN%2FZRbE7Vmz7zZ1g9U3fs5SAD%5CbS23A0eW%2FhqzUHpYMX9jVlVgPosnC5wJdYO7se20QsYn45DoJor%5Cskxna6I%5CQKW733yxHugKPmYvN%2FP0%2BQOpOwkZJumC6t0QCh9rdwbk06t4TnjlMg%2Fa5Ooj1CW4idEdZq4VBMsDsIEhM3%3A1654304708419; _iuqxldmzr_=32; _ntes_nnid=59c0c0c4fc69665b6261b45f5e44fe4a,1654302908431; _ntes_nuid=59c0c0c4fc69665b6261b45f5e44fe4a; NMTID=00O-D3f-9XeBnQh0Ei2qy1d-ULEVSUAAAGBLCI6vA; WEVNSM=1.0.0; WNMCID=tqqzib.1654302908799.01.0; WM_NI=EROpEfsIky5J3M1%2F2Uw0BlLsOXn0anY7%2BSg1r8Y7PB%2B37llD5L2xuZ6sKBgI7WCTj5wOcXoIPycPEUR6dtcJmPPozE646Hv2qifgkQ76N5QKrDtVgERuCcCub6j65tgtVTU%3D; WM_NIKE=9ca17ae2e6ffcda170e2e6eeafdb6aa79efbd5ed6383928eb7d44e878e8e82d54bf4b2a9a5d16da7aba6d6c52af0fea7c3b92a878e8191c86eb197a59ab842f193ffd0b15fb5f08e8dcf798d88a2d1e4669be9e5b4e63bb2e897d8d34ae9edf98def50f794fe99f852f6ad85a3e643f5898db5e93fb591adb9ee4394a7adb1c85f92eaac95e242af90a090f94ff6ecfaa9f53ab3b7aa88ea5bf5ea82d6d441b29cbcb7e64f92ab8d84c27fa2eaa6d7b880a5ac9ab5d837e2a3; WM_TID=Pc31v8zNG7tFVRUUQAKVUgm1GFke%2Fj9Q'
 }
 
-    # Padding method of RSA_NO_PADDING
+
+def plog(pinfo):
+    """ 用来输入没有换行符的内容 """
+    print(pinfo, end = '')
+
+def split_line():
+    """ 打印分割线 """
+    print("=" * (g_width-1))
+
+def name_check_and_replace(name):
+    """ 将无法用于命名的符号更换成-并返回 """
+    for i in "\/:*?\">|":
+        if i in name: name = name.replace(i, "-")
+    return name
+
+def json_get_music_name(data):
+    """ 从 api json 中返回可用名称 """
+    name = data['name']
+    name = name_check_and_replace(name)
+    if set_name_add_artist:
+        artist = data['artist']
+        artist = name_check_and_replace(artist)
+        name = name + " - " + artist
+    if set_artist_add_name:
+        artist = data['artist']
+        artist = name_check_and_replace(artist)
+        name = artist + " - " + name
+    return name
+
+def apiurl_get_id(music_url):
+    """ 识别 api json 里的 url 并获取里面的歌曲ID """
+    sid = re.findall(r'id=(.*?)$', music_url) 
+    return str(sid[0])
+
+def url_get_id(music_url):
+    """ 识别各平台链接里的ID """
+    if "id=" in music_url:
+        music_url = re.findall(r'id=(.*?)$', music_url) 
+        return music_url[0]
+    if "songDetail/" in music_url:
+        music_url = re.findall(r"songDetail/(\w+)", music_url)
+        return music_url[0]
+    if "playlist/" in music_url:
+        music_url = re.findall(r"playlist/(\w+)", music_url)
+        return music_url[0]
+    return music_url
+
+def id_isdigit(music_id):
+    """ 检测是否存在ID,并进行报错 """
+    if music_id.isdigit() == 0: 
+        print("=" * g_width, end='')
+        print("\033[33m请输入合法ID!\033[0m")
+        return True
+    return False
+
+def name_get_music_path(name, name_counter = 0):
+    """ 通过名称获取路径 """
+    music_path = g_music_dir_name + '/' + name + ".mp3"
+    if name_counter != 0:
+        music_path = g_music_dir_name + '/' + name + "(" + str(
+                name_counter) + ")" + ".mp3"
+    return music_path
+
+def path_get_lyric_path(path):
+    """ 通过歌曲路径获得音乐路径 """
+    lyric_path  = path.replace(".mp3", ".lrc")
+    return lyric_path
+
+def path_check_exist(path, sid, name):
+    ''' 检测歌曲是否存在,存在返回True,不存在返回path '''
+    if not g_eyed3_exist:
+        if os.path.exists(path):
+            return True
+        else: return path
+    counter = 1
+    while os.path.exists(path):
+        try: audiofile = eyed3.load(path)
+        except:  
+            print(colored("检测音乐eyed3失败,自动跳过", "yellow"))
+            return True
+        try: music_id = audiofile.tag.copyright 
+        except:
+            print(colored("检测音乐eyed3失败,自动跳过", "yellow"))
+            return True
+        if music_id == sid: return True
+        path = name_get_music_path(name, counter)
+        counter += 1
+    return path
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def json_download_music(data, headers, proxies):
+    """ 此函数接受api json并进行下载,返回path,失败返回错误信息 """
+    name = json_get_music_name(data)
+    music_path = name_get_music_path(name)
+    music_url = data['url']
+    sid = apiurl_get_id(music_url)
+    print(name)
+    # 检测歌曲文件存在
+    music_path = path_check_exist(music_path, sid, name)
+    if music_path is True:
+        print(colored("歌曲已存在,自动跳过", "yellow"))
+        return "exist"
+    music_req = requests.get(music_url, headers=headers, proxies=proxies, 
+            timeout=10)
+    if music_req.content is None:
+        print(colored("下载失败,自动跳过", "yellow"))
+        return
+    with open(music_path, "wb") as code:
+        code.write(music_req.content)
+    if not os.path.getsize(music_path):
+        print(colored("getsize失败,自动跳过,可能是vip歌曲", "yellow"))
+        return "getsize"
+    print('  ' + str(os.path.getsize(music_path)) + '字节')
+    return music_path
+
+def json_download_lyric(data, music_path, headers, proxies):
+    """  此函数接受api json并进行下载歌词"""
+    lyric_path = path_get_lyric_path(music_path)
+    lyric_url = data['lrc']
+    lyric_response = requests.get(lyric_url, headers=headers, proxies=proxies,
+            timeout=10)
+    if lyric_response.text == '':
+        print(colored("错误:歌词文件为空,自动跳过", "yellow"))
+        return 
+    with open(lyric_path, "wb") as code:
+        code.write(lyric_response.content)
+    print("  歌词已保存至" + g_music_dir_name)
+    return
+
+def json_add_hight_cover(music_id, audiofile, header163, proxies):
+    """ 此函数接受id调用网易云接受获取高清封面 """
+    music_url163 = "http://music.163.com/api/song/detail/?id=" +\
+            music_id +"&ids=%5B" + music_id + "%5D"
+    music_url163_response = requests.get(music_url163, headers=header163,
+            proxies=proxies, timeout=10)
+    music_data163 = json.loads(music_url163_response.text)
+    music_cover_url = music_data163['songs'][0]['album']['blurPicUrl']
+    audio_image = requests.get(music_cover_url, headers=header163,
+            proxies=proxies, timeout=10)
+    if audio_image.ok is False:
+        print(colored("  网易云API封面出错", "yellow"))
+        return
+    image_type = music_cover_url[-3:]
+    if image_type == 'jpg' or type == 'peg':
+        audiofile.tag.images.set(3, audio_image.content, "image/jpeg")
+    if image_type == 'png':
+        audiofile.tag.images.set(3, audio_image.content, "image/png")
+    plog("  已内嵌封面")
+
+def json_add_low_cover(data, audiofile):
+    """ 此函数向歌曲添加eyed3元素 """
+    if data['pic'] is None: return
+    audio_Image = requests.get(data['pic'], timeout=10)
+    if audio_Image.ok is not False:
+        audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
+        plog("  已内嵌封面")
+
+def json_add_eyed3(data, music_path, headers, proxies, header163, album_id=0):
+    """ 此函数将音乐添加eyed3元素 """
+    try: audiofile = eyed3.load(music_path)
+    except: 
+        plog("\n\033[33mEyed3: 打开音乐音乐失败,自动跳过\033[0m")
+        return
+    # title
+    if data['name'] is not None:
+        audiofile.tag.title = data['name']
+        plog("  已内嵌名称")
+    # artist
+    if data['artist'] != 'NoneType':
+        audiofile.tag.artist = data['artist']
+        plog("  已内嵌歌手")
+    # id
+    if data['url'] != 'NoneType':
+        sid = apiurl_get_id(data['url'])
+        audiofile.tag.copyright = str(sid)
+        plog("  已内嵌id")
+    # image
+    if set_download_cover_image_height:
+        try: json_add_hight_cover(data, audiofile, header163, proxies)
+        except: json_add_low_cover(data, audiofile)
+    if not set_download_cover_image_height:
+        json_add_low_cover(data, audiofile)
+    #lyrics
+    lyric_response = requests.get(data['lrc'], headers=headers, 
+            proxies=proxies, timeout=10)
+    if lyric_response.text != '':
+        audiofile.tag.lyrics.set(lyric_response.text)
+        plog("  已内嵌歌词")
+    else:
+        plog("\n\033[33m歌词为空,eyed3嵌入失败,自动跳过\033[0m\n")
+    #album
+    if album_id != 0:
+        audiofile.tag.album = str(album_id)
+        plog("  已内嵌专辑")
+    #save alright
+    if data['name'] is not None:
+        audiofile.tag.save(encoding='utf-8')
+    print("")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 此段为贡献代码,提供了下载指定歌手的全部专辑功能
 def rsa_no_padding(message, target_length):
+    """ Padding method of RSA_NO_PADDING """
     message = message[::-1]
     max_msglength = target_length - 11
     msglength = len(message)
- 
+
     if msglength > max_msglength:
+        # pylint: disable=consider-using-f-string
         raise OverflowError('%i bytes needed for message, but there is only'
                             ' space for %i' % (msglength, max_msglength))
     padding_length = target_length - msglength - 3
- 
+
     return b''.join([b'\x00\x00',padding_length * b'\x00',b'\x00',message])
 
 def encrypt (data) :
+    """ encrypt """
     bs = AES.block_size
-    aes_pad = lambda s: s + (bs - len(s) % bs) * chr(bs - len(s) % bs)
+    # pylint: disable=unnecessary-lambda-assignment
+    aes_pad = lambda s: s + (bs - len(s) % bs) * chr(bs - len(s) % bs) 
 
     data_encrypted = {}
     data_text = json.dumps(data)
     random_byte_array = secrets.token_bytes(16)
-    secret_key = "".join(map(lambda n : base62[n%62], random_byte_array))
+    secret_key = "".join(map(lambda n : g_base62[n%62], random_byte_array))
 
     # AES encrypt
-    preset_chiper = AES.new(key=bytes(presetKey, 'utf-8'), mode=AES.MODE_CBC, iv=bytes(iv, 'utf-8'))
+    preset_chiper = AES.new(key=bytes(g_presetKey, 'utf-8'), mode=AES.MODE_CBC, iv=bytes(g_iv, 'utf-8'))
     preset_encrypted = preset_chiper.encrypt(bytes(aes_pad(data_text), 'utf-8'))
     preset_encrypted_b64 = base64.b64encode(preset_encrypted).decode('ascii')
 
-    secret_chiper = AES.new(key=bytes(secret_key, 'utf-8'), mode=AES.MODE_CBC, iv=bytes(iv, 'utf-8'))
+    secret_chiper = AES.new(key=bytes(secret_key, 'utf-8'), mode=AES.MODE_CBC, iv=bytes(g_iv, 'utf-8'))
     secret_encrypted = secret_chiper.encrypt(bytes(aes_pad(preset_encrypted_b64), 'utf-8'))
     secret_encrypted_b64 = base64.b64encode(secret_encrypted).decode('ascii')
 
     data_encrypted['params'] = secret_encrypted_b64
 
     # RSA encrypt
-    rsa_pub = rsa.PublicKey.load_pkcs1_openssl_pem(bytes(publicKey, 'utf-8'))
+    rsa_pub = rsa.PublicKey.load_pkcs1_openssl_pem(bytes(g_publicKey, 'utf-8'))
     keylength = rsa.common.byte_size(rsa_pub.n)
     padded_message = rsa_no_padding(bytes(secret_key, 'utf-8'), keylength)
- 
+
     payload = rsa.transform.bytes2int(padded_message)
     encrypted = rsa.core.encrypt_int(payload, rsa_pub.e, rsa_pub.n)
     block = rsa.transform.int2bytes(encrypted, keylength)
@@ -338,15 +352,15 @@ def encrypt (data) :
 
     return data_encrypted
 
-    # Get All Albums
-def ArtistAlbumList (artist_id) :
+def artist_get_album_list(artist_id):
+    """ 通过歌手获取所有专辑 """
     album_list = []
     cookies = {
         '__remember_me': True,
         'NMTID': secrets.token_bytes(16).hex(),
         '_ntes_nuid': secrets.token_bytes(16).hex(),
-        'MUSIC_A': anonymous_token,
-      }
+        'MUSIC_A': g_anonymous_token,
+    }
     # url = "https://www.httpbin.org/post"
     url = "https://music.163.com/weapi/artist/albums/" + artist_id
     # print(url)
@@ -358,7 +372,7 @@ def ArtistAlbumList (artist_id) :
     headers['Content-Type'] = 'application/x-www-form-urlencoded'
     cookies_val = ''
     for key in cookies:
-         cookies_val += (str(key) + '=' + str(cookies[key]) + '; ')
+        cookies_val += (str(key) + '=' + str(cookies[key]) + '; ')
     # print(cookies_val)
     headers['Cookies'] = cookies_val
 
@@ -366,7 +380,7 @@ def ArtistAlbumList (artist_id) :
     while True:
     # for num in range(2):
         enc_data = encrypt(data)
-        r = requests.post(url=url, headers=headers, data=enc_data)
+        r = requests.post(url=url, headers=headers, data=enc_data, timeout=10)
         album = json.loads(r.text)
         # print(r.text)
 
@@ -377,111 +391,220 @@ def ArtistAlbumList (artist_id) :
         data['offset'] = data['offset'] + data['limit']
         # print(album['more'])
         # print(data)
-        if (album['more'] == False) :
-            break
+        if (album['more'] is False) : break # pylint: disable=superfluous-parens
 
     return album_list
 
 
-def GetMusicID(id):
-    if "id=" in id:
-        id = re.findall(r'id=(.*?)$', id) 
-        return id[0]
-    if "songDetail/" in id:
-        id = re.findall(r"songDetail/(\w+)", id)
-        return id[0]
-    if "playlist/" in id:
-        id = re.findall(r"playlist/(\w+)", id)
-        return id[0]
-    return id
 
-def CheckIdFalse(id):
-    if id.isdigit() == 0: 
-        print("=" * g_width, end='')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def mode_music(api_path, headers, proxies, header163, show_github = True):
+    """ 此函数接受api,下载所有歌曲 """
+    try: response = requests.get(api_path, headers = headers, 
+            proxies = proxies, timeout=10)
+    except: plog("连接错误:请关闭加速器后重试...\n");return
+    data = json.loads(response.text)
+    if 'error' in data: 
+        split_line()
         print("\033[33m请输入合法ID!\033[0m")
-        return True
-    else: return False
+        return 
+    counter = 0 + 1
+    for data in data:
+        plog(str(counter) + " ")
+        music_path = json_download_music(data, headers, proxies)
+        if music_path == "exist":
+            continue
+        if music_path == "getsize":
+            continue
+        if g_eyed3_exist:
+            json_add_eyed3(data, music_path, headers, proxies, header163)
+        if set_download_lyric:
+            json_download_lyric(data, music_path, headers, proxies)
+        counter += 1
+    if show_github:
+        split_line()
+        print(colored("Github: https://github.com/Beadd/MusicDownloader", "green"))
+        print(colored("下载完成!已下载" + str(counter - 1) + "首歌曲。感谢使用!", "green"))
+        print("\033[35m继续或输入 q 以退出\033[0m")
 
-def Setting():
+def mode_album(album_id, headers, proxies, header163):
+    """ 此函数接受专辑id,调用网易云接口和mode_music """
+    api_path ="http://music.163.com/api/album/" + str(album_id) +\
+            "?ext=true&id=" + str(album_id) + "&offset=0&total=true&limit=10"
+    response = requests.get(api_path, headers = header163, 
+            proxies = proxies, timeout=10)
+    data163 = json.loads(response.text)
+    if data163['code'] != 200:
+        print("\033[33mAPI调用失败!")
+        return
+    num = data163['album']['size']
+    for i in range(0, num):
+        music_id = data163['album']['songs'][i]['id']
+        api_path = "http://api.injahow.cn/meting/?type=song&id=" + str(music_id)
+        try: response = requests.get(api_path, headers = headers, 
+                proxies = proxies, timeout=10)
+        except: 
+            plog("连接错误:请关闭加速器后重试...\n") 
+            return
+        data = json.loads(response.text)
+        if 'error' in data: return 0
+        plog("Album")
+        mode_music(api_path, headers, proxies, header163, False)
+
+def mode_setting():
+    """ 设置模式,修改全局变量set_ """
     global set_name_add_artist
     global set_artist_add_name
     global set_download_lyric
     global set_download_cover_image_height
-    print("歌曲名称后加歌手:" + "  \033[36m|\033[0m  1" + "(" + str(set_name_add_artist) + ")")
-    print("歌曲名称前加歌手:" + "  \033[36m|\033[0m  2" + "(" + str(set_artist_add_name) + ")")
-    print("歌曲是否下载歌词:" + "  \033[36m|\033[0m  3" + "(" + str(set_download_lyric) + ")")
-    print("歌曲启用高清封面:" + "  \033[36m|\033[0m  4" + "(" + str(set_download_cover_image_height) + ")")
-    set = input("输入数字自动修改:  \033[36m|\033[0m  ")
-    if set == '1':
+
+    plog("歌曲名称后加歌手:")  
+    plog(colored("  |  ", "cyan"))
+    print("1(" + str(set_name_add_artist) + ")")
+    
+    plog("歌曲名称前加歌手:")  
+    plog(colored("  |  ", "cyan"))
+    print("2(" + str(set_artist_add_name) + ")")
+    
+    plog("歌曲是否下载歌词:")  
+    plog(colored("  |  ", "cyan"))
+    print("3(" + str(set_download_lyric) + ")")
+
+    plog("歌曲启用高清封面:")  
+    plog(colored("  |  ", "cyan"))
+    print("4(" + str(set_download_cover_image_height) + ")")
+
+    plog("输入数字自动修改:")
+    plog(colored("  |  ", "cyan"))
+    option_set = input()
+    if option_set == '1':
         set_name_add_artist = not set_name_add_artist
-        print("歌曲名称后加歌手:" + "  \033[36m|\033[0m  1" + "(" + str(set_name_add_artist) + ")")
-    if set == '2':
+        plog("歌曲名称后加歌手:")  
+        plog(colored("  |  ", "cyan"))
+        print("1(" + str(set_name_add_artist) + ")") 
+
+    if option_set == '2':
         set_artist_add_name = not set_artist_add_name
-        print("歌曲名称前加歌手:" + "  \033[36m|\033[0m  2" + "(" + str(set_artist_add_name) + ")")
-    if set == '3':
+        plog("歌曲名称前加歌手:")  
+        plog(colored("  |  ", "cyan"))
+        print("2(" + str(set_artist_add_name) + ")")
+
+    if option_set == '3':
         set_download_lyric = not set_download_lyric
-        print("歌曲是否下载歌词:" + "  \033[36m|\033[0m  2" + "(" + str(set_download_lyric) + ")")
-    if set == '4':
+        plog("歌曲是否下载歌词:")  
+        plog(colored("  |  ", "cyan"))
+        print("3(" + str(set_download_lyric) + ")")
+
+    if option_set == '4':
         set_download_cover_image_height = not set_download_cover_image_height
-        print("歌曲启用高清封面:" + "  \033[36m|\033[0m  3" + "(" + str(set_download_cover_image_height) + ")")
-    else: return 0
+        plog("歌曲启用高清封面:")  
+        plog(colored("  |  ", "cyan"))
+        print("4(" + str(set_download_cover_image_height) + ")")
+    return 0
 
-if not os.path.exists(GetMusicPath(0, True)): os.mkdir(GetMusicPath(0, True))
-if not os.path.exists(GetMusicLyricPath(0, True)) : os.mkdir(GetMusicLyricPath(0, True))
 
-while True:
-    print("下载网易云单曲  \033[36m|\033[0m  1")
-    print("下载网易云歌单  \033[36m|\033[0m  2")
-    print("下载QQ音乐单曲  \033[36m|\033[0m  3")
-    print("下载QQ音乐歌单  \033[36m|\033[0m  4")
-    print("下载网易云专辑  \033[36m|\033[0m  5")
-    print("网易云歌手下载  \033[36m|\033[0m  6")
-    print("歌曲下载项设置  \033[36m|\033[0m  7")
-    mode = input("输入数字选择:   \033[36m|\033[0m  ")
-    if mode == 'q' or mode == 'quit' or mode == 'exit': sys.exit()
-    if mode == '1':
-        print("=" * g_width, end='')
-        id = input("请输入网易云单曲ID:")
-        id = GetMusicID(id)
-        if CheckIdFalse(id): continue
-        api_path = "http://api.injahow.cn/meting/?type=song&id=" + str(id)
-        MusicMode(api_path, g_header, g_proxies, g_header163)
-    if mode == "2":
-        print("=" * g_width, end='')
-        id = input("请输入网易云歌单ID:")
-        id = GetMusicID(id)
-        if CheckIdFalse(id): continue
-        api_path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(id)
-        MusicMode(api_path, g_header, g_proxies, g_header163)
-    if mode == "3":
-        print("=" * g_width, end='')
-        id = input("请输入QQ音乐单曲ID:")
-        id = GetMusicID(id)
-        api_path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(id)
-        MusicMode(api_path, g_header, g_proxies, g_header163)
-    if mode == "4":
-        print("=" * g_width, end='')
-        id = input("请输入QQ音乐歌单ID:")
-        id = GetMusicID(id)
-        api_path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(id)
-        MusicMode(api_path, g_header, g_proxies, g_header163)
-    if mode == '5':
-        print("=" * g_width, end='')
-        id = input("请输入专辑ID:")
-        id = GetMusicID(id)
-        if CheckIdFalse(id): continue
-        api_path ="http://music.163.com/api/album/" + id + "?ext=true&id=" + id + "&offset=0&total=true&limit=10"
-        AlbumMode(api_path, g_header, g_proxies, g_header163)
-    if mode == '6':
-        print("=" * g_width, end='')
-        id = input("请输入歌手专辑页ID:")
-        id = GetMusicID(id)
-        if CheckIdFalse(id): continue
-        album_list = ArtistAlbumList(id)
-        for album in album_list:
-            api_path ="http://music.163.com/api/album/" + str(album) + "?ext=true&id=" + str(album) + "&offset=0&total=true&limit=10"
-            AlbumMode(api_path, g_header, g_proxies, g_header163)
-    if mode == '7':
-        print("=" * g_width, end='')
-        Setting()
-    print("=" * g_width, end='')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def mode_print_get_urlid(input_content):
+    """ 用于模式选择时输出并获取输入ID """
+    split_line()
+    music_id = url_get_id(input(input_content))
+    return music_id
+
+def main():
+    """ 功能优先添加到此函数中 """
+    init() # 初始化colorama库
+    if not os.path.exists(g_music_dir_name): os.mkdir(g_music_dir_name)
+    print('''
+\033[34m  __  __           _     \033[35m _____                      _                 _           \033[0m
+\033[34m |  \/  |         (_)    \033[35m|  __ \                    | |               | |          \033[0m
+\033[34m | \  / |_   _ ___ _  ___\033[35m| |  | | _____      ___ __ | | ___   __ _  __| | ___ _ __ \033[0m
+\033[34m | |\/| | | | / __| |/ __\033[35m| |  | |/ _ \ \ /\ / / '_ \| |/ _ \ / _` |/ _` |/ _ \ '__|\033[0m
+\033[34m | |  | | |_| \__ \ | (__\033[35m| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   \033[0m
+\033[34m |_|  |_|\__,_|___/_|\___\033[35m|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   \033[0m
+''')
+    split_line()
+    print("歌曲自动下载至目录 " + g_music_dir_name + "中")
+    print("歌词自动下载至目录 " + g_music_dir_name + "中")
+    if g_eyed3_exist: print("eyeD3已启用")
+    else: print("eyeD3未启用")
+    while True:
+        print("下载网易云单曲  \033[36m|\033[0m  1")
+        print("下载网易云歌单  \033[36m|\033[0m  2")
+        print("下载QQ音乐单曲  \033[36m|\033[0m  3")
+        print("下载QQ音乐歌单  \033[36m|\033[0m  4")
+        print("下载网易云专辑  \033[36m|\033[0m  5")
+        print("网易云歌手下载  \033[36m|\033[0m  6")
+        print("歌曲下载项设置  \033[36m|\033[0m  7")
+        mode = input("输入数字选择:   \033[36m|\033[0m  ")
+        if mode == 'q' or mode == 'quit' or mode == 'exit': sys.exit()
+        if mode == '1':
+            # 网易云单曲
+            music_id = mode_print_get_urlid("请输入网易云单曲ID或链接:")
+            if id_isdigit(music_id): continue
+            api_path = "http://api.injahow.cn/meting/?type=song&id=" + str(music_id)
+            mode_music(api_path, g_header, g_proxies, g_header163)
+        if mode == "2":
+            # 网易云歌单
+            music_id = mode_print_get_urlid("请输入网易云歌单ID或链接:")
+            if id_isdigit(music_id): continue
+            api_path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(music_id)
+            mode_music(api_path, g_header, g_proxies, g_header163)
+        if mode == "3":
+            # QQ音乐单曲
+            music_id = mode_print_get_urlid("请输入QQ音乐单曲ID或链接:")
+            api_path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(music_id)
+            mode_music(api_path, g_header, g_proxies, g_header163)
+        if mode == "4":
+            # QQ音乐歌单
+            music_id = mode_print_get_urlid("请输入QQ音乐歌单ID或链接:")
+            api_path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(music_id)
+            mode_music(api_path, g_header, g_proxies, g_header163)
+        if mode == '5':
+            # 网易云专辑
+            album_id = mode_print_get_urlid("请输入网易云专辑ID或链接:")
+            if id_isdigit(album_id): continue
+            mode_album(album_id, g_header, g_proxies, g_header163)
+        if mode == '6':
+            artist_id = mode_print_get_urlid("请输入歌手专辑页ID:")
+            if id_isdigit(artist_id): continue
+            album_list = artist_get_album_list(artist_id)
+            for album_id in album_list:
+                mode_album(album_id, g_header, g_proxies, g_header163)
+        if mode == '7':
+            split_line()
+            mode_setting()
+        split_line()
+
+if __name__ == "__main__":
+    main()
