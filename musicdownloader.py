@@ -214,7 +214,7 @@ def json_download_lyric(data, music_path, headers, proxies):
     print("  歌词已保存至" + g_music_dir_name)
     return
 
-def json_add_hight_cover(music_id, audiofile, header163, proxies):
+def ID_add_hight_cover(music_id, audiofile, header163, proxies):
     """ 此函数接受id调用网易云接受获取高清封面 """
     music_url163 = "http://music.163.com/api/song/detail/?id=" +\
             music_id +"&ids=%5B" + music_id + "%5D"
@@ -263,7 +263,8 @@ def json_add_eyed3(data, music_path, headers, proxies, header163, album_id=0):
         plog("  已内嵌id")
     # image
     if set_download_cover_image_height:
-        try: json_add_hight_cover(data, audiofile, header163, proxies)
+        music_id = url_get_id(data['url'])
+        try: ID_add_hight_cover(music_id, audiofile, header163, proxies)
         except: json_add_low_cover(data, audiofile)
     if not set_download_cover_image_height:
         json_add_low_cover(data, audiofile)
