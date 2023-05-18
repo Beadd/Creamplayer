@@ -33,6 +33,13 @@ pip install termcolor
 pip install eyeD3
 ```
 
+****
+## 新增GUI版本，下载源码运行EyeD3Music.py
+运行EyeD3Music.py需要pyqt库：
+```
+pip install PyQt5
+```
+
 # 进度 Progress
 - [x] 网易云音乐下载
 - [x] 网易云歌单批量下载
