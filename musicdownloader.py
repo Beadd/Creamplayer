@@ -79,7 +79,7 @@ def split_line():
 
 def name_check_and_replace(name):
     """ 将无法用于命名的符号更换成-并返回 """
-    for i in "\/:*?\">|":
+    for i in "\/:*?\"<>|":
         if i in name: name = name.replace(i, "-")
     return name
 
