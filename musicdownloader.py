@@ -46,6 +46,7 @@ set_name_add_artist = False
 set_artist_add_name = False
 set_download_lyric = True
 set_download_cover_image_height = True
+set_api_server = "http://api.injahow.cn/meting/"
 
 g_music_dir_name = "MusicB"
 g_width = os.get_terminal_size().columns # 为了打印一整行的分隔符
@@ -445,6 +446,7 @@ def mode_music(api_path, headers, proxies, header163, show_github = True):
 
 def mode_album(album_id, headers, proxies, header163):
     """ 此函数接受专辑id,调用网易云接口和mode_music """
+    api_netease_music = set_api_server + "?type=song&id="
     api_path ="http://music.163.com/api/album/" + str(album_id) +\
             "?ext=true&id=" + str(album_id) + "&offset=0&total=true&limit=10"
     response = requests.get(api_path, headers = header163, 
@@ -456,7 +458,7 @@ def mode_album(album_id, headers, proxies, header163):
     num = data163['album']['size']
     for i in range(0, num):
         music_id = data163['album']['songs'][i]['id']
-        api_path = "http://api.injahow.cn/meting/?type=song&id=" + str(music_id)
+        api_path = api_netease_music + str(music_id)
         try: response = requests.get(api_path, headers = headers, 
                 proxies = proxies, timeout=10)
         except: 
@@ -473,6 +475,7 @@ def mode_setting():
     global set_artist_add_name
     global set_download_lyric
     global set_download_cover_image_height
+    global set_api_server
 
     plog("歌曲名称后加歌手:")  
     plog(colored("  |  ", "cyan"))
@@ -490,8 +493,13 @@ def mode_setting():
     plog(colored("  |  ", "cyan"))
     print("4(" + str(set_download_cover_image_height) + ")")
 
+    plog("设置歌曲API服务器:")
+    plog(colored(" |  ", "cyan")) 
+    print("5(" + set_api_server + ")")
+
     plog("输入数字自动修改:")
     plog(colored("  |  ", "cyan"))
+
     option_set = input()
     if option_set == '1':
         set_name_add_artist = not set_name_add_artist
@@ -516,6 +524,12 @@ def mode_setting():
         plog("歌曲启用高清封面:")  
         plog(colored("  |  ", "cyan"))
         print("4(" + str(set_download_cover_image_height) + ")")
+
+    if option_set == '5':
+        set_api_server = input("设置歌曲API服务器:" + colored(" |  ", "cyan"))
+        plog("设置歌曲API服务器:")
+        plog(colored(" |  ", "cyan")) 
+        print("5(" + set_api_server + ")")
     return 0
 
 
@@ -560,6 +574,10 @@ def main():
     if g_eyed3_exist: print("eyeD3已启用")
     else: print("eyeD3未启用")
     while True:
+        api_netease_music = set_api_server + "?type=song&id="
+        api_netease_playlist = set_api_server + "?type=playlist&id="
+        api_qq_music = set_api_server + "?server=tencent&type=song&id="
+        api_qq_playlist = set_api_server + "?server=tencent&type=playlist&id="
         print("下载网易云单曲  \033[36m|\033[0m  1")
         print("下载网易云歌单  \033[36m|\033[0m  2")
         print("下载QQ音乐单曲  \033[36m|\033[0m  3")
@@ -573,23 +591,23 @@ def main():
             # 网易云单曲
             music_id = mode_print_get_urlid("请输入网易云单曲ID或链接:")
             if id_isdigit(music_id): continue
-            api_path = "http://api.injahow.cn/meting/?type=song&id=" + str(music_id)
+            api_path = api_netease_music + str(music_id)
             mode_music(api_path, g_header, g_proxies, g_header163)
         if mode == "2":
             # 网易云歌单
             music_id = mode_print_get_urlid("请输入网易云歌单ID或链接:")
             if id_isdigit(music_id): continue
-            api_path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(music_id)
+            api_path = api_netease_playlist + str(music_id)
             mode_music(api_path, g_header, g_proxies, g_header163)
         if mode == "3":
             # QQ音乐单曲
             music_id = mode_print_get_urlid("请输入QQ音乐单曲ID或链接:")
-            api_path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(music_id)
+            api_path = api_qq_music + str(music_id)
             mode_music(api_path, g_header, g_proxies, g_header163)
         if mode == "4":
             # QQ音乐歌单
             music_id = mode_print_get_urlid("请输入QQ音乐歌单ID或链接:")
-            api_path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(music_id)
+            api_path = api_qq_playlist + str(music_id)
             mode_music(api_path, g_header, g_proxies, g_header163)
         if mode == '5':
             # 网易云专辑
