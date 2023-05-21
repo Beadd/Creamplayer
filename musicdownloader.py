@@ -433,9 +433,10 @@ def artist_get_album_list(artist_id):
 
 def mode_music(api_path, headers, proxies, header163, show_github = True):
     """ 此函数接受api,下载所有歌曲 """
-    try: response = requests.get(api_path, headers = headers, 
-            proxies = proxies, timeout=10)
-    except: plog("连接错误:请关闭加速器后重试...\n");return
+    try: response = requests.get(api_path, headers = headers, proxies = proxies, timeout=10)
+    except: 
+        print(colored("连接错误:请关闭加速器或检查API服务是否设置正确后重试...", "yellow"))
+        return
     data = json.loads(response.text)
     if 'error' in data: 
         split_line()
@@ -478,7 +479,7 @@ def mode_album(album_id, headers, proxies, header163):
         try: response = requests.get(api_path, headers = headers, 
                 proxies = proxies, timeout=10)
         except: 
-            plog("连接错误:请关闭加速器后重试...\n") 
+            print(colored("连接错误:请关闭加速器或检查API服务是否设置正确后重试...", "yellow"))
             return
         data = json.loads(response.text)
         if 'error' in data: return 0
@@ -647,11 +648,14 @@ def command_start(args):
 
 def main():
     """ 功能优先添加到此函数中 """
+    global set_api_server
     init() # 初始化colorama库
     parser = argparse.ArgumentParser() # 启动参数检测
     if not os.path.exists(g_music_dir_name): os.mkdir(g_music_dir_name)
     parser.add_argument('args_url', nargs='?', help='Music URL')
+    parser.add_argument('--args_server', '-s', help='Download Music API Server')
     args = parser.parse_args()
+    if args.args_server is not None: set_api_server = args.args_server 
     if args.args_url is None: pure_main()
     else: command_start(args)
 
