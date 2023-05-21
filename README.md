@@ -37,13 +37,6 @@ musicdownloader.exe https://......song?id=... -s http://192.168.1.7/
 ```
 > 能否下载歌曲或会员歌曲及其音质取决于API服务器
 
-# 关于EyeD3
-- [x] 歌曲封面图片元
-- [x] 歌曲专辑ID元
-- [x] 歌曲名称元
-- [x] 歌曲歌手元
-- [x] 歌曲歌词嵌入
-
 # 感谢 Thanks
 - [Meting-api](https://github.com/injahow/meting-api)
 ## 贡献者 Contributors
