@@ -16,6 +16,7 @@
 # pylint: disable=consider-using-dict-items
 # pylint: disable=anomalous-backslash-in-string
 
+import argparse
 import base64
 import json
 import os
@@ -115,6 +116,21 @@ def url_get_id(music_url):
         music_url = re.findall(r"playlist/(\w+)", music_url)
         return music_url[0]
     return music_url
+
+def url_get_platform(music_url):
+    """ 通过URL识别平台 """
+    if "song?id=" in music_url:
+        return "netease_music"
+    if "playlist?id=" in music_url:
+        return "netease_playlist"
+    if "album?id=" in music_url:
+        return "netease_album"
+    if "artist?id=" in music_url:
+        return "netease_artist"
+    if "songDetail/" in music_url:
+        return "qq_music"
+    if "playlist/" in music_url:
+        return "qq_playlist"
 
 def id_isdigit(music_id):
     """ 检测是否存在ID,并进行报错 """
@@ -477,6 +493,7 @@ def mode_setting():
     global set_download_cover_image_height
     global set_api_server
 
+    split_line()
     plog("歌曲名称后加歌手:")  
     plog(colored("  |  ", "cyan"))
     print("1(" + str(set_name_add_artist) + ")")
@@ -550,80 +567,95 @@ def mode_setting():
 
 
 
-def mode_print_get_urlid(input_content):
-    """ 用于模式选择时输出并获取输入ID """
+def start_function(music_url = None):
+    """ 开始接受输入并下载 """
+    api_netease_music = set_api_server + "?type=song&id="
+    api_netease_playlist = set_api_server + "?type=playlist&id="
+    api_qq_music = set_api_server + "?server=tencent&type=song&id="
+    api_qq_playlist = set_api_server + "?server=tencent&type=playlist&id="
     split_line()
-    music_id = url_get_id(input(input_content))
-    return music_id
+    if music_url is None:
+        print(colored("输入q退出,输入s进入设置", "cyan"))
+        mode = input("请输入歌曲或歌单或歌手或专辑链接：")
+    else: mode = music_url
+    if mode == 'q' or mode == 'quit' or mode == 'exit': sys.exit()
+    if mode == 's' or mode == 'set' or mode == 'setting': 
+        mode_setting()
+        return
+    if url_get_platform(mode) == 'netease_music':
+        # 网易云单曲
+        api_path = api_netease_music + url_get_id(mode)
+        mode_music(api_path, g_header, g_proxies, g_header163)
+        return
+    if url_get_platform(mode) == 'netease_playlist':
+        # 网易云歌单
+        api_path = api_netease_playlist + url_get_id(mode)
+        mode_music(api_path, g_header, g_proxies, g_header163)
+        return
+    if url_get_platform(mode) == 'netease_album':
+        # 网易云专辑
+        album_id = url_get_id(mode)
+        mode_album(album_id, g_header, g_proxies, g_header163)
+        return
+    if url_get_platform(mode) == 'netease_artist':
+        # 网易云歌手
+        artist_id = url_get_id(mode)
+        album_list = artist_get_album_list(artist_id)
+        for album_id in album_list:
+            mode_album(album_id, g_header, g_proxies, g_header163)
+        return
+    if url_get_platform(mode) == 'qq_music':
+        # QQ音乐单曲
+        api_path = api_qq_music + url_get_id(mode)
+        mode_music(api_path, g_header, g_proxies, g_header163)
+        return
+    if url_get_platform(mode) == 'qq_playlist':
+        # QQ音乐歌单
+        api_path = api_qq_playlist + str(url_get_id(mode))
+        mode_music(api_path, g_header, g_proxies, g_header163)
+        return
+    else: 
+        print(colored("请输入完整的URL", "yellow"))
 
-def main():
-    """ 功能优先添加到此函数中 """
-    init() # 初始化colorama库
-    if not os.path.exists(g_music_dir_name): os.mkdir(g_music_dir_name)
+def pure_main():
+    """ 无参启动时的主函数 """
     print('''
 \033[34m  __  __           _     \033[35m _____                      _                 _           \033[0m
 \033[34m |  \/  |         (_)    \033[35m|  __ \                    | |               | |          \033[0m
 \033[34m | \  / |_   _ ___ _  ___\033[35m| |  | | _____      ___ __ | | ___   __ _  __| | ___ _ __ \033[0m
 \033[34m | |\/| | | | / __| |/ __\033[35m| |  | |/ _ \ \ /\ / / '_ \| |/ _ \ / _` |/ _` |/ _ \ '__|\033[0m
 \033[34m | |  | | |_| \__ \ | (__\033[35m| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   \033[0m
-\033[34m |_|  |_|\__,_|___/_|\___\033[35m|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   \033[0m
-''')
+\033[34m |_|  |_|\__,_|___/_|\___\033[35m|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   \033[0m''')
     split_line()
     print("歌曲自动下载至目录 " + g_music_dir_name + "中")
     print("歌词自动下载至目录 " + g_music_dir_name + "中")
     if g_eyed3_exist: print("eyeD3已启用")
     else: print("eyeD3未启用")
-    while True:
-        api_netease_music = set_api_server + "?type=song&id="
-        api_netease_playlist = set_api_server + "?type=playlist&id="
-        api_qq_music = set_api_server + "?server=tencent&type=song&id="
-        api_qq_playlist = set_api_server + "?server=tencent&type=playlist&id="
-        print("下载网易云单曲  \033[36m|\033[0m  1")
-        print("下载网易云歌单  \033[36m|\033[0m  2")
-        print("下载QQ音乐单曲  \033[36m|\033[0m  3")
-        print("下载QQ音乐歌单  \033[36m|\033[0m  4")
-        print("下载网易云专辑  \033[36m|\033[0m  5")
-        print("网易云歌手下载  \033[36m|\033[0m  6")
-        print("歌曲下载项设置  \033[36m|\033[0m  7")
-        mode = input("输入数字选择:   \033[36m|\033[0m  ")
-        if mode == 'q' or mode == 'quit' or mode == 'exit': sys.exit()
-        if mode == '1':
-            # 网易云单曲
-            music_id = mode_print_get_urlid("请输入网易云单曲ID或链接:")
-            if id_isdigit(music_id): continue
-            api_path = api_netease_music + str(music_id)
-            mode_music(api_path, g_header, g_proxies, g_header163)
-        if mode == "2":
-            # 网易云歌单
-            music_id = mode_print_get_urlid("请输入网易云歌单ID或链接:")
-            if id_isdigit(music_id): continue
-            api_path = api_netease_playlist + str(music_id)
-            mode_music(api_path, g_header, g_proxies, g_header163)
-        if mode == "3":
-            # QQ音乐单曲
-            music_id = mode_print_get_urlid("请输入QQ音乐单曲ID或链接:")
-            api_path = api_qq_music + str(music_id)
-            mode_music(api_path, g_header, g_proxies, g_header163)
-        if mode == "4":
-            # QQ音乐歌单
-            music_id = mode_print_get_urlid("请输入QQ音乐歌单ID或链接:")
-            api_path = api_qq_playlist + str(music_id)
-            mode_music(api_path, g_header, g_proxies, g_header163)
-        if mode == '5':
-            # 网易云专辑
-            album_id = mode_print_get_urlid("请输入网易云专辑ID或链接:")
-            if id_isdigit(album_id): continue
-            mode_album(album_id, g_header, g_proxies, g_header163)
-        if mode == '6':
-            artist_id = mode_print_get_urlid("请输入歌手专辑页ID:")
-            if id_isdigit(artist_id): continue
-            album_list = artist_get_album_list(artist_id)
-            for album_id in album_list:
-                mode_album(album_id, g_header, g_proxies, g_header163)
-        if mode == '7':
-            split_line()
-            mode_setting()
-        split_line()
+    print(colored("✓ ", "green") + "网易云单曲下载")
+    print(colored("✓ ", "green") + "网易云歌单下载")
+    print(colored("✓ ", "green") + "网易云专辑下载")
+    print(colored("✓ ", "green") + "网易云歌手下载")
+    print(colored("✓ ", "green") + "网易云我喜欢的歌曲下载")
+    print(colored("✓ ", "green") + "QQ音乐单曲下载")
+    print(colored("✓ ", "green") + "QQ音乐歌单下载")
+    print(colored("✓ ", "green") + "QQ音乐我喜欢的歌曲下载")
+    while True: start_function()
+
+def command_start(args):
+    """ 有参启动时主函数 """
+    music_url = args.args_url
+    start_function(music_url)
+
+
+def main():
+    """ 功能优先添加到此函数中 """
+    init() # 初始化colorama库
+    parser = argparse.ArgumentParser() # 启动参数检测
+    if not os.path.exists(g_music_dir_name): os.mkdir(g_music_dir_name)
+    parser.add_argument('args_url', nargs='?', help='Music URL')
+    args = parser.parse_args()
+    if args.args_url is None: pure_main()
+    else: command_start(args)
 
 if __name__ == "__main__":
     main()
