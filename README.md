@@ -38,8 +38,7 @@ musicdownloader.exe https://......song?id=... -s http://192.168.1.7/
 > 能否下载歌曲或会员歌曲及其音质取决于API服务器
 
 # 感谢 Thanks
-- [Meting-api](https://github.com/injahow/meting-api)
-## 贡献者 Contributors
+- [Meting-api](https://github.com/injahow/meting-api)及本项目贡献者
 <a href="https://github.com/beadd/musicdownloader/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=beadd/musicdownloader" />
 </a>
