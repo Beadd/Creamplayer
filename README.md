@@ -30,25 +30,14 @@ pip install -r requirements.txt
 musicdownloader.py https://......song?id=...
 musicdownloader.exe https://......playlist?id=...
 ```
-启动前加参数-s {api server} 可直接更换歌曲API服务器，例子：
+启动前加参数-s {api server} 可直接更换歌曲[API服务器](https://github.com/injahow/meting-api)，例子：
 ```
 musicdownloader.py -s https://example.com/metting/
 musicdownloader.exe https://......song?id=... -s http://192.168.1.7/
 ```
+> 能否下载歌曲或会员歌曲及其音质取决于API服务器
 
-# 进度 Progress
-- [x] 网易云音乐下载
-- [x] 网易云歌单批量下载
-- [ ] 网易云会员VIP音乐下载
-- [x] 网易云我喜欢的歌曲下载 
-- [x] 网易云专辑下载
-- [x] QQ音乐音乐下载
-- [x] QQ音乐歌单批量下载
-- [x] QQ音乐我喜欢的歌单下载
-- [x] 网易云歌手下载
-- [ ] QQ音乐会员VIP下载
-
-## 关于EyeD3
+# 关于EyeD3
 - [x] 歌曲封面图片元
 - [x] 歌曲专辑ID元
 - [x] 歌曲名称元
