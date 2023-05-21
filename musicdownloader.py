@@ -627,10 +627,8 @@ def pure_main():
 \033[34m | |  | | |_| \__ \ | (__\033[35m| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   \033[0m
 \033[34m |_|  |_|\__,_|___/_|\___\033[35m|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   \033[0m''')
     split_line()
-    print("歌曲自动下载至目录 " + g_music_dir_name + "中")
-    print("歌词自动下载至目录 " + g_music_dir_name + "中")
-    if g_eyed3_exist: print("eyeD3已启用")
-    else: print("eyeD3未启用")
+    if g_eyed3_exist: print(colored("✓ ", "green") + "EyeD3元素已启用")
+    else: print(colored("✗ ", "red") + "EyeD3元素未启用")
     print(colored("✓ ", "green") + "网易云单曲下载")
     print(colored("✓ ", "green") + "网易云歌单下载")
     print(colored("✓ ", "green") + "网易云专辑下载")
