@@ -24,6 +24,18 @@
 pip install -r requirements.txt
 ```
 
+# 高级使用
+启动前加歌曲链接参数会直接下载，例子：
+```
+musicdownloader.py https://......song?id=...
+musicdownloader.exe https://......playlist?id=...
+```
+启动前加参数-s {api server} 可直接更换歌曲API服务器，例子：
+```
+musicdownloader.py -s https://example.com/metting/
+musicdownloader.exe https://......song?id=... -s http://192.168.1.7/
+```
+
 # 进度 Progress
 - [x] 网易云音乐下载
 - [x] 网易云歌单批量下载
@@ -42,18 +54,6 @@ pip install -r requirements.txt
 - [x] 歌曲名称元
 - [x] 歌曲歌手元
 - [x] 歌曲歌词嵌入
-
-# 高级使用
-启动前加歌曲链接参数会直接下载，例子：
-```
-musicdownloader.py https://......song?id=...
-musicdownloader.exe https://......playlist?id=...
-```
-启动前加参数-s {api server} 可直接更换歌曲API服务器，例子：
-```
-musicdownloader.py -s https://example.com/metting/
-musicdownloader.exe https://......song?id=... -s http://192.168.1.7/
-```
 
 # 感谢 Thanks
 - [Meting-api](https://github.com/injahow/meting-api)
