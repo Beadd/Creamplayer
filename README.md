@@ -43,6 +43,13 @@ pip install -r requirements.txt
 - [x] 歌曲歌手元
 - [x] 歌曲歌词嵌入
 
+# 高级使用
+启动前加歌曲链接参数会直接下载，例子：
+```
+musicdownloader.py https://......
+musicdownloader.exe https://......
+```
+
 # 感谢 Thanks
 - [Meting-api](https://github.com/injahow/meting-api)
 ## 贡献者 Contributors
