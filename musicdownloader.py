@@ -716,3 +716,6 @@ def gui_download(mode, id):
         for album_id in album_list:
             mode_album(album_id, g_header, g_proxies, g_header163)
 
+def gui_set_api_server(url):
+    global set_api_server
+    set_api_server = url
