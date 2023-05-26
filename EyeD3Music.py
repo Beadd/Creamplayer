@@ -22,6 +22,7 @@ class MainWindow(QMainWindow, Ui_MusicDownloader):
 
         # 信号绑定
         self.ModeComboBox.currentIndexChanged.connect(self.mode_current_index_changed)
+        self.APILineEdit.textChanged.connect(self.api_text_changed)
         self.FrontArtistCheckBox.stateChanged.connect(self.front_artist_state_changed)
         self.RearArtistCheckBox.stateChanged.connect(self.rear_artist_state_changed)
         self.LyricCheckBox.stateChanged.connect(self.lyric_state_changed)
@@ -46,23 +47,26 @@ class MainWindow(QMainWindow, Ui_MusicDownloader):
         self.ModeComboBox.setView(QListView())
         self.UrlIdLineEdit.setPlaceholderText("请输入网易云单曲ID或链接")
         # self.PrintTextEdit.setStyleSheet("color: white; background-color: black")
+        self.APILineEdit.setText("http://api.injahow.cn/meting/")
 
     # 下载模式修改
-    def mode_current_index_changed(self):
+    def mode_current_index_changed(self, currentIndex):
         self.UrlIdLineEdit.clear()
-        mode_index = self.ModeComboBox.currentIndex()
-        if mode_index == 0:
+        if currentIndex == 0:
             self.UrlIdLineEdit.setPlaceholderText("请输入网易云单曲ID或链接")
-        elif mode_index == 1:
+        elif currentIndex == 1:
             self.UrlIdLineEdit.setPlaceholderText("请输入网易云歌单ID或链接")
-        elif mode_index == 2:
+        elif currentIndex == 2:
             self.UrlIdLineEdit.setPlaceholderText("请输入QQ音乐单曲ID或链接")
-        elif mode_index == 3:
+        elif currentIndex == 3:
             self.UrlIdLineEdit.setPlaceholderText("请输入QQ音乐歌单ID或链接")
-        elif mode_index == 4:
+        elif currentIndex == 4:
             self.UrlIdLineEdit.setPlaceholderText("请输入网易云专辑ID或链接")
-        elif mode_index == 5:
+        elif currentIndex == 5:
             self.UrlIdLineEdit.setPlaceholderText("请输入歌手专辑页ID")
+
+    def api_text_changed(self, text):
+        musicdownloader.gui_set_api_server(text)
 
     def front_artist_state_changed(self):
         musicdownloader.gui_mode_setting(2)
