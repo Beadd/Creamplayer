@@ -23,6 +23,13 @@
 ```
 pip install -r requirements.txt
 ```
+****
+## 新增GUI版本，下载源码运行EyeD3Music.py
+运行EyeD3Music.py需要pyqt库：
+```
+pip install PyQt5
+```
+> GUI版本基于 v2.2.1 版本
 
 # 高级使用
 启动前加歌曲链接参数会直接下载，例子：
