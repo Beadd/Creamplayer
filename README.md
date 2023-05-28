@@ -14,14 +14,37 @@
 <img src="https://img.shields.io/github/watchers/beadd/musicdownloader?style=flat" alt="watchers">
 
 # 使用 How
-## 1.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.exe
-下载运行即可,包含eyed3,无需pip,若无法使用请用下面的方法
+## 1.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载musicdownloader.exe
+下载运行即可，若无法使用请使用下面其他方法
 
-
-## 2.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载MusicDownloader.py
+## 2.  命令行模式（需python环境）
 
 ```
+git clone https://github.com/beadd/musicdownloader/
+```
+```
+cd musicdownloader
+```
+```
 pip install -r requirements.txt
+```
+```
+python musicdownloader.py
+```
+
+## 3.  GUI版本（需python环境）
+
+```
+git clone -b dev-GUI https://github.com/beadd/musicdownloader/
+```
+```
+cd musicdownloader
+```
+```
+pip install -r requirements.txt
+```
+```
+python EyeD3Music.py
 ```
 
 # 高级使用
