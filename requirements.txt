@@ -4,3 +4,4 @@ pycryptodome
 requests
 rsa
 termcolor
+PyQt5
