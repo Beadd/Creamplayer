@@ -46,7 +46,6 @@ class MainWindow(QMainWindow, Ui_MusicDownloader):
     def init_style(self):
         self.ModeComboBox.setView(QListView())
         self.UrlIdLineEdit.setPlaceholderText("请输入网易云单曲ID或链接")
-        # self.PrintTextEdit.setStyleSheet("color: white; background-color: black")
         self.APILineEdit.setText("http://api.injahow.cn/meting/")
 
     # 下载模式修改
