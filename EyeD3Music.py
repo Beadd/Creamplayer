@@ -12,7 +12,19 @@ class Stream(QtCore.QObject):
     def write(self, text):
         self.textPrint.emit(str(text))
 
+class DownloadWork(QtCore.QObject):
+    end_sig = QtCore.pyqtSignal()
+
+    def __init__(self):
+        super(DownloadWork, self).__init__()
+
+    def download_music(self, mode, id):
+        musicdownloader.gui_download(mode, id)
+        self.end_sig.emit()
+
 class MainWindow(QMainWindow, Ui_MusicDownloader):
+    begin_sig = QtCore.pyqtSignal(int, str)
+
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
@@ -29,8 +41,19 @@ class MainWindow(QMainWindow, Ui_MusicDownloader):
         self.HDCheckBox.stateChanged.connect(self.hd_state_changed)
         self.DownloadPushButton.clicked.connect(self.download_clicked)
 
+        # 下载线程初始化
+        self.download_thread = QtCore.QThread()
+        self.download_work = DownloadWork()
+        self.download_work.moveToThread(self.download_thread)
+        # 下载线程信号绑定
+        self.begin_sig.connect(self.download_work.download_music)
+        self.download_work.end_sig.connect(self.download_thread_end)
+        # 启动线程
+        self.download_thread.start()
+
     # 关闭响应
     def closeEvent(self, event):
+        self.download_thread.quit()
         sys.stdout = stdout_temp
         super().closeEvent(event)
 
@@ -46,8 +69,18 @@ class MainWindow(QMainWindow, Ui_MusicDownloader):
     def init_style(self):
         self.ModeComboBox.setView(QListView())
         self.UrlIdLineEdit.setPlaceholderText("请输入网易云单曲ID或链接")
-        # self.PrintTextEdit.setStyleSheet("color: white; background-color: black")
         self.APILineEdit.setText("http://api.injahow.cn/meting/")
+
+    # 界面激活
+    def gui_enabled(self, enabled):
+        self.ModeComboBox.setEnabled(enabled)
+        self.UrlIdLineEdit.setEnabled(enabled)
+        self.APILineEdit.setEnabled(enabled)
+        self.FrontArtistCheckBox.setEnabled(enabled)
+        self.RearArtistCheckBox.setEnabled(enabled)
+        self.LyricCheckBox.setEnabled(enabled)
+        self.HDCheckBox.setEnabled(enabled)
+        self.DownloadPushButton.setEnabled(enabled)
 
     # 下载模式修改
     def mode_current_index_changed(self, currentIndex):
@@ -82,9 +115,15 @@ class MainWindow(QMainWindow, Ui_MusicDownloader):
 
     # 下载
     def download_clicked(self):
+        self.gui_enabled(False)
+
         mode = self.ModeComboBox.currentIndex() + 1
         id = self.UrlIdLineEdit.text()
-        musicdownloader.gui_download(mode ,id)
+        self.begin_sig.emit(mode, id)
+
+    # 下载完成
+    def download_thread_end(self):
+        self.gui_enabled(True)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

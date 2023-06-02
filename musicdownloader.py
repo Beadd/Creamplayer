@@ -435,7 +435,7 @@ def artist_get_album_list(artist_id):
 
 
 
-def mode_music(api_path, headers, proxies, header163, gui = False, show_github = True):
+def mode_music(api_path, headers, proxies, header163, show_github = True):
     """ 此函数接受api,下载所有歌曲 """
     try: response = requests.get(api_path, headers = headers, proxies = proxies, timeout=10)
     except: 
@@ -443,11 +443,8 @@ def mode_music(api_path, headers, proxies, header163, gui = False, show_github =
         return
     data = json.loads(response.text)
     if 'error' in data: 
-        split_line(gui)
-        if gui:
-            print("请输入合法ID!")
-        else:
-            print("\033[33m请输入合法ID!\033[0m")
+        split_line()
+        print("\033[33m请输入合法ID!\033[0m")
         return 
     counter = 0 + 1
     for data in data:
@@ -463,11 +460,10 @@ def mode_music(api_path, headers, proxies, header163, gui = False, show_github =
             json_download_lyric(data, music_path, headers, proxies)
         counter += 1
     if show_github:
-        split_line(gui)
+        split_line()
         print(colored("Github: https://github.com/Beadd/MusicDownloader", "green"))
         print(colored("下载完成!已下载" + str(counter - 1) + "首歌曲。感谢使用!", "green"))
-        if not gui:
-            print("\033[35m继续或输入 q 以退出\033[0m")
+        print("\033[35m继续或输入 q 以退出\033[0m")
 
 def mode_album(album_id, headers, proxies, header163):
     """ 此函数接受专辑id,调用网易云接口和mode_music """
@@ -732,41 +728,93 @@ def gui_id_isdigit(music_id):
         return True
     return False
 
+def gui_mode_music(api_path, headers, proxies, header163, show_github = True):
+    try: response = requests.get(api_path, headers = headers, proxies = proxies, timeout=10)
+    except: 
+        print(colored("连接错误:请关闭加速器或检查API服务是否设置正确后重试...", "yellow"))
+        return
+    data = json.loads(response.text)
+    if 'error' in data: 
+        split_line(True)
+        print("请输入合法ID!")
+        return 
+    counter = 0 + 1
+    for data in data:
+        plog(str(counter) + " ")
+        music_path = json_download_music(data, headers, proxies)
+        if music_path == "exist":
+            continue
+        if music_path == "getsize":
+            continue
+        if g_eyed3_exist:
+            json_add_eyed3(data, music_path, headers, proxies, header163)
+        if set_download_lyric:
+            json_download_lyric(data, music_path, headers, proxies)
+        counter += 1
+    if show_github:
+        split_line(True)
+        print(colored("Github: https://github.com/Beadd/MusicDownloader", "green"))
+        print(colored("下载完成!已下载" + str(counter - 1) + "首歌曲。感谢使用!", "green"))
+
+def gui_mode_album(album_id, headers, proxies, header163):
+    api_netease_music = set_api_server + "?type=song&id="
+    api_path ="http://music.163.com/api/album/" + str(album_id) +\
+            "?ext=true&id=" + str(album_id) + "&offset=0&total=true&limit=10"
+    response = requests.get(api_path, headers = header163, 
+            proxies = proxies, timeout=10)
+    data163 = json.loads(response.text)
+    if data163['code'] != 200:
+        print("API调用失败!")
+        return
+    num = data163['album']['size']
+    for i in range(0, num):
+        music_id = data163['album']['songs'][i]['id']
+        api_path = api_netease_music + str(music_id)
+        try: response = requests.get(api_path, headers = headers, 
+                proxies = proxies, timeout=10)
+        except: 
+            print(colored("连接错误:请关闭加速器或检查API服务是否设置正确后重试...", "yellow"))
+            return
+        data = json.loads(response.text)
+        if 'error' in data: return 0
+        plog("Album")
+        gui_mode_music(api_path, headers, proxies, header163, False)
+
 def gui_download(mode, id):
     if mode == 1:
         # 网易云单曲
         music_id = gui_get_urlid(id)
         if gui_id_isdigit(music_id): return
         api_path = "http://api.injahow.cn/meting/?type=song&id=" + str(music_id)
-        mode_music(api_path, g_header, g_proxies, g_header163, True)
+        gui_mode_music(api_path, g_header, g_proxies, g_header163)
     if mode == 2:
         # 网易云歌单
         music_id = gui_get_urlid(id)
         if gui_id_isdigit(music_id): return
         api_path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(music_id)
-        mode_music(api_path, g_header, g_proxies, g_header163, True)
+        gui_mode_music(api_path, g_header, g_proxies, g_header163)
     if mode == 3:
         # QQ音乐单曲
         music_id = gui_get_urlid(id)
         api_path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(music_id)
-        mode_music(api_path, g_header, g_proxies, g_header163, True)
+        gui_mode_music(api_path, g_header, g_proxies, g_header163)
     if mode == 4:
         # QQ音乐歌单
         music_id = gui_get_urlid(id)
         api_path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(music_id)
-        mode_music(api_path, g_header, g_proxies, g_header163, True)
+        gui_mode_music(api_path, g_header, g_proxies, g_header163)
     if mode == 5:
         # 网易云专辑
         album_id = gui_get_urlid(id)
         if gui_id_isdigit(album_id): return
-        mode_album(album_id, g_header, g_proxies, g_header163)
+        gui_mode_album(album_id, g_header, g_proxies, g_header163)
     if mode == 6:
         # 网易云歌手
         artist_id = gui_get_urlid(id)
         if gui_id_isdigit(artist_id): return
         album_list = artist_get_album_list(artist_id)
         for album_id in album_list:
-            mode_album(album_id, g_header, g_proxies, g_header163)
+            gui_mode_album(album_id, g_header, g_proxies, g_header163)
 
 def gui_set_api_server(url):
     global set_api_server
