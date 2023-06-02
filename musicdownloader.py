@@ -302,7 +302,7 @@ def ID_get_music_album_name(music_id, header163, proxies):
     return music_album_name
 
 
-def json_add_eyed3(data, music_path, headers, proxies, header163, album_id=0):
+def json_add_eyed3(data, music_path, headers, proxies, header163):
     """ 此函数将音乐添加eyed3元素 """
     try: audiofile = eyed3.load(music_path)
     except: 
