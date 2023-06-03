@@ -20,6 +20,7 @@ import argparse
 import base64
 import datetime
 import json
+import logging
 import os
 import re
 import secrets
@@ -51,6 +52,9 @@ set_download_cover_image_height = True
 set_api_server = "http://api.injahow.cn/meting/"
 
 g_music_dir_name = "MusicB"
+g_log_dir = "MusicLogB"
+g_log_path = g_log_dir + "/" + str(
+    time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))) + ".log"
 g_width = os.get_terminal_size().columns # 为了打印一整行的分隔符
 g_base62 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 g_iv = '0102030405060708'
@@ -71,6 +75,13 @@ g_header163 = { # 直接请求网易云API所需
     'cookie':'JSESSIONID-WYYY=MqngSDeeeN%2FZRbE7Vmz7zZ1g9U3fs5SAD%5CbS23A0eW%2FhqzUHpYMX9jVlVgPosnC5wJdYO7se20QsYn45DoJor%5Cskxna6I%5CQKW733yxHugKPmYvN%2FP0%2BQOpOwkZJumC6t0QCh9rdwbk06t4TnjlMg%2Fa5Ooj1CW4idEdZq4VBMsDsIEhM3%3A1654304708419; _iuqxldmzr_=32; _ntes_nnid=59c0c0c4fc69665b6261b45f5e44fe4a,1654302908431; _ntes_nuid=59c0c0c4fc69665b6261b45f5e44fe4a; NMTID=00O-D3f-9XeBnQh0Ei2qy1d-ULEVSUAAAGBLCI6vA; WEVNSM=1.0.0; WNMCID=tqqzib.1654302908799.01.0; WM_NI=EROpEfsIky5J3M1%2F2Uw0BlLsOXn0anY7%2BSg1r8Y7PB%2B37llD5L2xuZ6sKBgI7WCTj5wOcXoIPycPEUR6dtcJmPPozE646Hv2qifgkQ76N5QKrDtVgERuCcCub6j65tgtVTU%3D; WM_NIKE=9ca17ae2e6ffcda170e2e6eeafdb6aa79efbd5ed6383928eb7d44e878e8e82d54bf4b2a9a5d16da7aba6d6c52af0fea7c3b92a878e8191c86eb197a59ab842f193ffd0b15fb5f08e8dcf798d88a2d1e4669be9e5b4e63bb2e897d8d34ae9edf98def50f794fe99f852f6ad85a3e643f5898db5e93fb591adb9ee4394a7adb1c85f92eaac95e242af90a090f94ff6ecfaa9f53ab3b7aa88ea5bf5ea82d6d441b29cbcb7e64f92ab8d84c27fa2eaa6d7b880a5ac9ab5d837e2a3; WM_TID=Pc31v8zNG7tFVRUUQAKVUgm1GFke%2Fj9Q'
 }
 
+
+def print_log(*args, sep=' ', end='\n', file=None):
+    """ 与print绑定,将print输出作为日志存储 """
+    message = sep.join(str(arg) for arg in args) + end
+    logging.debug(message)
+    if file is None:
+        built_in_print(*args, sep=sep, end=end)
 
 def plog(pinfo):
     """ 用来输入没有换行符的内容 """
@@ -705,7 +716,6 @@ def main():
     global set_api_server
     init() # 初始化colorama库
     parser = argparse.ArgumentParser() # 启动参数检测
-    if not os.path.exists(g_music_dir_name): os.mkdir(g_music_dir_name)
     parser.add_argument('args_url', nargs='?', help='Music URL')
     parser.add_argument('--args_server', '-s', help='Download Music API Server')
     args = parser.parse_args()
@@ -714,4 +724,9 @@ def main():
     else: command_start(args)
 
 if __name__ == "__main__":
+    if not os.path.exists(g_music_dir_name): os.mkdir(g_music_dir_name)
+    if not os.path.exists(g_log_dir): os.mkdir(g_log_dir)
+    logging.basicConfig(filename=g_log_path, level=logging.DEBUG)
+    built_in_print = print
+    print = print_log # pylint: disable=redefined-builtin
     main()
