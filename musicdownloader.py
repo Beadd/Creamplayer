@@ -27,14 +27,12 @@ import secrets
 import sys
 import time
 
-import binascii
 import rsa.core
 import rsa.common
 import rsa.randnum
 import rsa.transform
 import rsa
 import requests
-
 from Crypto.Cipher import AES
 from colorama import init
 from termcolor import colored
@@ -243,8 +241,8 @@ def json_download_lyric(data, music_path, headers, proxies):
     print("  歌词已保存至" + g_music_dir_name)
     return
 
-def ID_add_hight_cover(music_id, audiofile, header163, proxies):
-    """ 此函数接受id调用网易云接受获取高清封面 """
+def ID_add_high_cover(music_id, audiofile, header163, proxies):
+    """ 此函数接受id调用网易云接口并对歌曲添加高清封面 """
     music_url163 = "http://music.163.com/api/song/detail/?id=" +\
             music_id +"&ids=%5B" + music_id + "%5D"
     music_url163_response = requests.get(music_url163, headers=header163,
@@ -254,22 +252,38 @@ def ID_add_hight_cover(music_id, audiofile, header163, proxies):
     audio_image = requests.get(music_cover_url, headers=header163,
             proxies=proxies, timeout=10)
     if audio_image.ok is False:
-        print(colored("  网易云API封面出错", "yellow"))
-        return
+        print(colored("  网易云封面API出错", "yellow"))
+        raise ValueError
     image_type = music_cover_url[-3:]
     if image_type == 'jpg' or type == 'peg':
         audiofile.tag.images.set(3, audio_image.content, "image/jpeg")
     if image_type == 'png':
         audiofile.tag.images.set(3, audio_image.content, "image/png")
-    plog("  已内嵌封面")
+
+def ID_add_high_cover_qq(music_id, audiofile, headers, proxies):
+    """ 此函数接收id调用QQ音乐接口并对歌曲添加高清封面 """
+    music_qq_url = 'https://c.y.qq.com/v8/fcg-bin/fcg_play_single_song.fcg?songmid=' + music_id + '&tpl=yqq_song_detail&format=json&callback=getOneSongInfoCallback&g_tk=1928093487&jsonpCallback=getOneSongInfoCallback&loginUin=0&hostUin=0&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
+    music_qq_response = requests.get(music_qq_url, headers=headers, proxies=proxies, timeout=10)
+    music_qq_data = json.loads(music_qq_response.text)
+    music__qq_pmid = music_qq_data['data'][0]['album']['mid']
+    music_qq_cover_url = 'https://y.qq.com/music/photo_new/T002R500x500M000' + music__qq_pmid + '.jpg?max_age=2592000'
+    
+    audio_image = requests.get(music_qq_cover_url, headers=headers, proxies=proxies, timeout=10)
+    if audio_image.ok is False:
+        music__qq_pmid = music_qq_data['data'][0]['singer'][0]['mid']
+        music_qq_cover_url = 'https://y.qq.com/music/photo_new/T001R500x500M000' + music__qq_pmid + '.jpg?max_age=2592000'
+        audio_image = requests.get(music_qq_cover_url, headers=headers, proxies=proxies, timeout=10)
+    if audio_image.ok is False:
+        print(colored("  QQ音乐封面API出错", "yellow"))
+        raise ValueError
+    audiofile.tag.images.set(3, audio_image.content, "image/jpeg")
 
 def json_add_low_cover(data, audiofile):
-    """ 此函数向歌曲添加eyed3元素 """
+    """ 此函数接受json向歌曲添加封面 """
     if data['pic'] is None: return
     audio_Image = requests.get(data['pic'], timeout=10)
     if audio_Image.ok is not False:
         audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
-        plog("  已内嵌封面")
 
 def ID_get_music_album_id(music_id, header163, proxies):
     """ 此函数接受id调用网易云接口返回歌曲对应的专辑ID """
@@ -302,6 +316,19 @@ def ID_add_publish_time(music_id, audiofile, header163, proxies):
     audiofile.tag.recording_date = music_date
     return
 
+def ID_add_publish_time_qq(music_id, audiofile, headers, proxies):
+    """ 此函数调用QQ音乐接口并对音乐添加发行日期 """
+    music_qq_url = 'https://c.y.qq.com/v8/fcg-bin/fcg_play_single_song.fcg?songmid=' + music_id + '&tpl=yqq_song_detail&format=json&callback=getOneSongInfoCallback&g_tk=1928093487&jsonpCallback=getOneSongInfoCallback&loginUin=0&hostUin=0&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
+    music_qq_response = requests.get(music_qq_url, headers=headers, proxies=proxies, timeout=10)
+    music_qq_data = json.loads(music_qq_response.text)
+    music_date = music_qq_data['data'][0]['time_public']
+
+    audiofile.tag.release_date = music_date
+    music_date = datetime.datetime.strptime(music_date, "%Y-%m-%d")
+    music_date = music_date.strftime('%Y')
+    audiofile.tag.recording_date = music_date
+    return
+
 def ID_get_music_album_name(music_id, header163, proxies):
     """ 此函数接受id调用网易云接口返回歌曲对应的专辑名称 """
     music_url163_song = "http://music.163.com/api/song/detail/?id=" +\
@@ -310,6 +337,14 @@ def ID_get_music_album_name(music_id, header163, proxies):
             headers=header163, proxies=proxies, timeout=10)
     music_data163_song = json.loads(music_url163_song_response.text)
     music_album_name = music_data163_song['songs'][0]['album']['name']
+    return music_album_name
+
+def ID_get_music_album_name_qq(music_id, headers, proxies):
+    """ 此函数接收id调用QQ音乐接口返回对应的专辑名称 """
+    music_qq_url = 'https://c.y.qq.com/v8/fcg-bin/fcg_play_single_song.fcg?songmid=' + music_id + '&tpl=yqq_song_detail&format=json&callback=getOneSongInfoCallback&g_tk=1928093487&jsonpCallback=getOneSongInfoCallback&loginUin=0&hostUin=0&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
+    music_qq_response = requests.get(music_qq_url, headers=headers, proxies=proxies, timeout=10)
+    music_qq_data = json.loads(music_qq_response.text)
+    music_album_name = music_qq_data['data'][0]['album']['name']
     return music_album_name
 
 
@@ -335,8 +370,16 @@ def json_add_eyed3(data, music_path, headers, proxies, header163):
     # image
     if set_download_cover_image_height:
         music_id = url_get_id(data['url'])
-        try: ID_add_hight_cover(music_id, audiofile, header163, proxies)
-        except: json_add_low_cover(data, audiofile)
+        try: 
+            ID_add_high_cover(music_id, audiofile, header163, proxies)
+            plog("  已内嵌高清封面")
+        except: 
+            try:
+                ID_add_high_cover_qq(music_id, audiofile, headers, proxies)
+                plog("  已内嵌高清封面")
+            except:
+                json_add_low_cover(data, audiofile)
+                plog("  已内嵌封面")
     if not set_download_cover_image_height:
         json_add_low_cover(data, audiofile)
     # lyrics
@@ -354,14 +397,23 @@ def json_add_eyed3(data, music_path, headers, proxies, header163):
             music_album_name = ID_get_music_album_name(music_id, header163, proxies)
             audiofile.tag.album = music_album_name
             plog("  已内嵌专辑")
-        except: pass
+        except: 
+            try:
+                music_album_name = ID_get_music_album_name_qq(music_id, headers, proxies)
+                audiofile.tag.album = music_album_name
+                plog("  已内嵌专辑")
+            except: pass
     # public time
     if audiofile.tag.copyright is not None:
         music_id = audiofile.tag.copyright
         try: 
             ID_add_publish_time(music_id, audiofile, header163, proxies)
             plog("  已内嵌发行日期")
-        except: pass
+        except: 
+            try: 
+                ID_add_publish_time_qq(music_id, audiofile, headers, proxies)
+                plog("  已内嵌发行日期")
+            except: pass
     #save alright
     if data['name'] is not None:
         audiofile.tag.save(encoding='utf-8')
