@@ -216,9 +216,9 @@ def json_download_music(data, headers, proxies):
         return "exist"
     music_req = requests.get(music_url, headers=headers, proxies=proxies, 
             timeout=10)
-    if music_req.content is None:
-        print(colored("下载失败,自动跳过", "yellow"))
-        return
+    if music_req.content is None or music_req.content is b'':
+        print(colored("下载失败,自动跳过,可能是vip歌曲", "yellow"))
+        return "exit"
     with open(music_path, "wb") as code:
         code.write(music_req.content)
     if not os.path.getsize(music_path):
@@ -566,6 +566,8 @@ def mode_music(api_path, headers, proxies, header163, show_github = True):
         if music_path == "exist":
             continue
         if music_path == "getsize":
+            continue
+        if music_path == "exit":
             continue
         if g_eyed3_exist:
             json_add_eyed3(data, music_path, headers, proxies, header163)
