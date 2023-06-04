@@ -54,8 +54,7 @@ musicdownloader.py -s https://example.com/metting/
 musicdownloader.exe https://......song?id=... -s http://192.168.1.7/
 ```
 > 能否下载歌曲或会员歌曲及其音质取决于API服务器
-> 自建服务器并添加会员Cookie即可解析相关音乐
-
+> 自建服务器并添加会员Cookie即可解析相关音乐以及无损
 # 感谢 Thanks
 - [Meting-api](https://github.com/injahow/meting-api)及本项目贡献者
 <a href="https://github.com/beadd/musicdownloader/graphs/contributors">
