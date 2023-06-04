@@ -1,19 +1,14 @@
-# 关于 About
-一键批量下载网易云/QQ歌单歌曲工具
-<br><br>
-<img src="https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat" alt="license">
+<h1 align="center">EyeD3Music</h1>
+
+<p align="center">
 <img src="https://img.shields.io/github/last-commit/beadd/musicdownloader.svg?style=flat" alt="last commit">
 <img src="https://img.shields.io/github/downloads/beadd/musicdownloader/total?style=flat" alt="downloads">
 <img src="https://img.shields.io/github/v/release/beadd/musicdownloader?style=flat" alt="release">
 <img src="https://img.shields.io/github/commit-activity/y/beadd/musicdownloader?style=flat" alt="commit activity">
-<br>
-<img src="https://img.shields.io/github/issues/beadd/musicdownloader?style=flat" alt="issues">
-<img src="https://img.shields.io/github/issues-closed-raw/beadd/musicdownloader?style=flat" alt="closed issues">
-<img src="https://img.shields.io/github/forks/beadd/musicdownloader?style=flat" alt="forks">
-<img src="https://img.shields.io/github/stars/beadd/musicdownloader?style=flat" alt="stars">
-<img src="https://img.shields.io/github/watchers/beadd/musicdownloader?style=flat" alt="watchers">
+<img src="https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat" alt="license">
+</p>
 
-# 使用 How
+# Quick Start
 ## 1.  前往[releases](https://github.com/Beadd/MusicDownloader/releases)下载musicdownloader.exe
 下载运行即可，若无法使用请使用下面其他方法
 
