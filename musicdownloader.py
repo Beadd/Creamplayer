@@ -18,6 +18,7 @@
 
 import argparse
 import base64
+import datetime
 import json
 import os
 import re
@@ -263,6 +264,47 @@ def json_add_low_cover(data, audiofile):
         audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
         plog("  已内嵌封面")
 
+def ID_get_music_album_id(music_id, header163, proxies):
+    """ 此函数接受id调用网易云接口返回歌曲对应的专辑ID """
+    music_url163_song = "http://music.163.com/api/song/detail/?id=" +\
+            music_id +"&ids=%5B" + music_id + "%5D"
+    music_url163_song_response = requests.get(music_url163_song, 
+            headers=header163, proxies=proxies, timeout=10)
+    music_data163_song = json.loads(music_url163_song_response.text)
+    music_album_id = music_data163_song['songs'][0]['album']['id']
+    return music_album_id
+
+def ID_add_publish_time(music_id, audiofile, header163, proxies):
+    """ 此函数接受id调用网易云接口并对音乐添加发布日期 """
+    music_album_id = ID_get_music_album_id(music_id, header163, proxies)
+    music_url163_album ="http://music.163.com/api/album/" + str(music_album_id) +\
+            "?ext=true&id=" + str(music_album_id) + "&offset=0&total=true&limit=10"
+    music_url163_album_response = requests.get(music_url163_album, 
+            headers = header163, proxies = proxies, timeout=10)
+    music_data163_album = json.loads(music_url163_album_response.text)
+    if music_data163_album['code'] != 200:
+        print("API调用失败!")
+        return
+    music_public_time = music_data163_album['album']['publishTime']
+    time_stamp = music_public_time / 1000
+    date_time = datetime.datetime.fromtimestamp(time_stamp)
+
+    music_date = date_time.strftime('%Y-%m-%d %H:%M:%S')
+    audiofile.tag.release_date = music_date
+    music_date = date_time.strftime('%Y')
+    audiofile.tag.recording_date = music_date
+    return
+
+def ID_get_music_album_name(music_id, header163, proxies):
+    """ 此函数接受id调用网易云接口返回歌曲对应的专辑名称 """
+    music_url163_song = "http://music.163.com/api/song/detail/?id=" +\
+            music_id +"&ids=%5B" + music_id + "%5D"
+    music_url163_song_response = requests.get(music_url163_song, 
+            headers=header163, proxies=proxies, timeout=10)
+    music_data163_song = json.loads(music_url163_song_response.text)
+    music_album_name = music_data163_song['songs'][0]['album']['name']
+    return music_album_name
+
 def json_add_eyed3(data, music_path, headers, proxies, header163, album_id=0):
     """ 此函数将音乐添加eyed3元素 """
     try: audiofile = eyed3.load(music_path)
@@ -289,7 +331,7 @@ def json_add_eyed3(data, music_path, headers, proxies, header163, album_id=0):
         except: json_add_low_cover(data, audiofile)
     if not set_download_cover_image_height:
         json_add_low_cover(data, audiofile)
-    #lyrics
+    # lyrics
     lyric_response = requests.get(data['lrc'], headers=headers, 
             proxies=proxies, timeout=10)
     if lyric_response.text != '':
@@ -297,11 +339,22 @@ def json_add_eyed3(data, music_path, headers, proxies, header163, album_id=0):
         plog("  已内嵌歌词")
     else:
         plog("\n\033[33m歌词为空,eyed3嵌入失败,自动跳过\033[0m\n")
-    #album
-    if album_id != 0:
-        audiofile.tag.album = str(album_id)
-        plog("  已内嵌专辑")
-    #save alright
+    # album
+    if audiofile.tag.copyright is not None:
+        music_id = audiofile.tag.copyright
+        try:
+            music_album_name = ID_get_music_album_name(music_id, header163, proxies)
+            audiofile.tag.album = music_album_name
+            plog("  已内嵌专辑")
+        except: pass
+    # public time
+    if audiofile.tag.copyright is not None:
+        music_id = audiofile.tag.copyright
+        try: 
+            ID_add_publish_time(music_id, audiofile, header163, proxies)
+            plog("  已内嵌发行日期")
+        except: pass
+    # save alright
     if data['name'] is not None:
         audiofile.tag.save(encoding='utf-8')
     print("")
