@@ -59,11 +59,15 @@ class MainWindow(QMainWindow, Ui_MusicDownloader):
 
     # 重定向输出
     def output_print(self, text):
+        # 输出到界面
         cursor = self.PrintTextEdit.textCursor()
         cursor.movePosition(QtGui.QTextCursor.End)
         cursor.insertText(text)
         self.PrintTextEdit.setTextCursor(cursor)
         self.PrintTextEdit.ensureCursorVisible()
+
+        # 输出到日志
+        musicdownloader.gui_print_log(text)
 
     # 初始化样式
     def init_style(self):
