@@ -216,7 +216,7 @@ def json_download_music(data, headers, proxies):
         return "exist"
     music_req = requests.get(music_url, headers=headers, proxies=proxies, 
             timeout=10)
-    if music_req.content is None or music_req.content is b'':
+    if music_req.content == None or music_req.content == b'':
         print(colored("下载失败,自动跳过,可能是vip歌曲", "yellow"))
         return "exit"
     with open(music_path, "wb") as code:
