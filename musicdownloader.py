@@ -200,7 +200,7 @@ def url_get_type(url):
     matches = re.search(pattern, url)
     if matches:
         return matches.group(0)
-    return None
+    return 'mp3'
 
 
 
