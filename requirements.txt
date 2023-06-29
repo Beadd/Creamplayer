@@ -5,3 +5,4 @@ requests
 rsa
 termcolor
 mutagen 
+PyQt5

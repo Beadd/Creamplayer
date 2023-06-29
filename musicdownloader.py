@@ -55,6 +55,7 @@ g_log_dir = "MusicLogB"
 g_log_path = g_log_dir + "/" + str(
     time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))) + ".log"
 g_width = os.get_terminal_size().columns # 为了打印一整行的分隔符
+g_gui_width = 108 # gui显示窗口大小
 g_base62 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 g_iv = '0102030405060708'
 g_presetKey = '0CoJUm6Qyw8W8jud'
@@ -73,6 +74,12 @@ g_header163 = { # 直接请求网易云API所需
     'cookie':'NMTID=00OHBEMpFi3cPSpAUnopJGHYmwKAB4AAAGIpKYnhA; JSESSIONID-WYYY=xV6q1IBuTol/Q8TMPvfmnccbq74W7YgzZmNfXDNt/vhGlkCdganO6\d/GpkkYwH74gsVfa+uuul1mQQbQn3rX1eF\RrQ29ickeByMbi4D98r0JBuy5KVsmpQs3neElqiIPfJ/eItmnGGsJqPQbmcwtT86M\Gy4udsP5U\zy2b+rpE8dx:1686391392103; _iuqxldmzr_=32; _ntes_nnid=b674c540d5a48ced68899908703b64fb,1686389592122; _ntes_nuid=b674c540d5a48ced68899908703b64fb; WEVNSM=1.0.0; WNMCID=qnoprd.1686389596766.01.0; WM_NI=JWOh0m9He9qvHbSw3Sd/RVKfvzx96SmUvn3l+VAELjyjvoauGwN9FhhH+QgoDzDnMm1sAMqtundYnjEIFtdS00WS7LURXuvQaZDIfzF9qeNBvHGQWx6eezmnCGCZkAQlUlI=; WM_NIKE=9ca17ae2e6ffcda170e2e6eed6ea34908c8785f934bceb8ab2c15f979e8b86d83ba8a9a59bc26dae86bbbbef2af0fea7c3b92a8a898189b367fb98abdaf47e8cbe9d98b259a8f19eb7ca6eb6a6b8dab559af8bba8fb268e98a8fa6cf62bbb6ba90e47f85a982dac564ac98e5b2e66588a68c8fd067f3ad8faef480b7b2acbaed6287978a95e759f4f099b4b648978e9896f55ba3868caae57286e7bf86cd4ab69889b2d674f6bbab9bf06681998dbbea4b93b49b8dcc37e2a3; WM_TID=rp0OaTRccD1BABEEFEPB0MlxmT02I/Y1'
 }
 
+def print_log(*args, sep=' ', end='\n', file=None):
+    """ 与print绑定,将print输出作为日志存储 """
+    message = sep.join(str(arg) for arg in args) + end
+    logging.debug(message)
+    if file is None:
+        built_in_print(*args, sep=sep, end=end)
 
 def print_log(*args, sep=' ', end='\n', file=None):
     """ 与print绑定,将print输出作为日志存储 """
@@ -85,9 +92,12 @@ def plog(pinfo):
     """ 用来输入没有换行符的内容 """
     print(pinfo, end = '')
 
-def split_line():
+def split_line(if_gui = False):
     """ 打印分割线 """
-    print("=" * (g_width-1))
+    if if_gui:
+        print("=" * g_gui_width)
+    else:
+        print("=" * (g_width-1))
 
 def name_check_and_replace(name):
     """ 将无法用于命名的符号更换成-并返回 """
@@ -202,7 +212,16 @@ def url_get_type(url):
         return matches.group(0)
     return 'mp3'
 
-
+def url_get_type(url):
+    """ 
+    Matches the character after a dot (.), excluding the dot itself, 
+    and stops matching when encountering a question mark (?).
+    """
+    pattern = r'((?!.*\.))([^?]+)'
+    matches = re.search(pattern, url)
+    if matches:
+        return matches.group(0)
+    return 'mp3'
 
 
 
@@ -314,7 +333,7 @@ def ID_add_high_cover_qq(music_id, audiofile, music_type, headers, proxies):
     if audio_image.ok is False:
         print(colored("  QQ音乐封面API出错", "yellow"))
         raise ValueError
-    
+
     if music_type == 'mp3':
         audiofile.tag.images.set(3, audio_image.content, "image/jpeg")
     if music_type == 'flac':
@@ -399,7 +418,6 @@ def ID_get_music_album_name_qq(music_id, headers, proxies):
     music_qq_data = json.loads(music_qq_response.text)
     music_album_name = music_qq_data['data'][0]['album']['name']
     return music_album_name
-
 
 def json_add_eyed3(data, music_path, music_type, headers, proxies, header163):
     """ 此函数将音乐添加eyed3元素 """
@@ -889,3 +907,168 @@ if __name__ == "__main__":
     built_in_print = print
     print = print_log # pylint: disable=redefined-builtin
     main()
+
+
+######################################## GUI相关 ########################################
+def gui_main():
+    if not os.path.exists(g_music_dir_name): os.mkdir(g_music_dir_name)
+    if not os.path.exists(g_log_dir): os.mkdir(g_log_dir)
+    logging.basicConfig(filename=g_log_path, level=logging.DEBUG)
+    print('''
+ __  __           _      _____                      _                 _           
+|  \/  |         (_)    |  __ \                    | |               | |          
+| \  / |_   _ ___ _  ___| |  | | _____      ___ __ | | ___   __ _  __| | ___ _ __ 
+| |\/| | | | / __| |/ __| |  | |/ _ \ \ /\ / / '_ \| |/ _ \ / _` |/ _` |/ _ \ '__|
+| |  | | |_| \__ \ | (__| |__| | (_) \ V  V /| | | | | (_) | (_| | (_| |  __/ |   
+|_|  |_|\__,_|___/_|\___|_____/ \___/ \_/\_/ |_| |_|_|\___/ \__,_|\__,_|\___|_|   
+''')
+    split_line(True)
+    print("歌曲自动下载至目录 " + g_music_dir_name + " 中")
+    print("歌词自动下载至目录 " + g_music_dir_name + " 中")
+    if g_eyed3_exist: print("eyeD3已启用")
+    else: print("eyeD3未启用")
+
+def gui_print_log(message):
+    logging.debug(message)
+
+def gui_mode_setting(option_num):
+    global set_name_add_artist
+    global set_artist_add_name
+    global set_download_lyric
+    global set_download_cover_image_height
+
+    option_set = option_num
+    if option_set == 1:
+        set_name_add_artist = not set_name_add_artist
+        plog("歌曲名称后加歌手:")  
+        plog("  |  ")
+        print("(" + str(set_name_add_artist) + ")") 
+
+    if option_set == 2:
+        set_artist_add_name = not set_artist_add_name
+        plog("歌曲名称前加歌手:")  
+        plog("  |  ")
+        print("(" + str(set_artist_add_name) + ")")
+
+    if option_set == 3:
+        set_download_lyric = not set_download_lyric
+        plog("歌曲是否下载歌词:")  
+        plog("  |  ")
+        print("(" + str(set_download_lyric) + ")")
+
+    if option_set == 4:
+        set_download_cover_image_height = not set_download_cover_image_height
+        plog("歌曲启用高清封面:")  
+        plog("  |  ")
+        print("(" + str(set_download_cover_image_height) + ")")
+
+    return 0
+
+def gui_get_urlid(input_content):
+    music_id = url_get_id(input_content)
+    return music_id
+
+def gui_id_isdigit(music_id):
+    if music_id.isdigit() == 0: 
+        split_line(True)
+        print("请输入合法ID!")
+        return True
+    return False
+
+def gui_mode_music(api_path, headers, proxies, header163, show_github = True):
+    try: response = requests.get(api_path, headers = headers, proxies = proxies, timeout=10)
+    except: 
+        print(colored("连接错误:请关闭加速器或检查API服务是否设置正确后重试...", "yellow"))
+        return
+    data = json.loads(response.text)
+    if 'error' in data: 
+        split_line(True)
+        print("请输入合法ID!")
+        return 
+    counter = 0 + 1
+    for data in data:
+        plog(str(counter) + " ")
+        music_path = json_download_music(data, headers, proxies)
+        if music_path == "exist":
+            continue
+        if music_path == "getsize":
+            continue
+        if music_path == "exit":
+            continue
+        music_type = url_get_type(music_path)
+        if music_type == 'flac':
+            json_add_mutagen(data, music_path, music_type, headers, proxies, header163)
+        if music_type == "mp3":
+            if g_eyed3_exist:
+                json_add_eyed3(data, music_path, music_type, headers, proxies, header163)
+        if set_download_lyric:
+            json_download_lyric(data, music_path, headers, proxies)
+        counter += 1
+    if show_github:
+        split_line(True)
+        print(colored("Github: https://github.com/Beadd/MusicDownloader", "green"))
+        print(colored("下载完成!已下载" + str(counter - 1) + "首歌曲。感谢使用!", "green"))
+
+def gui_mode_album(album_id, headers, proxies, header163):
+    api_netease_music = set_api_server + "?type=song&id="
+    api_path ="http://music.163.com/api/album/" + str(album_id) +\
+            "?ext=true&id=" + str(album_id) + "&offset=0&total=true&limit=10"
+    response = requests.get(api_path, headers = header163, 
+            proxies = proxies, timeout=10)
+    data163 = json.loads(response.text)
+    if data163['code'] != 200:
+        print("API调用失败!")
+        return
+    num = data163['album']['size']
+    for i in range(0, num):
+        music_id = data163['album']['songs'][i]['id']
+        api_path = api_netease_music + str(music_id)
+        try: response = requests.get(api_path, headers = headers, 
+                proxies = proxies, timeout=10)
+        except: 
+            print(colored("连接错误:请关闭加速器或检查API服务是否设置正确后重试...", "yellow"))
+            return
+        data = json.loads(response.text)
+        if 'error' in data: return 0
+        plog("Album")
+        gui_mode_music(api_path, headers, proxies, header163, False)
+
+def gui_download(mode, id):
+    if mode == 1:
+        # 网易云单曲
+        music_id = gui_get_urlid(id)
+        if gui_id_isdigit(music_id): return
+        api_path = "http://api.injahow.cn/meting/?type=song&id=" + str(music_id)
+        gui_mode_music(api_path, g_header, g_proxies, g_header163)
+    if mode == 2:
+        # 网易云歌单
+        music_id = gui_get_urlid(id)
+        if gui_id_isdigit(music_id): return
+        api_path = "http://api.injahow.cn/meting/?type=playlist&id=" + str(music_id)
+        gui_mode_music(api_path, g_header, g_proxies, g_header163)
+    if mode == 3:
+        # QQ音乐单曲
+        music_id = gui_get_urlid(id)
+        api_path = "http://api.injahow.cn/meting/?server=tencent&type=song&id=" + str(music_id)
+        gui_mode_music(api_path, g_header, g_proxies, g_header163)
+    if mode == 4:
+        # QQ音乐歌单
+        music_id = gui_get_urlid(id)
+        api_path = "http://api.injahow.cn/meting/?server=tencent&type=playlist&id=" + str(music_id)
+        gui_mode_music(api_path, g_header, g_proxies, g_header163)
+    if mode == 5:
+        # 网易云专辑
+        album_id = gui_get_urlid(id)
+        if gui_id_isdigit(album_id): return
+        gui_mode_album(album_id, g_header, g_proxies, g_header163)
+    if mode == 6:
+        # 网易云歌手
+        artist_id = gui_get_urlid(id)
+        if gui_id_isdigit(artist_id): return
+        album_list = artist_get_album_list(artist_id)
+        for album_id in album_list:
+            gui_mode_album(album_id, g_header, g_proxies, g_header163)
+
+def gui_set_api_server(url):
+    global set_api_server
+    set_api_server = url
