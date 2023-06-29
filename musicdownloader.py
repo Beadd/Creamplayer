@@ -81,6 +81,13 @@ def print_log(*args, sep=' ', end='\n', file=None):
     if file is None:
         built_in_print(*args, sep=sep, end=end)
 
+def print_log(*args, sep=' ', end='\n', file=None):
+    """ 与print绑定,将print输出作为日志存储 """
+    message = sep.join(str(arg) for arg in args) + end
+    logging.debug(message)
+    if file is None:
+        built_in_print(*args, sep=sep, end=end)
+
 def plog(pinfo):
     """ 用来输入没有换行符的内容 """
     print(pinfo, end = '')
@@ -193,6 +200,17 @@ def get_redirected_url(url, headers, proxies):
     response = requests.get(url, headers=headers, proxies=proxies, timeout=10)
     redirected_url = response.url
     return redirected_url
+
+def url_get_type(url):
+    """ 
+    Matches the character after a dot (.), excluding the dot itself, 
+    and stops matching when encountering a question mark (?).
+    """
+    pattern = r'((?!.*\.))([^?]+)'
+    matches = re.search(pattern, url)
+    if matches:
+        return matches.group(0)
+    return 'mp3'
 
 def url_get_type(url):
     """ 
@@ -467,7 +485,7 @@ def json_add_eyed3(data, music_path, music_type, headers, proxies, header163):
                 ID_add_publish_time_qq(music_id, audiofile, headers, proxies)
                 plog("  已内嵌发行日期")
             except: pass
-    # save alright
+    #save alright
     if data['name'] is not None:
         audiofile.tag.save(encoding='utf-8')
     print("")
@@ -523,8 +541,6 @@ def json_add_mutagen(data, music_path, music_type, headers, proxies, header163):
             plog("  已内嵌发行日期")
         except: pass
     audio.save()
-
-
 
 
 
