@@ -36,6 +36,7 @@ import requests
 from Crypto.Cipher import AES
 from colorama import init
 from termcolor import colored
+from mutagen.flac import FLAC, Picture
 
 # 有时eyed3会不太妙，使文件可以脱离eyed3运行
 try: import eyed3; g_eyed3_exist = True
@@ -47,7 +48,7 @@ set_name_add_artist = False
 set_artist_add_name = False
 set_download_lyric = True
 set_download_cover_image_height = True
-set_api_server = "http://api.injahow.cn/meting/"
+set_api_server = "https://api.injahow.cn/meting/"
 
 g_music_dir_name = "MusicB"
 g_log_dir = "MusicLogB"
@@ -70,8 +71,7 @@ g_header163 = { # 直接请求网易云API所需
     'User-Agent':
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'
     ,
-    #'cookie':'NMTID=00O-UfVMage_XYVb01NofLYtGWN81wAAAGA6ROCHA; _ntes_nnid=0026f9a21f511bc7b813bc8257738ed7,1653178475744; _ntes_nuid=0026f9a21f511bc7b813bc8257738ed7; WNMCID=uzisge.1653178476562.01.0; WEVNSM=1.0.0; WM_TID=%2F8H5Vyp5GQxFUQERQRbFEfFcaI581rZl; _iuqxldmzr_=32; WM_NI=PvUHSZ6ODGORWadg5DK7d9SzSwgDNsEV3JehG9upEAJGRraJCFze%2B3Ix2YL4zAo9ukl3%2FPe2aI2kTlTFY9G%2Fgxu6Au7OWvM7p%2BiGGmIwnpbjRkJw9a7fOaUYlUq%2FU88eNlU%3D; WM_NIKE=9ca17ae2e6ffcda170e2e6eed1bc47b5efc0a7c46e95868aa2d84a939b9ab1c54ebced8cd9aa3baeb8bbaff02af0fea7c3b92a94aa9ba9d252f6918ca8ce5a95bfac88b85089e9acdad27291a9a9a5cd79878afdabe86485e7bb91c84b8a999e93e442819ab686aa398ba8febacf40ba9fa1daf861b0ede1b1e83aa397fe8cd768989a97dac625a5a8bbd7c47ff5919997d03db4f5a7a8c6678ba9a291e16292b58698bc6bf5ba8182d853b08bbfd0d834fcbb828dd837e2a3; JSESSIONID-WYYY=bTf0dAu0K3KzvcZDWFId0KCqJfkUUz%2Fnld6U6IhcZ2GBcGnbR%2B6P54Ex4sP%2B5aXIjrwtEDDyIaj%2FG5RM7gozKnk0%5C2cGnPn%2FtobEaEbkoGMTgAWXBWwzoWBkF5k3z1HSWb%5CND2rHARn0Ap7A85W7B%2BQ0D4DO5%2F%2F8Q3%2BjH0mjM%2B9%5CF%2FCq%3A1654302417314'
-    'cookie':'JSESSIONID-WYYY=MqngSDeeeN%2FZRbE7Vmz7zZ1g9U3fs5SAD%5CbS23A0eW%2FhqzUHpYMX9jVlVgPosnC5wJdYO7se20QsYn45DoJor%5Cskxna6I%5CQKW733yxHugKPmYvN%2FP0%2BQOpOwkZJumC6t0QCh9rdwbk06t4TnjlMg%2Fa5Ooj1CW4idEdZq4VBMsDsIEhM3%3A1654304708419; _iuqxldmzr_=32; _ntes_nnid=59c0c0c4fc69665b6261b45f5e44fe4a,1654302908431; _ntes_nuid=59c0c0c4fc69665b6261b45f5e44fe4a; NMTID=00O-D3f-9XeBnQh0Ei2qy1d-ULEVSUAAAGBLCI6vA; WEVNSM=1.0.0; WNMCID=tqqzib.1654302908799.01.0; WM_NI=EROpEfsIky5J3M1%2F2Uw0BlLsOXn0anY7%2BSg1r8Y7PB%2B37llD5L2xuZ6sKBgI7WCTj5wOcXoIPycPEUR6dtcJmPPozE646Hv2qifgkQ76N5QKrDtVgERuCcCub6j65tgtVTU%3D; WM_NIKE=9ca17ae2e6ffcda170e2e6eeafdb6aa79efbd5ed6383928eb7d44e878e8e82d54bf4b2a9a5d16da7aba6d6c52af0fea7c3b92a878e8191c86eb197a59ab842f193ffd0b15fb5f08e8dcf798d88a2d1e4669be9e5b4e63bb2e897d8d34ae9edf98def50f794fe99f852f6ad85a3e643f5898db5e93fb591adb9ee4394a7adb1c85f92eaac95e242af90a090f94ff6ecfaa9f53ab3b7aa88ea5bf5ea82d6d441b29cbcb7e64f92ab8d84c27fa2eaa6d7b880a5ac9ab5d837e2a3; WM_TID=Pc31v8zNG7tFVRUUQAKVUgm1GFke%2Fj9Q'
+    'cookie':'NMTID=00OHBEMpFi3cPSpAUnopJGHYmwKAB4AAAGIpKYnhA; JSESSIONID-WYYY=xV6q1IBuTol/Q8TMPvfmnccbq74W7YgzZmNfXDNt/vhGlkCdganO6\d/GpkkYwH74gsVfa+uuul1mQQbQn3rX1eF\RrQ29ickeByMbi4D98r0JBuy5KVsmpQs3neElqiIPfJ/eItmnGGsJqPQbmcwtT86M\Gy4udsP5U\zy2b+rpE8dx:1686391392103; _iuqxldmzr_=32; _ntes_nnid=b674c540d5a48ced68899908703b64fb,1686389592122; _ntes_nuid=b674c540d5a48ced68899908703b64fb; WEVNSM=1.0.0; WNMCID=qnoprd.1686389596766.01.0; WM_NI=JWOh0m9He9qvHbSw3Sd/RVKfvzx96SmUvn3l+VAELjyjvoauGwN9FhhH+QgoDzDnMm1sAMqtundYnjEIFtdS00WS7LURXuvQaZDIfzF9qeNBvHGQWx6eezmnCGCZkAQlUlI=; WM_NIKE=9ca17ae2e6ffcda170e2e6eed6ea34908c8785f934bceb8ab2c15f979e8b86d83ba8a9a59bc26dae86bbbbef2af0fea7c3b92a8a898189b367fb98abdaf47e8cbe9d98b259a8f19eb7ca6eb6a6b8dab559af8bba8fb268e98a8fa6cf62bbb6ba90e47f85a982dac564ac98e5b2e66588a68c8fd067f3ad8faef480b7b2acbaed6287978a95e759f4f099b4b648978e9896f55ba3868caae57286e7bf86cd4ab69889b2d674f6bbab9bf06681998dbbea4b93b49b8dcc37e2a3; WM_TID=rp0OaTRccD1BABEEFEPB0MlxmT02I/Y1'
 }
 
 def print_log(*args, sep=' ', end='\n', file=None):
@@ -153,17 +153,17 @@ def id_isdigit(music_id):
         return True
     return False
 
-def name_get_music_path(name, name_counter = 0):
+def name_get_music_path(name, music_type, name_counter = 0):
     """ 通过名称获取路径 """
-    music_path = g_music_dir_name + '/' + name + ".mp3"
+    music_path = g_music_dir_name + '/' + name + '.' + music_type
     if name_counter != 0:
         music_path = g_music_dir_name + '/' + name + "(" + str(
-                name_counter) + ")" + ".mp3"
+                name_counter) + ")" + "." + music_type
     return music_path
 
-def path_get_lyric_path(path):
+def path_get_lyric_path(path, music_type):
     """ 通过歌曲路径获得音乐路径 """
-    lyric_path  = path.replace(".mp3", ".lrc")
+    lyric_path  = path.replace("." + music_type, ".lrc")
     return lyric_path
 
 def path_check_exist(path, sid, name):
@@ -173,6 +173,7 @@ def path_check_exist(path, sid, name):
             return True
         else: return path
     counter = 1
+    music_type = url_get_type(path)
     while os.path.exists(path):
         try: audiofile = eyed3.load(path)
         except:  
@@ -183,11 +184,26 @@ def path_check_exist(path, sid, name):
             print(colored("检测音乐eyed3失败,自动跳过", "yellow"))
             return True
         if music_id == sid: return True
-        path = name_get_music_path(name, counter)
+        path = name_get_music_path(name, music_type, counter)
         counter += 1
     return path
 
+def get_redirected_url(url, headers, proxies):
+    """ redirect rul and return """
+    response = requests.get(url, headers=headers, proxies=proxies, timeout=10)
+    redirected_url = response.url
+    return redirected_url
 
+def url_get_type(url):
+    """ 
+    Matches the character after a dot (.), excluding the dot itself, 
+    and stops matching when encountering a question mark (?).
+    """
+    pattern = r'((?!.*\.))([^?]+)'
+    matches = re.search(pattern, url)
+    if matches:
+        return matches.group(0)
+    return 'mp3'
 
 
 
@@ -208,9 +224,14 @@ def path_check_exist(path, sid, name):
 def json_download_music(data, headers, proxies):
     """ 此函数接受api json并进行下载,返回path,失败返回错误信息 """
     name = json_get_music_name(data)
-    music_path = name_get_music_path(name)
+
     music_url = data['url']
     sid = apiurl_get_id(music_url)
+
+    redirected_url = get_redirected_url(music_url, headers, proxies)
+    music_type = url_get_type(redirected_url)
+
+    music_path = name_get_music_path(name, music_type)
     print(name)
     # 检测歌曲文件存在
     music_path = path_check_exist(music_path, sid, name)
@@ -219,7 +240,7 @@ def json_download_music(data, headers, proxies):
         return "exist"
     music_req = requests.get(music_url, headers=headers, proxies=proxies, 
             timeout=10)
-    if music_req.content == None or music_req.content == b'':
+    if music_req.content == None or music_req.content == b'': # pylint: disable=singleton-comparison
         print(colored("下载失败,自动跳过,可能是vip歌曲", "yellow"))
         return "exit"
     with open(music_path, "wb") as code:
@@ -232,7 +253,8 @@ def json_download_music(data, headers, proxies):
 
 def json_download_lyric(data, music_path, headers, proxies):
     """  此函数接受api json并进行下载歌词"""
-    lyric_path = path_get_lyric_path(music_path)
+    music_type = url_get_type(music_path)
+    lyric_path = path_get_lyric_path(music_path, music_type)
     lyric_url = data['lrc']
     lyric_response = requests.get(lyric_url, headers=headers, proxies=proxies,
             timeout=10)
@@ -244,7 +266,7 @@ def json_download_lyric(data, music_path, headers, proxies):
     print("  歌词已保存至" + g_music_dir_name)
     return
 
-def ID_add_high_cover(music_id, audiofile, header163, proxies):
+def ID_add_high_cover(music_id, audiofile, music_type, header163, proxies):
     """ 此函数接受id调用网易云接口并对歌曲添加高清封面 """
     music_url163 = "http://music.163.com/api/song/detail/?id=" +\
             music_id +"&ids=%5B" + music_id + "%5D"
@@ -259,18 +281,32 @@ def ID_add_high_cover(music_id, audiofile, header163, proxies):
         raise ValueError
     image_type = music_cover_url[-3:]
     if image_type == 'jpg' or type == 'peg':
-        audiofile.tag.images.set(3, audio_image.content, "image/jpeg")
+        if music_type == 'mp3':
+            audiofile.tag.images.set(3, audio_image.content, "image/jpeg")
+        if music_type == 'flac':
+            picture = Picture()
+            picture.type = 3  # Front cover
+            picture.mime = 'image/jpeg'  # MIME type of the image file
+            picture.data = audio_image.content
+            audiofile.add_picture(picture)
     if image_type == 'png':
-        audiofile.tag.images.set(3, audio_image.content, "image/png")
+        if music_type == 'mp3':
+            audiofile.tag.images.set(3, audio_image.content, "image/png")
+        if music_type == 'flac':
+            picture = Picture()
+            picture.type = 3  # Front cover
+            picture.mime = 'image/png'  # MIME type of the image file
+            picture.data = audio_image.content
+            audiofile.add_picture(picture)
 
-def ID_add_high_cover_qq(music_id, audiofile, headers, proxies):
+def ID_add_high_cover_qq(music_id, audiofile, music_type, headers, proxies):
     """ 此函数接收id调用QQ音乐接口并对歌曲添加高清封面 """
     music_qq_url = 'https://c.y.qq.com/v8/fcg-bin/fcg_play_single_song.fcg?songmid=' + music_id + '&tpl=yqq_song_detail&format=json&callback=getOneSongInfoCallback&g_tk=1928093487&jsonpCallback=getOneSongInfoCallback&loginUin=0&hostUin=0&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0'
     music_qq_response = requests.get(music_qq_url, headers=headers, proxies=proxies, timeout=10)
     music_qq_data = json.loads(music_qq_response.text)
     music__qq_pmid = music_qq_data['data'][0]['album']['mid']
     music_qq_cover_url = 'https://y.qq.com/music/photo_new/T002R500x500M000' + music__qq_pmid + '.jpg?max_age=2592000'
-
+    
     audio_image = requests.get(music_qq_cover_url, headers=headers, proxies=proxies, timeout=10)
     if audio_image.ok is False:
         music__qq_pmid = music_qq_data['data'][0]['singer'][0]['mid']
@@ -279,14 +315,29 @@ def ID_add_high_cover_qq(music_id, audiofile, headers, proxies):
     if audio_image.ok is False:
         print(colored("  QQ音乐封面API出错", "yellow"))
         raise ValueError
-    audiofile.tag.images.set(3, audio_image.content, "image/jpeg")
 
-def json_add_low_cover(data, audiofile):
+    if music_type == 'mp3':
+        audiofile.tag.images.set(3, audio_image.content, "image/jpeg")
+    if music_type == 'flac':
+        picture = Picture()
+        picture.type = 3  # Front cover
+        picture.mime = 'image/jpeg'  # MIME type of the image file
+        picture.data = audio_image.content
+        audiofile.add_picture(picture)
+
+def json_add_low_cover(data, music_type, audiofile):
     """ 此函数接受json向歌曲添加封面 """
     if data['pic'] is None: return
     audio_Image = requests.get(data['pic'], timeout=10)
     if audio_Image.ok is not False:
-        audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
+        if music_type == 'mp3':
+            audiofile.tag.images.set(3, audio_Image.content, "image/jpeg")
+        if music_type == 'flac':
+            picture = Picture()
+            picture.type = 3  # Front cover
+            picture.mime = 'image/jpeg'  # MIME type of the image file
+            picture.data = audio_Image.content
+            audiofile.add_picture(picture)
 
 def ID_get_music_album_id(music_id, header163, proxies):
     """ 此函数接受id调用网易云接口返回歌曲对应的专辑ID """
@@ -306,8 +357,8 @@ def ID_add_publish_time(music_id, audiofile, header163, proxies):
     music_url163_album_response = requests.get(music_url163_album, 
             headers = header163, proxies = proxies, timeout=10)
     music_data163_album = json.loads(music_url163_album_response.text)
-    if music_data163_album['code'] != 200:
-        print("API调用失败!")
+    if music_data163_album['status_code'] != 200:
+        plog(colored("  API调用失败!", "yellow"))
         return
     music_public_time = music_data163_album['album']['publishTime']
     time_stamp = music_public_time / 1000
@@ -350,7 +401,7 @@ def ID_get_music_album_name_qq(music_id, headers, proxies):
     music_album_name = music_qq_data['data'][0]['album']['name']
     return music_album_name
 
-def json_add_eyed3(data, music_path, headers, proxies, header163):
+def json_add_eyed3(data, music_path, music_type, headers, proxies, header163):
     """ 此函数将音乐添加eyed3元素 """
     try: audiofile = eyed3.load(music_path)
     except: 
@@ -373,17 +424,17 @@ def json_add_eyed3(data, music_path, headers, proxies, header163):
     if set_download_cover_image_height:
         music_id = url_get_id(data['url'])
         try: 
-            ID_add_high_cover(music_id, audiofile, header163, proxies)
+            ID_add_high_cover(music_id, audiofile, music_type, header163, proxies)
             plog("  已内嵌高清封面")
         except: 
             try:
-                ID_add_high_cover_qq(music_id, audiofile, headers, proxies)
+                ID_add_high_cover_qq(music_id, audiofile, music_type, headers, proxies)
                 plog("  已内嵌高清封面")
             except:
-                json_add_low_cover(data, audiofile)
+                json_add_low_cover(data, music_type, audiofile)
                 plog("  已内嵌封面")
     if not set_download_cover_image_height:
-        json_add_low_cover(data, audiofile)
+        json_add_low_cover(data, music_type, audiofile)
     # lyrics
     lyric_response = requests.get(data['lrc'], headers=headers, 
             proxies=proxies, timeout=10)
@@ -421,7 +472,57 @@ def json_add_eyed3(data, music_path, headers, proxies, header163):
         audiofile.tag.save(encoding='utf-8')
     print("")
 
-
+def json_add_mutagen(data, music_path, music_type, headers, proxies, header163):
+    """ 此函数将音乐添加mutagen元素 """
+    # Open the FLAC file
+    try: audio = FLAC(music_path)
+    except: 
+        plog("\n\033[33mMutagen: 打开音乐音乐失败,自动跳过\033[0m")
+        return
+    # title
+    if data['name'] is not None:
+        audio['title'] = data['name']
+        plog("  已内嵌名称")
+    # artist
+    if data['artist'] != 'NoneType':
+        audio['artist'] = data['artist']
+        plog("  已内嵌歌手")
+    # image
+    if set_download_cover_image_height:
+        music_id = url_get_id(data['url'])
+        try: 
+            ID_add_high_cover(music_id, audio, music_type, header163, proxies)
+            plog("  已内嵌高清封面")
+        except: 
+            try:
+                ID_add_high_cover_qq(music_id, audio, music_type, headers, proxies)
+                plog("  已内嵌高清封面")
+            except:
+                json_add_low_cover(data, music_type, audio)
+                plog("  已内嵌封面")
+    if not set_download_cover_image_height:
+        json_add_low_cover(data, music_type, audio)
+    # album
+    try:
+        music_album_name = ID_get_music_album_name(music_id, header163, proxies)
+        audio['artist'] = music_album_name
+        plog("  已内嵌专辑")
+    except: 
+        try:
+            music_album_name = ID_get_music_album_name_qq(music_id, headers, proxies)
+            audio['artist'] = music_album_name
+            plog("  已内嵌专辑")
+        except: pass
+    # public time
+    try: 
+        ID_add_publish_time(music_id, audio, header163, proxies)
+        plog("  已内嵌发行日期")
+    except: 
+        try: 
+            ID_add_publish_time_qq(music_id, audio, headers, proxies)
+            plog("  已内嵌发行日期")
+        except: pass
+    audio.save()
 
 
 
@@ -571,8 +672,12 @@ def mode_music(api_path, headers, proxies, header163, show_github = True):
             continue
         if music_path == "exit":
             continue
-        if g_eyed3_exist:
-            json_add_eyed3(data, music_path, headers, proxies, header163)
+        music_type = url_get_type(music_path)
+        if music_type == 'flac':
+            json_add_mutagen(data, music_path, music_type, headers, proxies, header163)
+        if music_type == "mp3":
+            if g_eyed3_exist:
+                json_add_eyed3(data, music_path, music_type, headers, proxies, header163)
         if set_download_lyric:
             json_download_lyric(data, music_path, headers, proxies)
         counter += 1
@@ -872,8 +977,14 @@ def gui_mode_music(api_path, headers, proxies, header163, show_github = True):
             continue
         if music_path == "getsize":
             continue
-        if g_eyed3_exist:
-            json_add_eyed3(data, music_path, headers, proxies, header163)
+        if music_path == "exit":
+            continue
+        music_type = url_get_type(music_path)
+        if music_type == 'flac':
+            json_add_mutagen(data, music_path, music_type, headers, proxies, header163)
+        if music_type == "mp3":
+            if g_eyed3_exist:
+                json_add_eyed3(data, music_path, music_type, headers, proxies, header163)
         if set_download_lyric:
             json_download_lyric(data, music_path, headers, proxies)
         counter += 1
