@@ -10,7 +10,7 @@
 
 > Netease music and QQ music download tools
 
-# 👉 [Quick Start](https://github.com/Beadd/MusicDownloader/releases)(command line mode)
+# 👉 [Quick Start](https://github.com/Beadd/MusicDownloader/releases) (command line mode)
 
 ```
 # or you can run EyeD3Music.py to start GUI mode
@@ -21,7 +21,7 @@ python EyeD3Music.py
 # you can also run musicdownloader.py to start the command line mode
 ```
 
-# ✨ more usage
+# ✨ More Usage
 Adding``` song URL ```parameters before startup will download directly, for example:
 
 ```
