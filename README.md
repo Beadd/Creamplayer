@@ -1,6 +1,6 @@
 <h1 align="center">🎵 EyeD3Music</h1>
 
-<p  align="center">
+<p align="center">
 <img src="https://img.shields.io/github/last-commit/beadd/musicdownloader.svg?style=flat" alt="last commit">
 <img src="https://img.shields.io/github/downloads/beadd/musicdownloader/total?style=flat" alt="downloads">
 <img src="https://img.shields.io/github/v/release/beadd/musicdownloader?style=flat" alt="release">
@@ -10,10 +10,12 @@
 
 > Netease music and QQ music download tools
 
-# 👉 [Quick Start](https://github.com/Beadd/MusicDownloader/releases) (command line mode)
+# 👉 Quick Start
+
+<a href="https://github.com/beadd/musicdownloader/releases/latest"><img src="https://raw.githubusercontent.com/Beadd/MusicDownloader/main/images/download_github.png" alt="GitHub download" width=""></a>
 
 ```
-# or you can run EyeD3Music.py to start GUI mode
+# you can run EyeD3Music.py to start GUI mode
 git clone https://github.com/beadd/musicdownloader/
 cd musicdownloader
 pip install -r requirements.txt
