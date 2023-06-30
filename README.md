@@ -8,12 +8,13 @@
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat" alt="license">
 </p>
 
+<p align="center">
+<a href="https://github.com/beadd/musicdownloader/releases/latest"><img src="https://raw.githubusercontent.com/Beadd/MusicDownloader/main/images/download_github.png" alt="GitHub download" width=""></a>
+</p>
+
 > Netease music and QQ music download tools
 
 # 👉 Quick Start
-
-<a href="https://github.com/beadd/musicdownloader/releases/latest"><img src="https://raw.githubusercontent.com/Beadd/MusicDownloader/main/images/download_github.png" alt="GitHub download" width=""></a>
-
 ```
 # you can run EyeD3Music.py to start GUI mode
 git clone https://github.com/beadd/musicdownloader/
