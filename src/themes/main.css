@@ -1,0 +1,6 @@
+body {
+  margin: 0px;
+}
+body.dark {
+  background-color: black;
+}
