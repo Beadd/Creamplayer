@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-<a href="https://github.com/beadd/musicdownloader/releases/latest"><img src="https://raw.githubusercontent.com/Beadd/MusicDownloader/main/images/download_github.png" alt="GitHub download" width=""></a>
+<a href="https://github.com/beadd/creamplayer/releases/latest"><img src="https://raw.githubusercontent.com/Beadd/MusicDownloader/main/images/download_github.png" alt="GitHub download" width=""></a>
 </p>
 
 # 👉 如何使用 Creamplayer Quick Start
