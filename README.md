@@ -42,6 +42,12 @@
 - 鼠标单击最左侧即可返回 Click on the far left to return
 - 鼠标右键即可切换主题 Right-click to switch the theme
 
+### 快捷键 Shortcut key
+- `ctrl` + `shift` + `i` 开发者工具 Developer tools
+- `ctrl` + `r` 刷新 Refresh
+- `ctrl` + `+` / `ctrl` + `-` 放大缩小 Zoom in and zoom out
+![](https://raw.githubusercontent.com/Beadd/Creamplayer/main/images/search.png)
+
 ### 如何设置Cookie How to set cookies
 - 搜索一首VIP歌曲，进入该歌曲的播放界面即可设置Cookie Search for a VIP song and enter the playing screen of the song to set the Cookie
 
@@ -50,6 +56,7 @@
 
 # 🎨 如何贡献主题 Contribute theme
 首页、搜索、播放三个界面每个对应一个vue文件，在[src/themes](https://github.com/Beadd/Creamplayer/tree/main/src/themes)里，将其他主题当作模板，修改里面的CSS即可自定义主题，然后创建对于的文件名即可 Home page, search page, play page, three interface, each corresponding to a vue file in [/SRC/themes](https://github.com/Beadd/Creamplayer/tree/main/src/themes), use other theme as a template, modify the CSS to customize the theme, and then create the appropriate file name
+
 ### 需要修改的文件 Files that need to be modified
 - 修改上一个vue文件changeTheme函数，修改switch后面的数为新增的主题vue文件名(数字) Modify the last vue file changeTheme function, change the number after the "switch" to the new theme vue file name (number)
   ```
