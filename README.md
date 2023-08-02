@@ -12,8 +12,8 @@
 <a href="https://github.com/beadd/musicdownloader/releases/latest"><img src="https://raw.githubusercontent.com/Beadd/MusicDownloader/main/images/download_github.png" alt="GitHub download" width=""></a>
 </p>
 
-# 👉 Creamplayer Quick Start
-程序里没有任何提示，所有你有必要查看此使用文档 There are no prompts in the program, so you need to check the usage documentation
+# 👉 如何使用 Creamplayer Quick Start
+程序里没有任何提示，所以有必要查看此使用文档 There are no prompts in the program, so you need to check the usage documentation
 
 ### 首页 Home Page
 - 输入框里输入歌曲名或id即可搜索 Enter the song name or id in the input box to search
@@ -47,3 +47,21 @@
 
 ### 关于QQ音乐 About QQ music
 - Creamplayer暂时无法下载qq音乐，你可以使用Release里本项目老版本musicdownloader Creamplayer is temporarily unable to download qq music, you can use the old version of this project: musicdownloader
+
+# 🎨 如何贡献主题 Contribute theme
+首页、搜索、播放三个界面每个对应一个vue文件，在[src/themes](https://github.com/Beadd/Creamplayer/tree/main/src/themes)里，将其他主题当作模板，修改里面的CSS即可自定义主题，然后创建对于的文件名即可 Home page, search page, play page, three interface, each corresponding to a vue file in [/SRC/themes](https://github.com/Beadd/Creamplayer/tree/main/src/themes), use other theme as a template, modify the CSS to customize the theme, and then create the appropriate file name
+### 需要修改的文件 Files that need to be modified
+- 修改上一个vue文件changeTheme函数，修改switch后面的数为新增的主题vue文件名(数字) Modify the last vue file changeTheme function, change the number after the "switch" to the new theme vue file name (number)
+  ```
+  function changeTheme() {
+    emit('switch', 1)
+  }
+  ```
+- 在对应的[views](https://github.com/Beadd/Creamplayer/tree/main/src/views)文件里引入新的主题vue文件，例如在Search页面里引入新的主题 import new themes to the corresponding [views](https://github.com/Beadd/Creamplayer/tree/main/src/views) vue file file
+  ```
+  import Theme16 from '../themes/search/16.vue';
+  ...
+  ...
+  <Theme16 :q="q" @switch="switchTheme" @return="returnHome" v-if="searchTheme == 16"/>
+  ```
+- 将新主题的changeTheme函数后面的数字改为1，以进入循环 Change the number after the changeTheme function for the new theme to 1 to enter the loop
