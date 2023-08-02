@@ -23,7 +23,7 @@
 ![](https://raw.githubusercontent.com/Beadd/Creamplayer/main/images/home.png)
 
 ### 关于下载 About download
-- 下载目录在程序目录的\resources\downloads
+- 下载目录在程序目录的\downloads
 - 默认最高音质 Highest sound quality by default
 - 没有设置Cookie的情况下无法下载无损与VIP歌曲 Lossless and VIP songs cannot be downloaded without setting cookies
 - 下载时会弹出提示框，里面的数字就是剩余的下载数量 When downloading, a prompt box will pop up, and the number inside is the remaining download quantity
