@@ -72,3 +72,10 @@
   <Theme16 :q="q" @switch="switchTheme" @return="returnHome" v-if="searchTheme == 16"/>
   ```
 - 将新主题的changeTheme函数后面的数字改为1，以进入循环 Change the number after the changeTheme function for the new theme to 1 to enter the loop
+
+# ⚡ 开发环境搭建 Build development environment
+```
+git clone https://github.com/beadd/creamplayer
+npm install
+npm run electron:serve
+```
