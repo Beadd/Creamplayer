@@ -12,7 +12,7 @@
 <a href="https://github.com/beadd/creamplayer/releases/latest"><img src="https://raw.githubusercontent.com/Beadd/MusicDownloader/main/images/download_github.png" alt="GitHub download" width=""></a>
 </p>
 
-# 👉 如何使用 Creamplayer Quick Start
+# 💡 如何使用 Creamplayer Quick Start
 程序里没有任何提示，所以有必要查看此使用文档 There are no prompts in the program, so you need to check the usage documentation
 
 ### 首页 Home Page
