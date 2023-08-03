@@ -13,7 +13,7 @@
 </p>
 
 # 💡 如何使用 Creamplayer Quick Start
-程序里没有任何提示，所以有必要查看此使用文档 There are no prompts in the program, so you need to check the usage documentation
+前往[release](https://github.com/beadd/creamplayer/releases/latest)下载即可，但程序里没有任何提示，所以有必要查看此使用文档 There are no prompts in the program, so you need to check the usage documentation
 
 ### 首页 Home Page
 - 输入框里输入歌曲名或id即可搜索 Enter the song name or id in the input box to search
