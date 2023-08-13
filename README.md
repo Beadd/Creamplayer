@@ -52,6 +52,11 @@
 ### 如何设置Cookie How to set cookies
 - 搜索一首VIP歌曲，进入该歌曲的播放界面即可设置Cookie Search for a VIP song and enter the playing screen of the song to set the Cookie
 
+### 如何获取Cookie How to get cookies
+- 在music.163.com里打开开发者模式 Open Developer tools in music.163.com
+- 在network栏里找到music.163.com并复制其所有Cookie即可 Find music.163.com in the network and copy all of its cookies
+![](https://raw.githubusercontent.com/Beadd/Creamplayer/main/images/cookie.png)
+
 ### 关于QQ音乐 About QQ music
 - Creamplayer暂时无法下载qq音乐，你可以使用Release里本项目老版本musicdownloader Creamplayer is temporarily unable to download qq music, you can use the old version of this project: musicdownloader
 
