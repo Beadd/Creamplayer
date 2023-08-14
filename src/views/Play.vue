@@ -197,6 +197,9 @@ function onClick() {
 body.dark .isVip {
   background-color: black;
 }
+body.dark .cookie-input {
+  background-color: black;
+}
 .cookie-input {
   color: red;
   border: 1px solid;
