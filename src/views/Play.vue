@@ -148,9 +148,9 @@ const onTimeUpdate = () => {
 
 const inputRef = ref(null)
 const coockieValue = ref(null)
-function searchEnter() {
+async function searchEnter() {
   console.log(coockieValue.value)
-  setCookie(coockieValue.value)
+  await setCookie(coockieValue.value)
   location.reload();
 }
 function onClick() {
