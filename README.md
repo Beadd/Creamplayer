@@ -17,7 +17,7 @@
 
 ### 首页 Home Page
 - 输入框里输入歌曲名或id即可搜索 Enter the song name or id in the input box to search
-- 输入框里输入链接即可下载 Enter the link in the input box to download
+- 输入框里输入歌曲或歌单链接即可批量下载 Enter the link in the input box to download
 - 鼠标右键首页可切换皮肤 Right-click the home page to switch the theme
 - 鼠标中键首页可切换暗黑模式 Middle mouse button home page can switch dark mode
 ![](https://raw.githubusercontent.com/Beadd/Creamplayer/main/images/home.png)
