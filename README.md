@@ -58,7 +58,7 @@
 ![](https://raw.githubusercontent.com/Beadd/Creamplayer/main/images/cookie.png)
 
 ### 关于QQ音乐 About QQ music
-- Creamplayer暂时无法下载qq音乐，你可以使用Release里本项目老版本musicdownloader Creamplayer is temporarily unable to download qq music, you can use the old version of this project: musicdownloader
+- Creamplayer暂时无法下载qq音乐，你可以使用Release里本项目老版本[musicdownloader](https://github.com/Beadd/Creamplayer/releases/tag/v2.6.1) Creamplayer is temporarily unable to download qq music, you can use the old version of this project: musicdownloader
 
 # 🎨 如何贡献主题 Contribute theme
 首页、搜索、播放三个界面每个对应一个vue文件，在[src/themes](https://github.com/Beadd/Creamplayer/tree/main/src/themes)里，将其他主题当作模板，修改里面的CSS即可自定义主题，然后创建对于的文件名即可 Home page, search page, play page, three interface, each corresponding to a vue file in [/SRC/themes](https://github.com/Beadd/Creamplayer/tree/main/src/themes), use other theme as a template, modify the CSS to customize the theme, and then create the appropriate file name
