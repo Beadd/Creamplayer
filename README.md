@@ -23,7 +23,7 @@
 ![](https://raw.githubusercontent.com/Beadd/Creamplayer/main/images/home.png)
 
 ### 关于下载 About download
-- 下载目录在程序目录的\downloads
+- **下载目录在程序目录的\downloads**
 - 默认最高音质 Highest sound quality by default
 - 会内嵌封面、歌词、歌手、专辑、发行日期等元数据 Metadata such as covers, lyrics, artists, albums, and release dates are embedded
 - 没有设置Cookie的情况下无法下载无损与VIP歌曲 Lossless and VIP songs cannot be downloaded without setting cookies
@@ -33,8 +33,8 @@
 - 如果下载数量不对，保留原先下载的歌曲文件，再次下载此歌单即可 If the number of downloads is not correct, keep the original downloaded song file and download this playlist again
 
 ### 搜索结果 Search result Page
+- **鼠标右击封面即可下载 Right-click the cover to download**
 - 鼠标单击封面即可进入播放界面 Click the cover to enter the playback interface
-- 鼠标右击封面即可下载 Right-click the cover to download
 - 鼠标单击空白地方即可返回 Click on a blank space to return
 - 鼠标右击空白地方即可切换切换主题 Right-click on the blank area to switch the theme
 
