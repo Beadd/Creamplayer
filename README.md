@@ -83,7 +83,8 @@
 - 将新主题的changeTheme函数后面的数字改为1，以进入循环 Change the number after the changeTheme function for the new theme to 1 to enter the loop
 
 # ⚡ 开发环境搭建 Build development environment
-开发环境里无法使用下载功能，使用下载功能请到release里下载发行包 The download function is not available in the development environment. To use the download function, please go to Release
+开发环境里无法使用下载功能，使用下载功能请到release里下载发行包，或者手动打包musicdownloader.py为exe放置当前目录里
+The download function is not available in the development environment. To use the download function, please go to Release. Or manually package musicdownloader.py and place it in the current directory for the exe
 ```
 git clone https://github.com/beadd/creamplayer
 npm install
