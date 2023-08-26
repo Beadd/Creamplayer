@@ -31,7 +31,7 @@ const props = defineProps({
 const counterStore = useCounterStore()
 counterStore.setLastSearch(props.q)
 
-const searchTheme = ref(12) 
+const searchTheme = ref(15) 
 const darkTheme = ref(false)
 
 const database = 'CreamPlayer'

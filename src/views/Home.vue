@@ -13,7 +13,7 @@ import Theme2 from '../themes/home/2.vue';
 const router = useRouter()
 
 const homeTheme = ref(1) 
-const darkTheme = ref(false)
+const darkTheme = ref(true)
 
 const database = 'CreamPlayer'
 const store = 'Setting'

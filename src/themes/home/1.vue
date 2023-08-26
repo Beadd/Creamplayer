@@ -6,7 +6,7 @@ const inputRef = ref(null)
 
 const emit = defineEmits(['switch', 'search']) 
 function changeTheme() {
-  emit('switch', 2)
+  emit('switch', 1)
 }
 function searchEnter() {
   emit('search', search.value)
@@ -19,7 +19,7 @@ function onClick() {
 <template>
   <div class="home" @contextmenu.prevent="changeTheme" @click="onClick">
       <div class="home-search">
-        <input class="home-input" v-model="search" @keyup.enter="searchEnter" autofocus ref="inputRef"> 
+        <input class="home-input" placeholder="歌曲名或歌单歌曲链接" v-model="search" @keyup.enter="searchEnter" autofocus ref="inputRef"> 
       </div>
     </div>
 </template>
