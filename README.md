@@ -13,14 +13,9 @@
 </p>
 
 # 💡 如何使用 Creamplayer Quick Start
-前往[release](https://github.com/beadd/creamplayer/releases/latest)下载即可，但程序里没有任何提示，所以有必要查看此使用文档 There are no prompts in the program, so you need to check the usage documentation
+前往[release](https://github.com/beadd/creamplayer/releases/latest)下载即可 Just download.
 
-### 首页 Home Page
-- 输入框里输入歌曲名或id即可搜索 Enter the song name or id in the input box to search
-- 输入框里输入歌曲或歌单链接即可批量下载 Enter the link in the input box to download
-- 鼠标右键首页可切换皮肤 Right-click the home page to switch the theme
-- 鼠标中键首页可切换暗黑模式 Middle mouse button home page can switch dark mode
-![](https://raw.githubusercontent.com/Beadd/Creamplayer/main/images/home.png)
+# 📖 使用文档 Usage document
 
 ### 关于下载 About download
 - **下载目录在程序目录的\downloads**
@@ -31,6 +26,14 @@
 - 数字变红代表下载失败了一首，会弹出下载失败的ID If the number turns red, the download failed. An ID indicating that the download failed is displayed
 - 如果歌单多的话有时可能漏掉几首，下载完成后将下载的歌曲数量加下载失败的数量与歌单数量进行比对检查 If the song list is too many, sometimes may miss a few songs, you can compare the number of songs downloaded successfully and those that failed to download, in order to check if your playlist has been fully downloaded
 - 如果下载数量不对，保留原先下载的歌曲文件，再次下载此歌单即可 If the number of downloads is not correct, keep the original downloaded song file and download this playlist again
+
+
+### 首页 Home Page
+- 输入框里输入歌曲名或id即可搜索 Enter the song name or id in the input box to search
+- 输入框里输入歌曲或歌单链接即可批量下载 Enter the link in the input box to download
+- 鼠标右键首页可切换皮肤 Right-click the home page to switch the theme
+- 鼠标中键首页可切换暗黑模式 Middle mouse button home page can switch dark mode
+![](https://raw.githubusercontent.com/Beadd/Creamplayer/main/images/home.png)
 
 ### 搜索结果 Search result Page
 - **鼠标右击封面即可下载 Right-click the cover to download**
