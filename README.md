@@ -18,10 +18,10 @@
 # 📖 使用文档 Usage document
 
 ### 关于下载 About download
-- **下载目录在程序目录的\downloads**
+- **下载的音乐在程序目录的\downloads里**
 - 默认最高音质 Highest sound quality by default
 - 会内嵌封面、歌词、歌手、专辑、发行日期等元数据 Metadata such as covers, lyrics, artists, albums, and release dates are embedded
-- 没有设置Cookie的情况下无法下载无损与VIP歌曲 Lossless and VIP songs cannot be downloaded without setting cookies
+- 没有[设置Cookie](#%E5%A6%82%E4%BD%95%E8%AE%BE%E7%BD%AEcookie-how-to-set-cookies)的情况下无法下载无损与VIP歌曲 Lossless and VIP songs cannot be downloaded without setting cookies
 - 下载时会弹出提示框，里面的数字就是剩余的下载数量 When downloading, a prompt box will pop up, and the number inside is the remaining download quantity
 - 数字变红代表下载失败了一首，会弹出下载失败的ID If the number turns red, the download failed. An ID indicating that the download failed is displayed
 - 如果歌单多的话有时可能漏掉几首，下载完成后将下载的歌曲数量加下载失败的数量与歌单数量进行比对检查 If the song list is too many, sometimes may miss a few songs, you can compare the number of songs downloaded successfully and those that failed to download, in order to check if your playlist has been fully downloaded
