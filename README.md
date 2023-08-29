@@ -13,7 +13,7 @@
 </p>
 
 # 💡 如何使用
-前往[release](https://github.com/beadd/creamplayer/releases/latest)下载即可
+前往[release](https://github.com/beadd/creamplayer/releases)下载即可
 
 # 📖 使用文档
 
