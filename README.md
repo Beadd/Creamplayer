@@ -13,7 +13,7 @@
 </p>
 
 # 💡 如何使用
-前往[release](https://github.com/beadd/creamplayer/releases)下载即可，也可以使用命令行老版本[musicdownloader](https://github.com/Beadd/Creamplayer/releases/tag/v2.6.1)
+前往[release](https://github.com/beadd/creamplayer/releases)下载即可，也可以使用命令行老版本[musicdownloader](https://github.com/Beadd/Creamplayer/releases/tag/v2.6.1)，网页版由于跨域限制无法使用
 
 # 📖 使用文档
 
