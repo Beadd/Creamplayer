@@ -1,6 +1,6 @@
-<h1 align="center">🎵 Creamplayer</h1>
+# 🎵 Creamplayer
 
-<p align="center">
+<p>
 <img src="https://img.shields.io/github/last-commit/beadd/musicdownloader.svg?style=flat" alt="last commit">
 <img src="https://img.shields.io/github/downloads/beadd/musicdownloader/total?style=flat" alt="downloads">
 <img src="https://img.shields.io/github/v/release/beadd/musicdownloader?style=flat" alt="release">
@@ -8,43 +8,50 @@
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat" alt="license">
 </p>
 
-<p align="center">
-<a href="https://github.com/beadd/creamplayer/releases/latest"><img src="https://raw.githubusercontent.com/Beadd/MusicDownloader/main/images/download_github.png" alt="GitHub download" width=""></a>
-</p>
+# 💡 Quick Start
+## [Windows客户端版本](https://github.com/beadd/creamplayer/releases)
+- ✔ 网易云单曲下载
+- ✔ 网易云歌单批量下载
+- ✔ 网易云我喜欢的歌曲批量下载
+- ✔ 支持无损与会员
+- ✔ 下载的歌曲内嵌封面、歌词、歌手、专辑、发行日期等元数据
 
-# 💡 如何使用
-前往[release](https://github.com/beadd/creamplayer/releases)下载即可，也可以使用命令行老版本[musicdownloader](https://github.com/Beadd/Creamplayer/releases/tag/v2.6.1)，网页版由于跨域限制无法使用
+## [Python命令行老版本](https://github.com/Beadd/Creamplayer/releases/tag/v2.6.1)
+- ✔ 网易云单曲下载
+- ✔ 网易云歌单批量下载
+- ✔ 网易云专辑批量下载
+- ✔ 网易云歌手批量下载
+- ✔ 网易云我喜欢的歌曲批量下载
+- ✔ QQ音乐单曲下载
+- ✔ QQ音乐歌单批量下载
+- ✔ QQ音乐我喜欢的歌曲批量下载
+- ✔ 支持无损与会员
+- ✔ 下载的歌曲内嵌封面、歌词、歌手、专辑、发行日期等元数据
+
+## [服务器版本](https://github.com/Beadd/Creamplayer/tree/server)
+- ✔ 网易云单曲下载
+- ✔ 支持无损与会员
 
 # 📖 使用文档
 
 ### 关于下载
 - **下载的音乐在程序目录的\downloads里**
-- 默认最高音质
-- 默认会内嵌封面、歌词、歌手、专辑、发行日期等元数据
-- 没有[设置Cookie](#如何获取cookie)的情况下无法下载无损与VIP歌曲
-- 下载时会弹出提示框，里面的数字就是剩余的下载数量
-- 数字变红代表下载失败了一首，会弹出下载失败的ID
-- 如果歌单多的话有时可能漏掉几首，下载完成后将下载的歌曲数量加下载失败的数量与歌单数量进行比对检查
-- 如果下载数量不对，保留原先下载的歌曲文件，再次下载此歌单即可
-
+- 如果下载数量不对，再次下载即可
 
 ### 首页
-- 鼠标中键首页可切换暗黑模式
+- 右键首页切换皮肤
+- 中键首页切换暗黑模式
 ![](https://raw.githubusercontent.com/Beadd/Creamplayer/main/images/home.png)
-- 输入框里输入歌曲名或id即可搜索
-- 输入框里输入歌曲或歌单链接即可批量下载
-- 鼠标右键首页可切换皮肤
 
-### 搜索结果
-- **鼠标右击封面即可下载**
-- 鼠标单击封面即可进入播放界面
-- 鼠标单击空白地方即可返回
-- 鼠标右击空白地方即可切换切换主题
+
+### 结果页面
+- **右击歌曲封面即可下载该歌曲**
+- 单击空白返回
+- 右击空白切换主题
 
 ### 播放界面
-- 默认最高音质
-- 鼠标单击最左侧即可返回
-- 鼠标右键即可切换主题
+- 单击最左侧返回
+- 右键切换主题
 
 ### 快捷键
 - `ctrl` + `shift` + `i` 开发者工具
