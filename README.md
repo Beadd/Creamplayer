@@ -63,7 +63,7 @@
 ### 关于QQ音乐
 - Creamplayer暂时无法下载qq音乐，你可以使用Release里本项目老版本[musicdownloader](https://github.com/Beadd/Creamplayer/releases/tag/v2.6.1)
 
-# 🎨 如何贡献主题 Contribute theme
+# 🎨 如何修改主题 Contribute theme
 首页、搜索、播放三个界面每个对应一个vue文件，在[src/themes](https://github.com/Beadd/Creamplayer/tree/main/src/themes)里，将其他主题当作模板，修改里面的CSS即可自定义主题，然后创建对于的文件名即可 
 ### 需要修改的文件
 - 修改上一个vue文件changeTheme函数，修改switch后面的数为新增的主题vue文件名(数字)
