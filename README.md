@@ -9,13 +9,7 @@
 </p>
 
 # 💡 Quick Start 
-## [Creamplayer](https://github.com/beadd/creamplayer/releases) 💾 Out of the box Or
-```
-git clone https://github.com/beadd/creamplayer
-cd creamplayer
-npm install
-npm run electron:serve
-```
+## [Creamplayer](https://github.com/beadd/creamplayer/releases) 💾 Out of the box
 
 ## [Musicdownloader](https://github.com/Beadd/Creamplayer/releases/tag/v2.6.1) 💾 Out of the box Or
 ```
