@@ -19,6 +19,14 @@ pip install -r requirements.txt
 python musicdownloader.py
 ```
 
+## [Musicdownloader(GUI)](https://github.com/Beadd/Creamplayer/releases/tag/v3.2.0) 💾(exe) Out of the box Or
+```
+git clone https://github.com/beadd/creamplayer -b eyed3music
+cd creamplayer
+pip install -r requirements.txt
+python EyeD3Music.py
+```
+
 ## Creamplayer Server 🌐(vue cli) Run on Browser
 ```
 git clone https://github.com/beadd/creamplayer -b server
