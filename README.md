@@ -8,7 +8,7 @@
 <img src="https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat" alt="license">
 </p>
 
-# 💡 Quick Start Click it
+# 💡 Quick Start 
 ## [Creamplayer](https://github.com/beadd/creamplayer/releases) 💾 Out of the box Or
 ```
 git clone https://github.com/beadd/creamplayer
