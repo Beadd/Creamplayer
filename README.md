@@ -9,9 +9,9 @@
 </p>
 
 # 💡 Quick Start 
-## [Creamplayer](https://github.com/beadd/creamplayer/releases) 💾 Out of the box
+## [Creamplayer](https://github.com/beadd/creamplayer/releases) 💾(exe) Out of the box
 
-## [Musicdownloader](https://github.com/Beadd/Creamplayer/releases/tag/v2.6.1) 💾 Out of the box Or
+## [Musicdownloader](https://github.com/Beadd/Creamplayer/releases/tag/v2.6.1) 💾(exe) Out of the box Or
 ```
 git clone https://github.com/beadd/creamplayer -b musicdownloader
 cd creamplayer
