@@ -19,7 +19,7 @@ pip install -r requirements.txt
 python musicdownloader.py
 ```
 
-## [Creamplayer Server](https://github.com/Beadd/Creamplayer/tree/server) 🌐 Run on Browser
+## Creamplayer Server 🌐(vue cli) Run on Browser
 ```
 git clone https://github.com/beadd/creamplayer -b server
 npm install
