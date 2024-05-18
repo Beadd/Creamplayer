@@ -505,12 +505,12 @@ def json_add_mutagen(data, music_path, music_type, headers, proxies, header163):
     # album
     try:
         music_album_name = ID_get_music_album_name(music_id, header163, proxies)
-        audio['artist'] = music_album_name
+        audio['album'] = music_album_name
         plog("  已内嵌专辑")
     except: 
         try:
             music_album_name = ID_get_music_album_name_qq(music_id, headers, proxies)
-            audio['artist'] = music_album_name
+            audio['album'] = music_album_name
             plog("  已内嵌专辑")
         except: pass
     # public time
