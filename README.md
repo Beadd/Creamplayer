@@ -1,4 +1,4 @@
-> 刚开学事情太多了，过几个月就重建这个项目。
+> 整个项目即将重构
 # 🎵 Creamplayer
 
 <p>
@@ -13,24 +13,7 @@
 ## [Creamplayer](https://github.com/beadd/creamplayer/releases) 💾(exe) Out of the box
 
 ## [Musicdownloader](https://github.com/Beadd/Creamplayer/releases/tag/v2.6.1) 💾(exe) Out of the box Or
-```
-git clone https://github.com/beadd/creamplayer -b musicdownloader
-cd creamplayer
-pip install -r requirements.txt
-python musicdownloader.py
-```
 
 ## [Musicdownloader(GUI)](https://github.com/Beadd/Creamplayer/releases/tag/v3.2.0) 💾(exe) Out of the box Or
-```
-git clone https://github.com/beadd/creamplayer -b eyed3music
-cd creamplayer
-pip install -r requirements.txt
-python EyeD3Music.py
-```
 
 ## Creamplayer Server 🌐(vue cli) Run on Browser
-```
-git clone https://github.com/beadd/creamplayer -b server
-npm install
-vue serve
-```
