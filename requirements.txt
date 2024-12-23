@@ -1,4 +1,0 @@
-argparse
-eyed3
-requests
-mutagen
