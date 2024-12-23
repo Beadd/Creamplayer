@@ -1,0 +1,30 @@
+{
+  "system": {
+    "test": "这是一条测试信息"
+  },
+  "search": {
+    "placeholder": "歌曲名称或URL",
+    "search": "搜索"
+  },
+  "downloader": {
+    "all": "下载全部",
+    "set_maximum_number_of_processes": "设置最大进程数",
+    "no_limit": "无限制"
+  },
+  "list": {
+    "state": "状态",
+    "song_name": "歌曲名称",
+    "cover": "封面",
+    "artist": "艺术家",
+    "album": "专辑",
+    "id": "标识",
+    "publish_time": "发布时间",
+    "download": "下载",
+    "downloading": "下载中",
+    "open_folder": "打开文件夹",
+    "vip_retry": "VIP & 重试"
+  },
+  "loader": {
+    "more": "加载更多"
+  }
+}

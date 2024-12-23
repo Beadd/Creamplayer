@@ -1,0 +1,30 @@
+{
+  "system": {
+    "test": "This is a test message"
+  },
+  "search": {
+    "placeholder": "Song Name or URL",
+    "search": "Search"
+  },
+  "downloader": {
+    "all": "Downloade All",
+    "set_maximum_number_of_processes": "Set Maximum Number of Processes",
+    "no_limit": "No Limit"
+  },
+  "list": {
+    "state": "State",
+    "song_name": "Song Name",
+    "cover": "Cover",
+    "artist": "Artist",
+    "album": "Album",
+    "id": "ID",
+    "publish_time": "Publish Time",
+    "download": "Download",
+    "downloading": "Downloading",
+    "open_folder": "Open Folder",
+    "vip_retry": "Vip & Retry"
+  },
+  "loader": {
+    "more": "Load More"
+  }
+}
