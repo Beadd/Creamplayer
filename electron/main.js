@@ -38,7 +38,7 @@ function createWindow() {
   });
 
   if (process.env.NODE_ENV === "development") {
-    win.loadURL("http://localhost:3000");
+    win.loadURL("http://localhost:5173");
     win.maximize();
     win.webContents.openDevTools();
   } else {
