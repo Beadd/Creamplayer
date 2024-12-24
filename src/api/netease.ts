@@ -3,7 +3,10 @@ import { format } from "date-fns";
 import type { Song } from "../types/song";
 
 const apiClient = axios.create({
-  baseURL: "/api",
+  baseURL:
+    import.meta.env.MODE === "development"
+      ? "/api"
+      : "http://music.163.com/api",
   headers: {
     "Content-Type": "application/json",
   },

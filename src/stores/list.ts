@@ -9,6 +9,7 @@ export const useListStore = defineStore("list", () => {
   const value = ref("");
   const rowData = ref<Song[]>([]);
   const hasMore = ref(true);
+  const saveLyric = ref(false);
 
   const limit = 20;
 
@@ -57,7 +58,10 @@ export const useListStore = defineStore("list", () => {
     const res = await netease.download(rowData.value[index]);
     rowData.value[index] = res;
 
-    const result = await electron.download(rowData.value[index]);
+    const result = await electron.download(
+      rowData.value[index],
+      saveLyric.value,
+    );
 
     if (result) {
       rowData.value[index].path = result;
@@ -104,5 +108,6 @@ export const useListStore = defineStore("list", () => {
     download,
     open,
     downloadAll,
+    saveLyric,
   };
 });

@@ -9,7 +9,8 @@
   "downloader": {
     "all": "Downloade All",
     "set_maximum_number_of_processes": "Set Maximum Number of Processes",
-    "no_limit": "No Limit"
+    "no_limit": "No Limit",
+    "save_the_lyrics_file_separately": "Save the Lyrics File Separately"
   },
   "list": {
     "state": "State",

@@ -6,7 +6,8 @@ function checkFileName(name: string) {
 }
 
 export const electron = {
-  download: async (song: Song) => {
+  // @saveLyric: Save lyrics to a separate file
+  download: async (song: Song, saveLyric: boolean = false) => {
     const name = encodeURIComponent(checkFileName(song.name));
     const artist = encodeURIComponent(checkFileName(song.artist));
     const album = encodeURIComponent(checkFileName(song.album));
@@ -14,7 +15,7 @@ export const electron = {
     const publishTime = song.publishTime ? song.publishTime : "";
 
     // prettier-ignore
-    const args = 
+    let args = 
         ' -s ' + song.url  
       + ' -f "' + name + " - " + artist + '"'
       + ' -u ' + song.url
@@ -25,6 +26,10 @@ export const electron = {
       + ' -ar "' + artist + '"'
       + ' -al "' + album + '"'
       + ' -p "' + publishTime + '"';
+
+    if (saveLyric) {
+      args += " -sl";
+    }
 
     // @ts-ignore
     const res = window.electron.invoke("download", args);

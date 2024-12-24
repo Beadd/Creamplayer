@@ -1,24 +1,40 @@
 {
-  "name": "my-vue-app",
+  "name": "creamplayer",
+  "version": "5.0.0",
+  "description": "A music downloader with metadata",
+  "main": "main.cjs",
+  "author": "Beadd",
+  "license": "MIT",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
-    "start": "electron ./electron/main.js"
+    "start": "set NODE_ENV=development&& electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "dependencies": {
     "ag-grid-vue3": "^33.0.3",
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
+    "electron-squirrel-startup": "^1.0.1",
     "pinia": "^2.3.0",
     "pinia-plugin-persistedstate": "^4.2.0",
     "vue": "^3.5.13",
     "vue-i18n": "^10.0.5"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.6.0",
+    "@electron-forge/maker-deb": "^7.6.0",
+    "@electron-forge/maker-rpm": "^7.6.0",
+    "@electron-forge/maker-squirrel": "^7.6.0",
+    "@electron-forge/maker-zip": "^7.6.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
+    "@electron-forge/plugin-fuses": "^7.6.0",
+    "@electron/fuses": "^1.8.0",
+    "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.20",
