@@ -37,19 +37,21 @@ async function search(q: string, limit: number, offset: number) {
   }
 }
 
-async function url(id: string) {
+async function url(
+  id: string,
+  cookie: string = "",
+  quality: number = 2147483647,
+) {
   let res = await apiClient.get(
-    "/song/enhance/player/url?ids=[" + id + "]&br=2147483647",
+    "/song/enhance/player/url?ids=[" + id + "]&br=" + quality,
   );
 
-  if (res.data.data[0].url === null) {
-    const loginStore = useLoginStore();
-
+  if (res.data.data[0].url === null && cookie !== "") {
     res = await apiClient.get(
-      `/song/enhance/player/url?ids=[${id}]&br=2147483647`,
+      `/song/enhance/player/url?ids=[${id}]&br=` + quality,
       {
         headers: {
-          flag: loginStore.neteaseCookie,
+          flag: cookie,
         },
       },
     );
@@ -117,8 +119,8 @@ export default {
     return songs;
   },
 
-  async download(song: Song) {
-    song.url = await url(song.id);
+  async download(song: Song, cookie?: string, quality?: number) {
+    song.url = await url(song.id, cookie, quality);
     song.lyrics = lyric(song.id);
     return song;
   },

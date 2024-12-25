@@ -1,19 +1,15 @@
 <template>
-  <div
-    v-show="listStore.show && listStore.hasMore"
-    @click="click"
-    class="btn btn-accent"
-  >
+  <div v-show="loadStore.show" @click="click" class="btn btn-accent">
     {{ $t("loader.more") }}
   </div>
 </template>
 
 <script setup lang="ts">
-import { useListStore } from "../../stores/list";
+import { useLoadStore } from "../../stores/load";
 
-const listStore = useListStore();
+const loadStore = useLoadStore();
 
 async function click() {
-  await listStore.loadMore();
+  await loadStore.loadMore();
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-2" v-show="listStore.show">
+  <div class="flex gap-2" v-show="loginStore.show">
     <div @click="click" class="btn btn-error">
       {{ $t("loginer.login_to_netease_to_download_vip") }}
     </div>
@@ -22,9 +22,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useLoginStore } from "../../stores/login";
-import { useListStore } from "../../stores/list";
 
-const listStore = useListStore();
 const loginStore = useLoginStore();
 const status = ref(0);
 const btnClass = ref("btn-warning");

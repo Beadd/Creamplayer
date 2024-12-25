@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const useLoginStore = defineStore("login", () => {
+  const show = ref(false);
   const neteaseCookie = ref("");
 
   const login = () => {
@@ -19,6 +20,7 @@ export const useLoginStore = defineStore("login", () => {
   };
 
   return {
+    show,
     login,
     get,
     neteaseCookie,

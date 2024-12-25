@@ -3,7 +3,7 @@
     <label class="input input-bordered flex items-center gap-2">
       <input
         @keydown.enter="click"
-        v-model="listStore.value"
+        v-model="searchStore.value"
         type="text"
         class="grow"
         :placeholder="$t('search.placeholder')"
@@ -26,12 +26,12 @@
 </template>
 
 <script setup lang="ts">
-import { useListStore } from "../../stores/list";
+import { useSearchStore } from "../../stores/search";
 
-const listStore = useListStore();
+const searchStore = useSearchStore();
 
 async function click() {
-  const res = await listStore.search();
+  const res = await searchStore.search();
   if (res) {
   }
 }

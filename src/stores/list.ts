@@ -1,70 +1,21 @@
 import { defineStore } from "pinia";
-import { ref, watch } from "vue";
-import netease from "../api/netease";
+import { ref } from "vue";
 import type { Song } from "../types/song";
+import { useDownloadStore } from "./download";
 import { electron } from "../api/download";
 
 export const useListStore = defineStore("list", () => {
   const show = ref(false);
-  const value = ref("");
   const rowData = ref<Song[]>([]);
-  const hasMore = ref(true);
-  const saveLyric = ref(false);
-
-  const limit = 20;
-
-  watch(value, () => {
-    show.value = false;
-    rowData.value = [];
-    hasMore.value = true;
-  });
-
-  async function search() {
-    const res: any = await netease.search(value.value, 5, 0);
-
-    if (res.length > 0) {
-      rowData.value = res;
-      show.value = true;
-      hasMore.value = res.length === 5;
-    }
-
-    console.log(res);
-    return true;
-  }
-
-  async function loadMore() {
-    if (!hasMore.value) return;
-
-    const res: any = await netease.search(
-      value.value,
-      limit + 1,
-      rowData.value.length,
-    );
-
-    if (res.length > 0) {
-      const itemsToAdd = res.slice(0, limit);
-      rowData.value = rowData.value.concat(itemsToAdd);
-
-      hasMore.value = res.length > limit;
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   async function download(index: number) {
+    const downloadStore = useDownloadStore();
     rowData.value[index].state = "downloading";
 
-    const res = await netease.download(rowData.value[index]);
-    rowData.value[index] = res;
+    const res = await downloadStore.download(rowData.value[index]);
 
-    const result = await electron.download(
-      rowData.value[index],
-      saveLyric.value,
-    );
-
-    if (result) {
-      rowData.value[index].path = result;
+    if (res) {
+      rowData.value[index].path = res;
       rowData.value[index].state = "downloaded";
       return true;
     } else {
@@ -99,15 +50,10 @@ export const useListStore = defineStore("list", () => {
   }
 
   return {
-    rowData,
-    search,
     show,
-    value,
-    loadMore,
-    hasMore,
     download,
     open,
     downloadAll,
-    saveLyric,
+    rowData,
   };
 });
