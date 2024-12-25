@@ -22,7 +22,7 @@
           />
         </label>
       </div>
-      <novip></novip>
+      <anonymous></anonymous>
     </div>
   </div>
 </template>
@@ -32,7 +32,7 @@ import { useListStore } from "../../stores/list";
 import { useDownloadStore } from "../../stores/download";
 import process from "./process.vue";
 import quality from "./quality.vue";
-import novip from "./novip.vue";
+import anonymous from "./anonymous.vue";
 
 const downloadStore = useDownloadStore();
 const listStore = useListStore();

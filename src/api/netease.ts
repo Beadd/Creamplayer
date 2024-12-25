@@ -40,17 +40,19 @@ async function url(
   id: string,
   cookie: string = "",
   quality: number = 2147483647,
-  novip: boolean = true,
+  anonymous: boolean = true,
 ) {
   if (quality === 0) {
     quality = 2147483647;
   }
 
-  let res = await apiClient.get(
-    "/song/enhance/player/url?ids=[" + id + "]&br=" + quality,
-  );
-
-  if (res.data.data[0].url === null && cookie !== "" && novip) {
+  let res: any;
+  async function normal() {
+    res = await apiClient.get(
+      "/song/enhance/player/url?ids=[" + id + "]&br=" + quality,
+    );
+  }
+  async function vip() {
     res = await apiClient.get(
       `/song/enhance/player/url?ids=[${id}]&br=` + quality,
       {
@@ -59,6 +61,23 @@ async function url(
         },
       },
     );
+  }
+
+  if (cookie === "") {
+    await normal();
+  } else {
+    if (quality === 2147483647) {
+      await vip();
+    } else {
+      if (anonymous) {
+        await normal();
+        if (res.data.data[0].url === null) {
+          await vip();
+        }
+      } else {
+        await vip();
+      }
+    }
   }
 
   return res.data.data[0].url;
@@ -127,9 +146,9 @@ export default {
     song: Song,
     cookie?: string,
     quality?: number,
-    novip?: boolean,
+    anonymous?: boolean,
   ) {
-    song.url = await url(song.id, cookie, quality, novip);
+    song.url = await url(song.id, cookie, quality, anonymous);
     song.lyrics = lyric(song.id);
     return song;
   },

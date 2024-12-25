@@ -7,7 +7,7 @@
       <input
         type="checkbox"
         class="toggle toggle-accent"
-        v-model="downloadStore.novip"
+        v-model="downloadStore.anonymous"
       />
     </label>
   </div>
