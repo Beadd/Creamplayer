@@ -10,7 +10,9 @@
     "all": "下载全部",
     "set_maximum_number_of_processes": "设置最大进程数",
     "no_limit": "无限制",
-    "save_the_lyrics_file_separately": "单独保存歌词文件"
+    "save_the_lyrics_file_separately": "单独保存歌词文件",
+    "lossless": "无损",
+    "set_song_bitrate": "设置歌曲比特率"
   },
   "list": {
     "state": "状态",

@@ -8,7 +8,7 @@ import { electron } from "../api/download";
 export const useDownloadStore = defineStore("download", () => {
   const show = ref(false);
   const saveLyric = ref(false);
-  const quality = ref(2147483647);
+  const quality = ref(0); // lossless
   const process = ref(2);
 
   async function download(song: Song) {
@@ -24,5 +24,5 @@ export const useDownloadStore = defineStore("download", () => {
     return result;
   }
 
-  return { show, saveLyric, download, process };
+  return { show, saveLyric, download, process, quality };
 });

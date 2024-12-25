@@ -1,7 +1,6 @@
 import axios from "axios";
 import { format } from "date-fns";
 import type { Song } from "../types/song";
-import { useLoginStore } from "../stores/login";
 
 const apiClient = axios.create({
   baseURL:
@@ -42,6 +41,10 @@ async function url(
   cookie: string = "",
   quality: number = 2147483647,
 ) {
+  if (quality === 0) {
+    quality = 2147483647;
+  }
+
   let res = await apiClient.get(
     "/song/enhance/player/url?ids=[" + id + "]&br=" + quality,
   );

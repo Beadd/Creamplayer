@@ -8,6 +8,7 @@
       <slot></slot>
     </div>
     <process></process>
+    <quality></quality>
     <div class="flex justify-center items-center gap-2">
       <div class="form-control flex-row">
         <label class="label cursor-pointer gap-4">
@@ -29,6 +30,7 @@
 import { useListStore } from "../../stores/list";
 import { useDownloadStore } from "../../stores/download";
 import process from "./process.vue";
+import quality from "./quality.vue";
 
 const downloadStore = useDownloadStore();
 const listStore = useListStore();
