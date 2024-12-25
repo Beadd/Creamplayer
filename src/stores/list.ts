@@ -5,7 +5,7 @@ import type { Song } from "../types/song";
 import { electron } from "../api/download";
 
 export const useListStore = defineStore("list", () => {
-  const show = ref(true);
+  const show = ref(false);
   const value = ref("");
   const rowData = ref<Song[]>([]);
   const hasMore = ref(true);

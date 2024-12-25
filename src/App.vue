@@ -4,9 +4,8 @@
       <languager></languager>
     </div>
     <search></search>
-    <downloader>
-      <loginer></loginer>
-    </downloader>
+    <downloader></downloader>
+    <loginer></loginer>
     <div class="w-full">
       <list></list>
     </div>

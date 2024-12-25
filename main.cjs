@@ -3,6 +3,7 @@ const { exec } = require("child_process");
 const { join } = require("path");
 const path = require("path");
 const fs = require("fs");
+const { session } = require("electron");
 
 let loginWindow;
 
@@ -69,12 +70,8 @@ function createWindow() {
 
 function createLoginWindow() {
   loginWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-    },
+    width: 800,
+    height: 600,
   });
 
   loginWindow.loadURL("https://music.163.com/login");
@@ -89,6 +86,21 @@ ipcMain.handle("netease-login", async () => {
     loginWindow.focus();
   } else {
     createLoginWindow();
+  }
+});
+
+ipcMain.handle("get-netease-login", async () => {
+  try {
+    const cookies = await loginWindow.webContents.session.cookies.get({
+      url: "https://music.163.com",
+    });
+    const cookieString = cookies
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join("; ");
+
+    return cookieString;
+  } catch (error) {
+    return null;
   }
 });
 
@@ -130,6 +142,18 @@ ipcMain.handle("open", async (event, relativePath) => {
 // Electron app lifecycle
 app.whenReady().then(() => {
   createWindow();
+
+  // Allow to set cookie
+  const defaultSession = session.defaultSession;
+  defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+    const cookieValue = details.requestHeaders["flag"];
+    if (cookieValue) {
+      delete details.requestHeaders["flag"];
+      details.requestHeaders.Cookie = cookieValue;
+    }
+
+    callback({ requestHeaders: details.requestHeaders });
+  });
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {

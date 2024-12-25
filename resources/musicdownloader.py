@@ -111,12 +111,13 @@ def set_mp3_metadata(path, metadata):
 # Set FLAC metadata
 def set_flac_metadata(path, metadata):
     audio = FLAC(path)
-    # Set cover
+    
+    # Set cover image
     if metadata['cover_url']:
         cover_data = requests.get(metadata['cover_url']).content
         mime_type = "image/jpeg" if metadata['cover_url'].endswith(('jpg', 'jpeg')) else "image/png"
         picture = Picture()
-        picture.type = 3
+        picture.type = 3  # Cover art
         picture.mime = mime_type
         picture.data = cover_data
         audio.add_picture(picture)
@@ -125,19 +126,31 @@ def set_flac_metadata(path, metadata):
     audio['title'] = metadata['title']
     audio['artist'] = metadata['artist']
     audio['album'] = metadata['album']
-    audio['copyright'] = metadata['song_id']
+    audio['copyright'] = str(metadata['song_id'])
 
     # Set publish time
     if metadata['publish_time']:
         publish_time = metadata['publish_time']
         publish_time = datetime.datetime.strptime(publish_time, '%Y-%m-%d %H:%M:%S')
         audio['date'] = publish_time.strftime('%Y-%m-%d')
+        audio['YEAR'] = publish_time.strftime('%Y')
 
+    # Fetch and set lyrics (if available)
+    if metadata['lyrics_url']:
+        try:
+            lyrics_response = requests.get(metadata['lyrics_url'])
+            if lyrics_response.status_code == 200:
+                lyrics = lyrics_response.text
+                audio['LYRICS'] = lyrics  # Adding lyrics as UNSYNCEDLYRICS or LYRICS
+        except Exception as e:
+            print(f"Error fetching lyrics: {e}")
+
+    # Save the FLAC metadata
     try:
         audio.save()
-        print("FLAC metadata saved successfully:" + path)
+        print(f"FLAC metadata saved successfully: {path}")
     except Exception as e:
-        print("Failed to save FLAC metadata:" + e)
+        print(f"Failed to save FLAC metadata: {e}")
 
 # Main process
 def main():

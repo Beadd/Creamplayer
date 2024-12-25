@@ -1,6 +1,7 @@
 import axios from "axios";
 import { format } from "date-fns";
 import type { Song } from "../types/song";
+import { useLoginStore } from "../stores/login";
 
 const apiClient = axios.create({
   baseURL:
@@ -37,9 +38,22 @@ async function search(q: string, limit: number, offset: number) {
 }
 
 async function url(id: string) {
-  const res = await apiClient.get(
+  let res = await apiClient.get(
     "/song/enhance/player/url?ids=[" + id + "]&br=2147483647",
   );
+
+  if (res.data.data[0].url === null) {
+    const loginStore = useLoginStore();
+
+    res = await apiClient.get(
+      `/song/enhance/player/url?ids=[${id}]&br=2147483647`,
+      {
+        headers: {
+          flag: loginStore.neteaseCookie,
+        },
+      },
+    );
+  }
 
   return res.data.data[0].url;
 }

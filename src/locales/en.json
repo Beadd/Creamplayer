@@ -29,6 +29,9 @@
     "more": "Load More"
   },
   "loginer": {
-    "login_to_netease_to_download_vip": "Login to Netease to Download VIP Songs"
+    "login_to_netease_to_download_vip": "Login to Netease to Download VIP Songs",
+    "after_login_or_logout_please_click_me_before_closing_login_window": "After login or logout, please click me before closing login window",
+    "cookie_set_successfully": "Cookie set successfully",
+    "sorry_please_try_again_or_open_window_again": "Sorry, please try again or open the window again"
   }
 }

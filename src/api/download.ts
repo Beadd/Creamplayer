@@ -16,11 +16,11 @@ export const electron = {
 
     // prettier-ignore
     let args = 
-        ' -s ' + song.url  
+        ' -s "' + song.url + '" '  
       + ' -f "' + name + " - " + artist + '"'
-      + ' -u ' + song.url
-      + ' -c ' + song.cover
-      + ' -l ' + (lyrics ? `"${lyrics}"` : "")  
+      + ' -u "' + song.url + '" '  
+      + ' -c "' + song.cover + '"'
+      + ' -l "' + (lyrics ? lyrics : "") + '" '
       + ' -i ' + song.id
       + ' -t "' + name + '"'
       + ' -ar "' + artist + '"'
