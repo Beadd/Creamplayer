@@ -26,16 +26,35 @@ async function runScript(binPath, args, onSuccess, onError) {
   });
 }
 
-// Create the main Electron window
+function setTitle(win) {
+  const currentTime = new Date();
+  const currentHour = currentTime.getHours();
+  let greeting = "";
+
+  if (currentHour >= 0 && currentHour < 12) {
+    greeting = "Creamplayer - Good Morning";
+  } else if (currentHour >= 12 && currentHour < 19) {
+    greeting = "Creamplayer - Good Afternoon";
+  } else {
+    greeting = "Creamplayer - Good Evening";
+  }
+
+  win.webContents.on("did-finish-load", () => {
+    win.webContents.executeJavaScript(`document.title = "${greeting}"`);
+  });
+}
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 700,
     webPreferences: {
       preload: join(__dirname, "preload.cjs"),
     },
+    title: "Creamplayer",
     autoHideMenuBar: true,
   });
+  setTitle(win);
 
   if (process.env.NODE_ENV === "development") {
     win.loadURL("http://localhost:5173");
