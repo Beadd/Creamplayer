@@ -49,8 +49,8 @@ function setTitle(win) {
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 700,
+    width: 900,
+    height: 800,
     webPreferences: {
       preload: join(__dirname, "preload.cjs"),
     },

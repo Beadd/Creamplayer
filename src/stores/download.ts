@@ -10,6 +10,7 @@ export const useDownloadStore = defineStore("download", () => {
   const saveLyric = ref(false);
   const quality = ref(0); // lossless
   const process = ref(2);
+  const novip = ref(true); // Use anonymous downloading of non-lossless songs
 
   async function download(song: Song) {
     const loginStore = useLoginStore();
@@ -17,6 +18,7 @@ export const useDownloadStore = defineStore("download", () => {
       song,
       loginStore.neteaseCookie,
       quality.value,
+      novip.value,
     );
 
     const result = await electron.download(song, saveLyric.value);
@@ -24,5 +26,5 @@ export const useDownloadStore = defineStore("download", () => {
     return result;
   }
 
-  return { show, saveLyric, download, process, quality };
+  return { show, saveLyric, download, process, quality, novip };
 });

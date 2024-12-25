@@ -40,6 +40,7 @@ async function url(
   id: string,
   cookie: string = "",
   quality: number = 2147483647,
+  novip: boolean = true,
 ) {
   if (quality === 0) {
     quality = 2147483647;
@@ -49,7 +50,7 @@ async function url(
     "/song/enhance/player/url?ids=[" + id + "]&br=" + quality,
   );
 
-  if (res.data.data[0].url === null && cookie !== "") {
+  if (res.data.data[0].url === null && cookie !== "" && novip) {
     res = await apiClient.get(
       `/song/enhance/player/url?ids=[${id}]&br=` + quality,
       {
@@ -122,8 +123,13 @@ export default {
     return songs;
   },
 
-  async download(song: Song, cookie?: string, quality?: number) {
-    song.url = await url(song.id, cookie, quality);
+  async download(
+    song: Song,
+    cookie?: string,
+    quality?: number,
+    novip?: boolean,
+  ) {
+    song.url = await url(song.id, cookie, quality, novip);
     song.lyrics = lyric(song.id);
     return song;
   },

@@ -12,7 +12,8 @@
     "no_limit": "无限制",
     "save_the_lyrics_file_separately": "单独保存歌词文件",
     "lossless": "无损",
-    "set_song_bitrate": "设置歌曲比特率"
+    "set_song_bitrate": "设置歌曲比特率",
+    "use_anonymous_downloading_of_non_lossless_songs": "使用匿名下载非无损歌曲(推荐)"
   },
   "list": {
     "state": "状态",

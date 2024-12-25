@@ -12,7 +12,8 @@
     "no_limit": "No Limit",
     "save_the_lyrics_file_separately": "Save the Lyrics File Separately",
     "lossless": "Lossless",
-    "set_song_bitrate": "Set Song Bitrate"
+    "set_song_bitrate": "Set Song Bitrate",
+    "use_anonymous_downloading_of_non_lossless_songs": "Use Anonymous Downloading of Non-Lossless Songs(Recommended)"
   },
   "list": {
     "state": "State",
