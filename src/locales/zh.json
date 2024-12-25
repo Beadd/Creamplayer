@@ -27,5 +27,8 @@
   },
   "loader": {
     "more": "加载更多"
+  },
+  "loginer": {
+    "login_to_netease_to_download_vip": "登录网易云以下载VIP歌曲"
   }
 }

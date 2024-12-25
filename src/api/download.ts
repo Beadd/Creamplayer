@@ -31,13 +31,11 @@ export const electron = {
       args += " -sl";
     }
 
-    // @ts-ignore
-    const res = window.electron.invoke("download", args);
+    const res = (window as any).electron.invoke("download", args);
     return res;
   },
 
   open(path: string) {
-    // @ts-ignore
-    window.electron.invoke("open", path);
+    (window as any).electron.invoke("open", path);
   },
 };

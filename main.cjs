@@ -4,6 +4,8 @@ const { join } = require("path");
 const path = require("path");
 const fs = require("fs");
 
+let loginWindow;
+
 // Function to execute Python scripts
 async function runScript(binPath, args, onSuccess, onError) {
   exec(binPath + args, (error, stdout, stderr) => {
@@ -64,6 +66,31 @@ function createWindow() {
     win.loadFile("./dist/index.html");
   }
 }
+
+function createLoginWindow() {
+  loginWindow = new BrowserWindow({
+    width: 600,
+    height: 400,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+
+  loginWindow.loadURL("https://music.163.com/login");
+
+  loginWindow.on("closed", () => {
+    loginWindow = null;
+  });
+}
+
+ipcMain.handle("netease-login", async () => {
+  if (loginWindow) {
+    loginWindow.focus();
+  } else {
+    createLoginWindow();
+  }
+});
 
 ipcMain.handle("download", async (event, args) => {
   const binPath = join("./resources/musicdownloader.exe");

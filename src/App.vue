@@ -4,7 +4,9 @@
       <languager></languager>
     </div>
     <search></search>
-    <downloader></downloader>
+    <downloader>
+      <loginer></loginer>
+    </downloader>
     <div class="w-full">
       <list></list>
     </div>
@@ -18,6 +20,7 @@ import list from "./components/list/index.vue";
 import loader from "./components/loader/index.vue";
 import downloader from "./components/downloader/index.vue";
 import languager from "./components/languager/index.vue";
+import loginer from "./components/loginer/index.vue";
 </script>
 
 <style lang="postcss" module>

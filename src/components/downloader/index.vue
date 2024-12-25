@@ -1,10 +1,11 @@
 <template>
   <div class="flex gap-4 flex-col" v-show="listStore.show">
     <!-- Download All Button -->
-    <div class="flex justify-center items-center">
+    <div class="flex justify-center items-center gap-2">
       <div @click="click" class="btn btn-accent">
         {{ $t("downloader.all") }} ({{ listStore.rowData.length }})
       </div>
+      <slot></slot>
     </div>
     <div class="flex justify-center items-center gap-2 cursor-pointer">
       {{ $t("downloader.set_maximum_number_of_processes") }}

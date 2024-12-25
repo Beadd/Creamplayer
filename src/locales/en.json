@@ -23,9 +23,12 @@
     "download": "Download",
     "downloading": "Downloading",
     "open_folder": "Open Folder",
-    "vip_retry": "Vip & Retry"
+    "vip_retry": "VIP & Retry"
   },
   "loader": {
     "more": "Load More"
+  },
+  "loginer": {
+    "login_to_netease_to_download_vip": "Login to Netease to Download VIP Songs"
   }
 }
