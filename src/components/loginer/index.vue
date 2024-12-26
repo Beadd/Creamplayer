@@ -1,7 +1,7 @@
 <template>
   <div class="flex gap-2" v-show="loginStore.show">
     <div @click="click" class="btn btn-error">
-      {{ $t("loginer.login_to_netease_to_download_vip") }}
+      {{ $t("loginer.login_to_netease_to_download_vip_and_lossless") }}
     </div>
     <div class="btn" :class="btnClass" @click="clickCheck">
       <text v-if="status === 0">{{

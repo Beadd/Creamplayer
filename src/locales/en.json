@@ -8,7 +8,7 @@
   },
   "downloader": {
     "all": "Downloade All",
-    "set_maximum_number_of_processes": "Set Maximum Number of Processes",
+    "set_the_limit_on_the_number_of_download_processes": "Set the Limit on the Number of Download Processes",
     "no_limit": "No Limit",
     "save_the_lyrics_file_separately": "Save the Lyrics File Separately",
     "lossless": "Lossless",
@@ -32,7 +32,7 @@
     "more": "Load More"
   },
   "loginer": {
-    "login_to_netease_to_download_vip": "Login to Netease to Download VIP Songs",
+    "login_to_netease_to_download_vip_and_lossless": "Login to Netease to Download VIP and lossless Songs",
     "after_login_or_logout_please_click_me_before_closing_login_window": "After login or logout, please click me before closing login window",
     "cookie_set_successfully": "Cookie set successfully",
     "sorry_please_try_again_or_open_window_again": "Sorry, please try again or open the window again"

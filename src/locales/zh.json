@@ -8,7 +8,7 @@
   },
   "downloader": {
     "all": "下载全部",
-    "set_maximum_number_of_processes": "设置最大进程数",
+    "set_the_limit_on_the_number_of_download_processes": "设置下载进程的数量限制",
     "no_limit": "无限制",
     "save_the_lyrics_file_separately": "单独保存歌词文件",
     "lossless": "无损",
@@ -32,7 +32,7 @@
     "more": "加载更多"
   },
   "loginer": {
-    "login_to_netease_to_download_vip": "登录网易云以下载VIP歌曲",
+    "login_to_netease_to_download_vip_and_lossless": "登录网易云以下载VIP及无损歌曲",
     "after_login_or_logout_please_click_me_before_closing_login_window": "登录或登出完成后请点一下我再关闭窗口",
     "cookie_set_successfully": "Cookie设置成功",
     "sorry_please_try_again_or_open_window_again": "抱歉请再试一遍或再次打开窗口"

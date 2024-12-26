@@ -8,7 +8,7 @@ import { electron } from "../api/download";
 export const useDownloadStore = defineStore("download", () => {
   const show = ref(false);
   const saveLyric = ref(false);
-  const quality = ref(0); // lossless
+  const quality = ref(320000); // lossless
   const process = ref(2);
   const anonymous = ref(true); // Use anonymous downloading of non-lossless songs
 

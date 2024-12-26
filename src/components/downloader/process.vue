@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center gap-2 cursor-pointer">
-    {{ $t("downloader.set_maximum_number_of_processes") }}
+    {{ $t("downloader.set_the_limit_on_the_number_of_download_processes") }}
     <!-- Process Selection -->
     <div class="join">
       <button
