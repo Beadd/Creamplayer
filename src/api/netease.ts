@@ -87,11 +87,9 @@ function lyric(id: string) {
   return "http://music.163.com/api/song/lyric?os=pc&id=" + id + "&lv=-1&tv=1";
 }
 
-async function playlist(id: string, limit: number, offset: number) {
+async function playlist(id: string) {
   try {
-    const res = await apiClient.get(
-      "/v6/playlist/detail/?id=" + id + "&limit=" + limit + "&offset=" + offset,
-    );
+    const res = await apiClient.get("/v6/playlist/detail/?id=" + id);
     return res.data;
   } catch (err: any) {
     console.error("API Error Response:", err.response.data);
@@ -109,9 +107,9 @@ export default {
     if (single) {
       ids = [single[1]];
     } else if (isPlaylist) {
-      const res = await playlist(isPlaylist[1], limit, offset);
-      ids = res.playlist.trackIds.map((track: any) => track.id);
-      console.log(ids);
+      const res = await playlist(isPlaylist[1]);
+      const allId = res.playlist.trackIds.map((track: any) => track.id);
+      ids = allId.slice(offset, offset + limit);
     } else {
       const res: any = await search(value, limit, offset);
       ids = res.result.songs.map((song: any) => song.id);
