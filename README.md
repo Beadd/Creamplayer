@@ -11,5 +11,7 @@
 
 > 如果一次加载过多的话可能会遭到网易云频率限制，可以加载一会停一会，或者明天再试
 
+> 后续会支持QQ音乐，并用nuxt重构，和加载过多的卡顿问题
+
 # Preview
 ![](https://raw.githubusercontent.com/Beadd/Creamplayer/refs/heads/main/preview.png)
