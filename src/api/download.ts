@@ -1,8 +1,14 @@
 import type { Song } from "../types/song";
 
-function checkFileName(name: string) {
-  const invalidRegex = /[\\/:*?<>|]/g;
-  return name.replace(invalidRegex, "-");
+function checkFileName(name: string, maxLength = 100) {
+  const invalidRegex = /[\\/:*?"<>|]/g;
+  let safeName = name.replace(invalidRegex, "-");
+
+  if (safeName.length > maxLength) {
+    safeName = safeName.slice(0, maxLength - 3) + "...";
+  }
+
+  return safeName;
 }
 
 export const electron = {
