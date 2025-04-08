@@ -7,13 +7,9 @@ import eyed3
 from mutagen.flac import FLAC, Picture
 from urllib.parse import unquote
 import urllib.parse
-import re
 
 # Define download directory
 DOWNLOAD_DIR = "downloads"
-
-# Windows has a max path length of 260 characters
-MAX_FILENAME_LENGTH = 200  # Leaving room for path and extension
 
 # Initialize command-line argument parsing
 def parse_args():
@@ -35,49 +31,10 @@ def parse_args():
 def get_file_extension(url):
     return url.split('.')[-1].split('?')[0] if '.' in url else 'mp3'
 
-# Sanitize filename by removing invalid characters
-def sanitize_filename(filename):
-    # Remove invalid Windows filename characters
-    invalid_chars = r'[\\/*?:"<>|]'
-    filename = re.sub(invalid_chars, '', filename)
-    
-    # Replace multiple spaces with single space
-    filename = re.sub(r'\s+', ' ', filename).strip()
-    
-    return filename
-
-# Generate a safe filename that doesn't exceed Windows limits
-def generate_safe_filename(original_name, song_title, ext):
-    # Sanitize both names
-    sanitized_original = sanitize_filename(original_name)
-    sanitized_title = sanitize_filename(song_title)
-    
-    # First try the sanitized original name
-    test_name = f"{sanitized_original}.{ext}"
-    if len(test_name) <= MAX_FILENAME_LENGTH:
-        return test_name
-    
-    # If original is too long, try just the sanitized song title
-    test_name = f"{sanitized_title}.{ext}"
-    if len(test_name) <= MAX_FILENAME_LENGTH:
-        return test_name
-    
-    # If still too long, truncate and add ellipsis
-    max_title_length = MAX_FILENAME_LENGTH - len(ext) - 4  # Account for .ext and ...
-    truncated_title = sanitized_title[:max_title_length] + "..."
-    return f"{truncated_title}.{ext}"
-
 # Generate file path
-def generate_file_path(name, title, ext, counter=0):
-    safe_name = generate_safe_filename(name, title, ext)
-    base = f"{DOWNLOAD_DIR}/{safe_name}"
-    
-    # Handle duplicate filenames
-    if counter:
-        name_part, ext_part = os.path.splitext(safe_name)
-        base = f"{DOWNLOAD_DIR}/{name_part}({counter}){ext_part}"
-    
-    return base
+def generate_file_path(name, ext, counter=0):
+    base = f"{DOWNLOAD_DIR}/{name}"
+    return f"{base}({counter}).{ext}" if counter else f"{base}.{ext}"
 
 # Download file
 def download_file(url, path):
@@ -87,14 +44,113 @@ def download_file(url, path):
         with open(path, "wb") as file:
             file.write(response.content)
         return os.path.getsize(path) > 0
-    except requests.RequestException as e:
-        print(f"Download error: {e}")
-        return False
-    except OSError as e:
-        print(f"Filesystem error: {e}")
+    except requests.RequestException:
         return False
 
-# [Rest of your existing functions remain the same...]
+# Save lyrics to a separate file
+def save_lyrics(lyrics_url, song_title):
+    try:
+        lyrics_response = requests.get(lyrics_url)
+        if lyrics_response.ok:
+            lyrics = lyrics_response.json().get('lrc', {}).get('lyric', '')
+            lyrics_path = generate_file_path(song_title, "lrc")
+            with open(lyrics_path, "w", encoding="utf-8") as lyrics_file:
+                lyrics_file.write(lyrics)
+        else:
+            print("Failed to download lyrics")
+    except requests.RequestException as e:
+        print(f"Error downloading lyrics: {e}")
+
+# Set MP3 metadata
+def set_mp3_metadata(path, metadata):
+    audio = eyed3.load(path)
+    if not audio:
+        print(f"Unable to load file: {path}")
+        return
+
+    audio.initTag()  
+    # Set cover
+    if metadata['cover_url']:
+        cover_data = requests.get(metadata['cover_url']).content
+        mime_type = "image/jpeg" if metadata['cover_url'].endswith(('jpg', 'jpeg')) else "image/png"
+        audio.tag.images.set(3, cover_data, mime_type)
+    
+    # Set lyrics
+    if metadata['lyrics_url']:
+        lyrics_url = metadata['lyrics_url']
+        lyrics_response = requests.get(lyrics_url)
+        if lyrics_response.ok:
+            lyrics = lyrics_response.json().get('lrc', {}).get('lyric', '')
+            audio.tag.lyrics.set(lyrics)
+
+    # Set other metadata, ensuring UTF-8 encoding
+    audio.tag.title = metadata['title']
+    audio.tag.artist = metadata['artist']
+    audio.tag.album = metadata['album']
+    audio.tag.copyright = metadata['song_id']
+
+    # Set publish time
+    if metadata['publish_time']:
+        try:
+            publish_time = datetime.datetime.strptime(metadata['publish_time'], '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            print("Invalid publish time format. Expected YYYY-MM-DD HH:MM:SS")
+            sys.exit(1)
+
+        release_time = publish_time.strftime('%Y-%m-%dT%H:%M:%S')
+        audio.tag.recording_date = release_time
+        audio.tag.release_time = release_time
+
+    try:
+        url_encoded_path = urllib.parse.quote(path)
+        audio.tag.save(encoding='utf-8')
+        print("MP3 metadata saved successfully:" + url_encoded_path)
+    except Exception as e:
+        print(f"Failed to save MP3 metadata: {e}")
+
+# Set FLAC metadata
+def set_flac_metadata(path, metadata):
+    audio = FLAC(path)
+    
+    # Set cover image
+    if metadata['cover_url']:
+        cover_data = requests.get(metadata['cover_url']).content
+        mime_type = "image/jpeg" if metadata['cover_url'].endswith(('jpg', 'jpeg')) else "image/png"
+        picture = Picture()
+        picture.type = 3  # Cover art
+        picture.mime = mime_type
+        picture.data = cover_data
+        audio.add_picture(picture)
+
+    # Set other metadata, ensuring UTF-8 encoding
+    audio['title'] = metadata['title']
+    audio['artist'] = metadata['artist']
+    audio['album'] = metadata['album']
+    audio['copyright'] = str(metadata['song_id'])
+
+    # Set publish time
+    if metadata['publish_time']:
+        publish_time = metadata['publish_time']
+        publish_time = datetime.datetime.strptime(publish_time, '%Y-%m-%d %H:%M:%S')
+        audio['date'] = publish_time.strftime('%Y-%m-%d')
+        audio['YEAR'] = publish_time.strftime('%Y')
+
+    # Fetch and set lyrics (if available)
+    if metadata['lyrics_url']:
+        try:
+            lyrics_response = requests.get(metadata['lyrics_url'])
+            if lyrics_response.status_code == 200:
+                lyrics = lyrics_response.text
+                audio['LYRICS'] = lyrics  # Adding lyrics as UNSYNCEDLYRICS or LYRICS
+        except Exception as e:
+            print(f"Error fetching lyrics: {e}")
+
+    # Save the FLAC metadata
+    try:
+        audio.save()
+        print(f"FLAC metadata saved successfully: {path}")
+    except Exception as e:
+        print(f"Failed to save FLAC metadata: {e}")
 
 # Main process
 def main():
@@ -106,30 +162,40 @@ def main():
         print("Error: Song download URL (-u) is required.")
         sys.exit(1)
 
-    # Decode the file name and title to handle any URL-encoded characters
-    decoded_filename = unquote(args.f) if args.f else ""
-    decoded_title = unquote(args.t) if args.t else "unknown_title"
+    # Decode the file name to handle any URL-encoded characters
+    decoded_filename = unquote(args.f)
 
-    # Get file extension
+    # Get file extension and path
     file_extension = get_file_extension(args.u)
-    
-    # Generate file path with safe filename handling
-    file_path = generate_file_path(decoded_filename, decoded_title, file_extension)
-
-    # Handle duplicate filenames
-    counter = 0
-    while os.path.exists(file_path):
-        counter += 1
-        file_path = generate_file_path(decoded_filename, decoded_title, file_extension, counter)
-
-    print(f"Attempting to download to: {file_path}")  # Debug output
+    file_path = generate_file_path(decoded_filename, file_extension)
 
     # Download music file
     if not download_file(args.u, file_path):
         print("Download failed or file is empty")
         sys.exit(1)
 
-    # [Rest of your main function remains the same...]
+    # Prepare metadata dictionary
+    metadata = {
+        'cover_url': args.c,
+        'lyrics_url': args.l,
+        'song_id': args.i,
+        'title': unquote(args.t),
+        'artist': unquote(args.ar),
+        'album': unquote(args.al),
+        'publish_time': args.p
+    }
+
+    # Save lyrics to a separate file if requested
+    if args.sl and args.l:
+        save_lyrics(args.l, decoded_filename)
+
+    # Set metadata for the downloaded file
+    if file_extension == "mp3":
+        set_mp3_metadata(file_path, metadata)
+    elif file_extension == "flac":
+        set_flac_metadata(file_path, metadata)
+    else:
+        print(f"Unsupported file type: {file_extension}")
 
 if __name__ == "__main__":
     main()
