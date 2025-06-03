@@ -1,8 +1,9 @@
 {
-  "name": "nuxt-app",
+  "name": "creamplayer",
   "type": "module",
-  "private": true,
+  "private": false,
   "scripts": {
+    "start": "electron .",
     "build": "nuxt build",
     "dev": "cls && nuxt dev -o",
     "generate": "nuxt generate",

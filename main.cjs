@@ -1,9 +1,9 @@
-const { app, BrowserWindow, ipcMain, shell } = require("electron/main");
-const { exec } = require("child_process");
-const { join } = require("path");
-const path = require("path");
-const fs = require("fs");
+const { exec } = require("node:child_process");
+const fs = require("node:fs");
+const { join } = require("node:path");
+const path = require("node:path");
 const { session } = require("electron");
+const { app, BrowserWindow, ipcMain, shell } = require("electron/main");
 
 let loginwindow;
 
@@ -12,19 +12,23 @@ async function runscript(binpath, args, onsuccess, onerror) {
   exec(binpath + args, (error, stdout, stderr) => {
     if (error) {
       console.error("Error running script:", error.message);
-      if (onerror) onerror(error, stderr);
+      if (onerror)
+        onerror(error, stderr);
       return;
     }
 
-    console.log(binpath + args);
-    console.log("Script output:", stdout);
+    // eslint-ignore
+    console.warn(binpath + args);
+    console.warn("Script output:", stdout);
 
     if (stdout.includes("success")) {
-      console.log("Script execution successful");
-      if (onsuccess) onsuccess(stdout);
+      console.warn("Script execution successful");
+      if (onsuccess)
+        onsuccess(stdout);
     } else {
       console.error("Unexpected script output");
-      if (onerror) onerror(new Error("Unexpected script output"), stdout);
+      if (onerror)
+        onerror(new Error("Unexpected script output"), stdout);
     }
   });
 }
@@ -40,7 +44,7 @@ function createwindow() {
     autoHideMenuBar: true,
   });
 
-  if (process.env.NODE_ENV === "development") {
+  if (require("node:process").env.NODE_ENV === "development") {
     win.loadURL("http://localhost:5173");
     win.maximize();
     win.webContents.openDevTools();
@@ -76,11 +80,11 @@ ipcMain.handle("get-netease-login", async () => {
       url: "https://music.163.com",
     });
     const cookiestring = cookies
-      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .map(cookie => `${cookie.name}=${cookie.value}`)
       .join("; ");
 
     return cookiestring;
-  } catch (error) {
+  } catch {
     return null;
   }
 });
@@ -127,9 +131,9 @@ app.whenReady().then(() => {
   // Allow to set cookie
   const defaultsession = session.defaultSession;
   defaultsession.webRequest.onBeforeSendHeaders((details, callback) => {
-    const cookievalue = details.requestHeaders["flag"];
+    const cookievalue = details.requestHeaders.flag;
     if (cookievalue) {
-      delete details.requestHeaders["flag"];
+      delete details.requestHeaders.flag;
       details.requestHeaders.Cookie = cookievalue;
     }
 
@@ -144,7 +148,7 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
+  if (require("node:process").platform !== "darwin") {
     app.quit();
   }
 });
