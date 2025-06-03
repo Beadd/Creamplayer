@@ -5,49 +5,31 @@ const path = require("path");
 const fs = require("fs");
 const { session } = require("electron");
 
-let loginWindow;
+let loginwindow;
 
 // Function to execute Python scripts
-async function runScript(binPath, args, onSuccess, onError) {
-  exec(binPath + args, (error, stdout, stderr) => {
+async function runscript(binpath, args, onsuccess, onerror) {
+  exec(binpath + args, (error, stdout, stderr) => {
     if (error) {
       console.error("Error running script:", error.message);
-      if (onError) onError(error, stderr);
+      if (onerror) onerror(error, stderr);
       return;
     }
 
-    console.log(binPath + args);
+    console.log(binpath + args);
     console.log("Script output:", stdout);
 
     if (stdout.includes("success")) {
       console.log("Script execution successful");
-      if (onSuccess) onSuccess(stdout);
+      if (onsuccess) onsuccess(stdout);
     } else {
       console.error("Unexpected script output");
-      if (onError) onError(new Error("Unexpected script output"), stdout);
+      if (onerror) onerror(new Error("Unexpected script output"), stdout);
     }
   });
 }
 
-function setTitle(win) {
-  const currentTime = new Date();
-  const currentHour = currentTime.getHours();
-  let greeting = "";
-
-  if (currentHour >= 0 && currentHour < 12) {
-    greeting = "Creamplayer - Good Morning";
-  } else if (currentHour >= 12 && currentHour < 19) {
-    greeting = "Creamplayer - Good Afternoon";
-  } else {
-    greeting = "Creamplayer - Good Evening";
-  }
-
-  win.webContents.on("did-finish-load", () => {
-    win.webContents.executeJavaScript(`document.title = "${greeting}"`);
-  });
-}
-
-function createWindow() {
+function createwindow() {
   const win = new BrowserWindow({
     width: 900,
     height: 800,
@@ -57,7 +39,6 @@ function createWindow() {
     title: "Creamplayer",
     autoHideMenuBar: true,
   });
-  setTitle(win);
 
   if (process.env.NODE_ENV === "development") {
     win.loadURL("http://localhost:5173");
@@ -68,56 +49,56 @@ function createWindow() {
   }
 }
 
-function createLoginWindow() {
-  loginWindow = new BrowserWindow({
+function createloginwindow() {
+  loginwindow = new BrowserWindow({
     width: 800,
     height: 600,
   });
 
-  loginWindow.loadURL("https://music.163.com/login");
+  loginwindow.loadURL("https://music.163.com/login");
 
-  loginWindow.on("closed", () => {
-    loginWindow = null;
+  loginwindow.on("closed", () => {
+    loginwindow = null;
   });
 }
 
 ipcMain.handle("netease-login", async () => {
-  if (loginWindow) {
-    loginWindow.focus();
+  if (loginwindow) {
+    loginwindow.focus();
   } else {
-    createLoginWindow();
+    createloginwindow();
   }
 });
 
 ipcMain.handle("get-netease-login", async () => {
   try {
-    const cookies = await loginWindow.webContents.session.cookies.get({
+    const cookies = await loginwindow.webContents.session.cookies.get({
       url: "https://music.163.com",
     });
-    const cookieString = cookies
+    const cookiestring = cookies
       .map((cookie) => `${cookie.name}=${cookie.value}`)
       .join("; ");
 
-    return cookieString;
+    return cookiestring;
   } catch (error) {
     return null;
   }
 });
 
 ipcMain.handle("download", async (event, args) => {
-  const binPath = join("./resources/musicdownloader.exe");
+  const binpath = join("./resources/musicdownloader.exe");
 
   return new Promise((resolve) => {
-    runScript(
-      binPath,
+    runscript(
+      binpath,
       args,
       (stdout) => {
         const match = stdout.match(/successfully:(.*)/);
         if (match && match[1]) {
           const result = match[1].trim();
-          const decodedUrl = decodeURIComponent(result);
+          const decodedurl = decodeURIComponent(result);
 
-          resolve(decodedUrl);
+          resolve(decodedurl);
         } else {
           resolve(null);
         }
@@ -130,26 +111,26 @@ ipcMain.handle("download", async (event, args) => {
   });
 });
 
-ipcMain.handle("open", async (event, relativePath) => {
-  const absolutePath = path.resolve(relativePath);
-  if (fs.existsSync(absolutePath)) {
-    shell.showItemInFolder(absolutePath);
+ipcMain.handle("open", async (event, relativepath) => {
+  const absolutepath = path.resolve(relativepath);
+  if (fs.existsSync(absolutepath)) {
+    shell.showItemInFolder(absolutepath);
   } else {
-    console.error("Path does not exist:", absolutePath);
+    console.error("Path does not exist:", absolutepath);
   }
 });
 
 // Electron app lifecycle
 app.whenReady().then(() => {
-  createWindow();
+  createwindow();
 
   // Allow to set cookie
-  const defaultSession = session.defaultSession;
-  defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    const cookieValue = details.requestHeaders["flag"];
-    if (cookieValue) {
+  const defaultsession = session.defaultSession;
+  defaultsession.webRequest.onBeforeSendHeaders((details, callback) => {
+    const cookievalue = details.requestHeaders["flag"];
+    if (cookievalue) {
       delete details.requestHeaders["flag"];
-      details.requestHeaders.Cookie = cookieValue;
+      details.requestHeaders.Cookie = cookievalue;
     }
 
     callback({ requestHeaders: details.requestHeaders });
@@ -157,7 +138,7 @@ app.whenReady().then(() => {
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+      createwindow();
     }
   });
 });
