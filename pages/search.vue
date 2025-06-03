@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const q = ref("");
+const query = useRoute().query.q as string;
+const q = ref(decodeURIComponent(query));
 </script>
 
 <template>
