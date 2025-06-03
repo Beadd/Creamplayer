@@ -2,8 +2,9 @@
   "name": "creamplayer",
   "type": "module",
   "private": false,
+  "main": "main.cjs",
   "scripts": {
-    "start": "electron .",
+    "start": "set NODE_ENV=development&& electron .",
     "build": "nuxt build",
     "dev": "cls && nuxt dev -o",
     "generate": "nuxt generate",
