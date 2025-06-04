@@ -3,12 +3,12 @@ const q = ref("");
 </script>
 
 <template>
-  <div class="flex h-dvh w-full items-center justify-center">
+  <AppFrame>
     <div class="flex flex-col gap-4">
       <input v-model="q" class="input">
       <div class="btn w-80" @click="useRouter().push(`/search?q=${encodeURIComponent(q)}`)">
         {{ $t('Search') }}
       </div>
     </div>
-  </div>
+  </AppFrame>
 </template>
