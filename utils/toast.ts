@@ -22,10 +22,16 @@ export function showtoast(
   toast.add(message(detail, level || "success"));
 }
 
-export function showtoastsuccess(toast: ToastServiceMethods, t: (key: string) => string) {
+export function showtoastsuccess(
+  toast: ToastServiceMethods,
+  t: (key: string) => string,
+) {
   showtoast(toast, t("Success"), "success");
 }
 
-export function showtoasterror(toast: ToastServiceMethods, t: (key: string) => string) {
+export function showtoasterror(
+  toast: ToastServiceMethods,
+  t: (key: string) => string,
+) {
   showtoast(toast, t("Error"), "error");
 }
