@@ -8,6 +8,7 @@ const q = ref("");
       <Search v-model="q" />
       <SettingLimit />
       <SettingQuality />
+      <SettingSavelyric />
     </div>
   </AppFrame>
 </template>
