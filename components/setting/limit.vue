@@ -8,13 +8,13 @@ function click(process: number) {
 </script>
 
 <template>
-  <div class="flex cursor-pointer items-center justify-center gap-2">
-    {{ $t("downloader.set_the_limit_on_the_number_of_download_processes") }}
+  <div class="flex cursor-pointer flex-col justify-center gap-4">
+    {{ $t("Set the limit on the number of download processes") }}
     <div class="join">
       <button
         v-for="process in processes"
         :key="process"
-        class="join-item btn btn-sm"
+        class="join-item btn"
         :class="[downloads.process === process ? 'btn-accent' : 'btn-info']"
         @click="click(process)"
       >
