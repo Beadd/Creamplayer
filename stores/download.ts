@@ -6,4 +6,4 @@ export const usedownloadstore = defineStore("download", () => {
   const ifanonymous = ref(true);
 
   return { ifshow, ifsavelyric, process, quality, ifanonymous };
-});
+}, { persist: true });
