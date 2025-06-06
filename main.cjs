@@ -87,6 +87,13 @@ ipcMain.handle("get-netease-login", async () => {
   }
 });
 
+ipcMain.handle("close-netease-login", async () => {
+  if (loginwindow) {
+    loginwindow.close();
+    loginwindow = null;
+  }
+});
+
 ipcMain.handle("download", async (_, args) => {
   const binpath = join("./resources/musicdownloader.exe");
 

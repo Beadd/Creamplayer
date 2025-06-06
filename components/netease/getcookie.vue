@@ -7,6 +7,9 @@ async function get() {
     cookies.netease = res;
     return true;
   } else {
+    (window as any).electron.invoke("netease-login");
+    cookies.netease = await (window as any).electron.invoke("get-netease-login");
+    (window as any).electron.invoke("close-netease-login");
     return false;
   }
 }
