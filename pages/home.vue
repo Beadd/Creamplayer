@@ -9,6 +9,7 @@ const q = ref("");
       <SettingLimit />
       <SettingQuality />
       <SettingSavelyric />
+      <SettingAnonymous />
     </div>
   </AppFrame>
 </template>
