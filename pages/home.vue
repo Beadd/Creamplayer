@@ -10,6 +10,7 @@ const q = ref("");
       <SettingQuality />
       <SettingSavelyric />
       <SettingAnonymous />
+      <SettingLogin />
     </div>
   </AppFrame>
 </template>
