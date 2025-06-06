@@ -10,7 +10,8 @@ const q = ref("");
       <SettingQuality />
       <SettingSavelyric />
       <SettingAnonymous />
-      <SettingLogin />
+      <NeteaseLogin />
+      <NeteaseGetcookie />
     </div>
   </AppFrame>
 </template>
