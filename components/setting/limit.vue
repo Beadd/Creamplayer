@@ -8,7 +8,7 @@ function click(process: number) {
 </script>
 
 <template>
-  <div class="flex cursor-pointer flex-col justify-center gap-4">
+  <div class="flex cursor-pointer flex-col gap-4">
     {{ $t("Set the limit on the number of download processes") }}
     <div class="join">
       <button
