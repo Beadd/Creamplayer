@@ -7,7 +7,6 @@ const { app, BrowserWindow, ipcMain, shell } = require("electron/main");
 
 let loginwindow;
 
-// Function to execute Python scripts
 async function runscript(binpath, args, onsuccess, onerror) {
   exec(binpath + args, (error, stdout, stderr) => {
     if (error) {
@@ -17,7 +16,6 @@ async function runscript(binpath, args, onsuccess, onerror) {
       return;
     }
 
-    // eslint-ignore
     console.warn(binpath + args);
     console.warn("Script output:", stdout);
 
@@ -89,7 +87,7 @@ ipcMain.handle("get-netease-login", async () => {
   }
 });
 
-ipcMain.handle("download", async (event, args) => {
+ipcMain.handle("download", async (_, args) => {
   const binpath = join("./resources/musicdownloader.exe");
 
   return new Promise((resolve) => {
@@ -115,7 +113,7 @@ ipcMain.handle("download", async (event, args) => {
   });
 });
 
-ipcMain.handle("open", async (event, relativepath) => {
+ipcMain.handle("open", async (_, relativepath) => {
   const absolutepath = path.resolve(relativepath);
   if (fs.existsSync(absolutepath)) {
     shell.showItemInFolder(absolutepath);
@@ -124,11 +122,9 @@ ipcMain.handle("open", async (event, relativepath) => {
   }
 });
 
-// Electron app lifecycle
 app.whenReady().then(() => {
   createwindow();
 
-  // Allow to set cookie
   const defaultsession = session.defaultSession;
   defaultsession.webRequest.onBeforeSendHeaders((details, callback) => {
     const cookievalue = details.requestHeaders.flag;
