@@ -1,5 +1,11 @@
 <script setup lang="ts">
 const q = defineModel<string>();
+
+function search() {
+  if (q.value) {
+    useRouter().push(`/search?q=${encodeURIComponent(q.value)}`);
+  }
+}
 </script>
 
 <template>
@@ -7,7 +13,7 @@ const q = defineModel<string>();
     <input v-model="q" class="input" :placeholder="$t('Song id/url or title')">
     <div
       class="btn w-80"
-      @click="useRouter().push(`/search?q=${encodeURIComponent(q || '')}`)"
+      @click="search"
     >
       {{ $t("Search") }}
     </div>
