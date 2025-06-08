@@ -12,14 +12,25 @@ async function search() {
   const playlist = q.value.match(/music\.163\.com\/#\/playlist\?id=(\d+)/);
 
   if (single) {
-    songs.search = [single[1]];
+    const res: any = await useFetch(api.netease.detail(single[1]));
+    songs.search = res;
+    more.value = false;
   } else if (playlist) {
     const res: any = await useFetch(api.netease.playlist(playlist[1]));
     const list = res.playlist.trackIds.map((track: any) => track.id);
     songs.search = list.slice(offset.value, offset.value + limit);
   } else {
-    const res: any = await useFetch(api.netease.search(q.value, limit, offset.value));
-    songs.search = res.result.songs.map((song: any) => song.id);
+    const { data } = await useFetch<any>(api.netease.search(q.value, limit, offset.value));
+    const parsed = JSON.parse(data.value as string).result.songs;
+    if (parsed.length < limit)
+      more.value = false;
+
+    songs.search = await parsed.map((song: any) => ({
+      id: song.id,
+      name: song.name,
+      cover: song.al.picUrl,
+    }));
+    more.value = false;
   }
 }
 </script>

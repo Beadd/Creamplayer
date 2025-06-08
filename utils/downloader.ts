@@ -10,7 +10,7 @@ function checkfilename(name: string, maxlength = 100) {
 }
 
 export default {
-  download: async (detail: typeDetail, ifsavelyric: boolean = false) => {
+  download: async (detail: typedetail, ifsavelyric: boolean = false) => {
     const name = encodeURIComponent(checkfilename(detail.name));
     const artist = encodeURIComponent(checkfilename(detail.artist));
     const album = encodeURIComponent(checkfilename(detail.album));

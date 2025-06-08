@@ -1,10 +1,10 @@
-export interface typeSong {
+export interface typesong {
   id: string;
   name: string;
   cover: string;
 }
 
-export interface typeDetail {
+export interface typedetail {
   id: string;
   name: string;
   artist: string;

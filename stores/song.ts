@@ -1,5 +1,5 @@
-export const usesongstore = defineStore("cookie", () => {
-  const search = ref();
+export const usesongstore = defineStore("song", () => {
+  const search = ref<typesong[]>();
 
   return { search };
 });
