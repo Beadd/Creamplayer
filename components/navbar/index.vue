@@ -1,6 +1,6 @@
 <template>
   <div class="flex w-full justify-between">
-    <AppMenu>
+    <AppMenu @click="useRouter().push('/')">
       <i class="bx bx-home" />
     </AppMenu>
   </div>
