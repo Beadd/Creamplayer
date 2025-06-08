@@ -38,6 +38,9 @@ async function search() {
 <template>
   <AppFrame>
     <Search v-model="q" />
+    <div class="flex flex-wrap gap-4 p-4">
+      <Song v-for="(song, index) in songs.search" :key="index" :song="song" />
+    </div>
     <AppLoadder :load="search" :more="more" />
   </AppFrame>
 </template>

@@ -11,11 +11,11 @@ function search() {
 <template>
   <div class="flex flex-col gap-4">
     <input v-model="q" class="input" :placeholder="$t('Song id/url or title')">
-    <div
+    <button
       class="btn w-80"
       @click="search"
     >
       {{ $t("Search") }}
-    </div>
+    </button>
   </div>
 </template>
