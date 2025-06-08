@@ -18,6 +18,7 @@
   "dependencies": {
     "@primevue/forms": "^4.3.3",
     "@tailwindcss/vite": "^4.1.4",
+    "boxicons": "^2.1.4",
     "nuxt": "^3.16.2",
     "tailwindcss": "^4.1.4",
     "vue": "^3.5.13",
