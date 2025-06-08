@@ -17,6 +17,7 @@ async function get() {
   <button class="btn btn-warning" @click="get">
     {{ $t('Get the cookie of netease login window') }}
   </button>
+  {{ $t('Or you can manually enter the cookie') }}
   <input
     v-model="cookies.netease" :placeholder="$t('Netease cookie')" class="input"
   >

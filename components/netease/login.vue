@@ -5,6 +5,7 @@ function open() {
 </script>
 
 <template>
+  {{ $t('App only') }}
   <button class="btn btn-error" @click="open">
     {{ $t('Open the login window of netease') }}
   </button>
