@@ -3,7 +3,7 @@ const query = useRoute().query.q as string;
 const q = ref(decodeURIComponent(query));
 
 const offset = ref(0);
-const limit = 10;
+const limit = 20;
 const more = ref(true);
 const songs = usesongstore();
 
@@ -38,7 +38,7 @@ async function search() {
 <template>
   <AppFrame>
     <Search v-model="q" />
-    <div class="flex flex-wrap gap-4 p-4">
+    <div class="flex flex-wrap justify-center gap-4 p-4">
       <Song v-for="(song, index) in songs.search" :key="index" :song="song" />
     </div>
     <AppLoadder :load="search" :more="more" />
