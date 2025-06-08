@@ -10,26 +10,26 @@ function checkfilename(name: string, maxlength = 100) {
 }
 
 export default {
-  download: async (song: Song, savelyric: boolean = false) => {
-    const name = encodeURIComponent(checkfilename(song.name));
-    const artist = encodeURIComponent(checkfilename(song.artist));
-    const album = encodeURIComponent(checkfilename(song.album));
-    const lyrics = song.lyrics ? song.lyrics : "";
-    const publishtime = song.publishtime ? song.publishtime : "";
+  download: async (detail: typeDetail, ifsavelyric: boolean = false) => {
+    const name = encodeURIComponent(checkfilename(detail.name));
+    const artist = encodeURIComponent(checkfilename(detail.artist));
+    const album = encodeURIComponent(checkfilename(detail.album));
+    const lyrics = detail.lyrics ? detail.lyrics : "";
+    const publishtime = detail.publishtime ? detail.publishtime : "";
 
     let args
-      = ` -s "${song.url}"`
+      = ` -s "${detail.url}"`
         + ` -f "${name} - ${artist}"`
-        + ` -u "${song.url}"`
-        + ` -c "${song.cover}"`
+        + ` -u "${detail.url}"`
+        + ` -c "${detail.cover}"`
         + ` -l "${lyrics || ""}"`
-        + ` -i ${song.id}`
+        + ` -i ${detail.id}`
         + ` -t "${name}"`
         + ` -ar "${artist}"`
         + ` -al "${album}"`
         + ` -p "${publishtime}"`;
 
-    if (savelyric) {
+    if (ifsavelyric) {
       args += " -sl";
     }
 

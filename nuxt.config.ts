@@ -6,6 +6,14 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      proxy: {
+        "/api": {
+          target: "http://music.163.com/",
+          changeOrigin: true,
+        },
+      },
+    },
   },
   modules: [
     "@pinia/nuxt",
@@ -16,7 +24,7 @@ export default defineNuxtConfig({
     "@primevue/nuxt-module",
   ],
   eslint: {
-    checker: true, // <---
+    checker: true,
   },
   i18n: {
     defaultLocale: "zh",
